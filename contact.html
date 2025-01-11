@@ -24,6 +24,8 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
 
 </head>
 
@@ -208,7 +210,7 @@
           </div><!-- End Google Maps -->
 
           <div class="col-lg-6">
-            <form action="http://localhost:8000/forms/contact" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+            <!-- <form action="http://localhost:8000/forms/contact" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
               <div class="row gy-4">
 
                 <div class="col-md-12">
@@ -231,7 +233,22 @@
                 </div>
 
               </div>
-            </form>
+            </form> -->
+
+            <form id="contact-form" class="php-email-form">
+              <div class="row gy-4">
+                <div class="col-md-12">
+                  <input type="text" name="name" placeholder="Your Name" required>
+                  </div>
+                  <div class="col-md-12">
+                  <input type="email" name="email" placeholder="Your Email" required>
+                  </div>
+                  <div class="col-md-12">
+                  <textarea name="message" rows="6" placeholder="Message" required></textarea>
+                  </div>
+                  <button type="submit">Send Message</button>
+              </div>
+          </form>
           </div><!-- End Contact Form -->
 
         </div>
@@ -239,6 +256,26 @@
       </div>
 
     </section><!-- /Contact Section -->
+
+    <script>
+      // Initialize EmailJS with your Public Key
+      emailjs.init("EpgwZgV3MZaqS6Ycd");
+    
+      // Add event listener for form submission
+      document.getElementById("contact-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+    
+        emailjs.sendForm("service_7ehj2gb", "template_owrhycg", this)
+          .then(function(response) {
+            console.log("SUCCESS!", response.status, response.text);
+            alert("Email sent successfully!");
+          })
+          .catch(function(error) {
+            console.error("FAILED...", error);
+            alert("Failed to send email. Please try again.");
+          });
+      });
+    </script>
 
     <!-- Whatsapp Icon -->
     <a href="https://wa.me/+917983438214" target="_blank" class="whatsapp-icon">

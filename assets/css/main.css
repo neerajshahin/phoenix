@@ -99,10 +99,10 @@
 }
 
 @media (max-width: 1000px) {
-  .alt-services .features-image img {
+  /* .alt-services .features-image img {
     width: 70% !important;
     height: auto !important;
-  }
+  } */
 
   .all {
     margin-top: 1rem !important;

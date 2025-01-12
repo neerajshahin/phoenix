@@ -237,20 +237,38 @@
 
             <form id="contact-form" class="php-email-form">
               <div class="row gy-4">
-                <div class="col-md-12">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                  <div class="col-md-12">
+                      <input 
+                          type="text" 
+                          name="name" 
+                          id="name" 
+                          class="form-control" 
+                          placeholder="Your Name" 
+                          required 
+                          onblur="convertToCamelCase()">
                   </div>
                   <div class="col-md-12">
-                  <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                      <input 
+                          type="email" 
+                          name="email" 
+                          class="form-control" 
+                          placeholder="Your Email" 
+                          required>
                   </div>
                   <div class="col-md-12">
-                  <textarea name="message" rows="6"class="form-control" placeholder="Message" required></textarea>
+                      <textarea 
+                          name="message" 
+                          rows="6" 
+                          class="form-control" 
+                          placeholder="Message" 
+                          required></textarea>
                   </div>
                   <div class="col-md-12 text-center">
-                    <button type="submit">Send Message</button>
+                      <button type="submit">Send Message</button>
                   </div>
               </div>
           </form>
+          
           </div><!-- End Contact Form -->
 
         </div>
@@ -258,7 +276,19 @@
       </div>
 
     </section><!-- /Contact Section -->
-
+    <script>
+      // Function to convert the name field to Camel Case
+      function convertToCamelCase() {
+          const nameInput = document.getElementById("name");
+          if (nameInput && nameInput.value) {
+              nameInput.value = nameInput.value
+                  .toLowerCase()
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ');
+          }
+      }
+    </script>
     <script>
       // Initialize EmailJS with your Public Key
       emailjs.init("EpgwZgV3MZaqS6Ycd");

@@ -155,6 +155,8 @@ This project is configured for automatic deployment to GitHub Pages using GitHub
    - Navigate to **Settings** → **Pages**
    - Under **Source**, select **GitHub Actions**
    - The site will automatically deploy on every push to the `main` branch
+   
+   ⚠️ **Important**: Make sure you select "GitHub Actions" as the source, NOT "Deploy from a branch". This tells GitHub to use our custom workflow instead of Jekyll.
 
 3. **Access Your Site:**
    - Your site will be available at: `https://[username].github.io/[repository-name]/`

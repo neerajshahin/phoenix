@@ -1,0 +1,170 @@
+---
+layout: base.njk
+title: Contact - Phoenix Cabs
+bodyClass: contact-page
+extraJS: |
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // Function to convert the name field to Camel Case
+    function convertToCamelCase() {
+        const nameInput = document.getElementById("name");
+        if (nameInput && nameInput.value) {
+            nameInput.value = nameInput.value
+                .toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+    }
+
+    // Wait for DOM and EmailJS to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Try multiple ways to access EmailJS
+        const emailJS = window.emailjs || window.EmailJS;
+        
+        if (emailJS) {
+            // Initialize EmailJS v4 SDK
+            emailJS.init({
+                publicKey: "EpgwZgV3MZaqS6Ycd",
+            });
+
+            // Add event listener for form submission
+            const contactForm = document.getElementById("contact-form");
+            if (contactForm) {
+                contactForm.addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    emailJS.sendForm("service_7ehj2gb", "template_owrhycg", this)
+                        .then(function(response) {
+                            console.log("SUCCESS!", response.status, response.text);
+                            alert("Email sent successfully!");
+                        })
+                        .catch(function(error) {
+                            console.error("FAILED...", error);
+                            alert("Failed to send email. Please try again.");
+                        });
+                });
+            }
+        } else {
+            console.warn("EmailJS library not available. Contact form will show a fallback message.");
+            // Fallback: Show user a message with contact details
+            const contactForm = document.getElementById("contact-form");
+            if (contactForm) {
+                contactForm.addEventListener("submit", function(event) {
+                    event.preventDefault();
+                    alert("Email service is not available when viewing this page locally. Please contact us directly at rajatshah06@gmail.com or call +91 79834 38214");
+                });
+            }
+        }
+    });
+  </script>
+---
+{%- set assetPath = "../" if page.url != "/" else "" -%}
+
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-size: cover; background-repeat: no-repeat;
+background-position: center;">
+  <div class="container position-relative">
+    <h1>Contact</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{{assetPath}}index.html">Home</a></li>
+        <li class="current">Contact</li>
+      </ol>
+    </nav>
+  </div>
+</div><!-- End Page Title -->
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row gy-4">
+
+      <div class="col-lg-6">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+          <i class="bi bi-geo-alt"></i>
+          <h3>Address</h3>
+          <center><p>Phoenix Cabs, River Heaven Colony, Jhajra, Dehradun - 248007</p> </center>
+        </div>
+      </div><!-- End Info Item -->
+
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+          <i class="bi bi-telephone"></i>
+          <h3>Call Us</h3>
+         <center> <p> <a href="tel:+917983438214">+917983438214 </a> </p>
+         </center>
+        </div>
+
+      </div>
+
+   
+      <!-- End Info Item -->
+
+      
+      <div class="col-lg-3 col-md-6">
+       
+        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+          <i class="bi bi-envelope"></i>
+          <h3>Email Us</h3>
+           <p> 
+            <a href="mailto:rajatshah06@gmail.com">rajatshah06@gmail.com</a>
+          </p>
+        </div>
+       
+      </div>
+      
+   <!-- End Info Item -->
+
+    </div>
+
+    <div class="row gy-4 mt-1">
+      <div class="col-lg-6">
+        <iframe style="height:100%;width:100%;border:0;" frameborder="0" src="https://www.google.com/maps/embed/v1/place?q=30.3430950,+77.8999885&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+      </div><!-- End Google Maps -->
+
+      <div class="col-lg-6">
+        <form id="contact-form" class="php-email-form">
+          <div class="row gy-4">
+              <div class="col-md-12">
+                  <input 
+                      type="text" 
+                      name="name" 
+                      id="name" 
+                      class="form-control" 
+                      placeholder="Your Name" 
+                      required 
+                      onblur="convertToCamelCase()">
+              </div>
+              <div class="col-md-12">
+                  <input 
+                      type="email" 
+                      name="email" 
+                      class="form-control" 
+                      placeholder="Your Email" 
+                      required>
+              </div>
+              <div class="col-md-12">
+                  <textarea 
+                      name="message" 
+                      rows="6" 
+                      class="form-control" 
+                      placeholder="Message" 
+                      required></textarea>
+              </div>
+              <div class="col-md-12 text-center">
+                  <button type="submit">Send Message</button>
+              </div>
+          </div>
+      </form>
+      
+      </div><!-- End Contact Form -->
+
+    </div>
+
+  </div>
+
+</section><!-- /Contact Section -->

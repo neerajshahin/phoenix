@@ -1,0 +1,29 @@
+{%- set assetPath = "../" if page.url != "/" else "" -%}
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    <a href="{{assetPath}}index.html" class="logo d-flex align-items-center">
+      <img src="{{assetPath}}assets/img/phoenix.png" alt="Phoenix Cabs">
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li class="{% if page.url == '/' %}active{% endif %}">
+          <a href="{{assetPath}}index.html">Home</a>
+        </li>
+        <li class="{% if '/about/' in page.url %}active{% endif %}">
+          <a href="{{assetPath}}about/index.html">About</a>
+        </li>
+        <li class="{% if '/services/' in page.url %}active{% endif %}">
+          <a href="{{assetPath}}services/index.html">Services</a>
+        </li>
+        <li class="{% if '/char-dham/' in page.url %}active{% endif %}">
+          <a href="{{assetPath}}char-dham/index.html">Char Dham Yatra</a>
+        </li>
+        <li class="{% if '/contact/' in page.url %}active{% endif %}">
+          <a href="{{assetPath}}contact/index.html">Contact</a>
+        </li>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+  </div>
+</header>

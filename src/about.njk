@@ -1,0 +1,283 @@
+---
+layout: base.njk
+title: About - Phoenix Cabs
+bodyClass: about-page
+---
+{%- set assetPath = "../" if page.url != "/" else "" -%}
+
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg);
+ background-repeat: no-repeat;
+background-position: center;">
+  <div class="container position-relative">
+    <h1>About</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{{assetPath}}index.html">Home</a></li>
+        <li class="current">About</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<!-- About Section -->
+<section id="alt-services" class="alt-services section">
+  <div class="container">
+    <div class="row justify-content-around gy-4">
+      <div class="features-image col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <img src="{{assetPath}}assets/img/traveller.jpg" alt="" />
+      </div>
+
+      <div class="col-lg-5 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
+        <h3>
+          Why to choose  Phoenix Cabs Taxies over others
+        </h3>
+        <p>
+          Choosing  Phoenix Cabs for your taxi service needs
+          ensures a reliable and enjoyable travel experience. We pride
+          ourselves on offering top-notch services that stand out from the
+          competition. Here are a few reasons why you should choose us:
+        </p>
+
+        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="300">
+          <i class="bi bi-easel flex-shrink-0"></i>
+          <div>
+            <h4>
+              <a href="/about/" class="stretched-link">Experienced Drivers</a>
+            </h4>
+            <p>Our drivers are highly experienced and professional.</p>
+          </div>
+        </div>
+        <!-- End Icon Box -->
+
+        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="400">
+          <i class="bi bi-car-front"></i>
+          <div>
+            <h4><a href="/about/" class="stretched-link">Best Cars</a></h4>
+            <p>
+              We maintain a fleet of high-quality, well-maintained cars.
+            </p>
+          </div>
+        </div>
+        <!-- End Icon Box -->
+
+        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="500">
+          <i class="bi-shield-fill-check"></i>
+          <div>
+            <h4>
+              <a href="/about/" class="stretched-link">Safety and Comfort</a>
+            </h4>
+            <p>
+              Safety and comfort are our top priorities for every journey
+            </p>
+          </div>
+        </div>
+        <!-- End Icon Box -->
+        
+        <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
+          style="margin-top: 1rem">
+          <a href="tel:+917983438214" class="call-us-button btn-get-started">CALL NOW
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /About Section -->
+
+<!-- Stats Counter Section -->
+<section id="stats-counter" class="stats-counter section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-8">
+        <div class="stats-item d-flex align-items-center w-100 h-100">
+          <i class="bi bi-emoji-smile color-blue flex-shrink-0"></i>
+          <div>
+            <span data-purecounter-start="0" data-purecounter-end="5500" data-purecounter-duration="1"
+              class="purecounter"></span>
+            <p>Happy Clients</p>
+          </div>
+        </div>
+      </div>
+      <!-- End Stats Item -->
+
+      <div class="col-lg-4 col-md-8">
+        <div class="stats-item d-flex align-items-center w-100 h-100">
+          <i class="bi bi-journal-richtext color-orange flex-shrink-0"></i>
+          <div>
+            <span data-purecounter-start="0" data-purecounter-end="40" data-purecounter-duration="1"
+              class="purecounter"></span>
+            <p>Destinations</p>
+          </div>
+        </div>
+      </div>
+      <!-- End Stats Item -->
+
+      <div class="col-lg-4 col-md-8">
+        <div class="stats-item d-flex align-items-center w-100 h-100">
+          <i class="bi bi-headset color-green flex-shrink-0"></i>
+          <div>
+            <span data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="1"
+              class="purecounter"></span>
+            <p>Hours Support</p>
+          </div>
+        </div>
+      </div>
+      <!-- End Stats Item -->
+    </div>
+  </div>
+</section>
+<!-- /Stats Counter Section -->
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials section">
+
+<!-- Section Title -->
+<div class="container section-title" data-aos="fade-up">
+  <h2>Our Client Says</h2>
+  <p>Read the experiences of our satisfied customers and discover why Phoenix Cabs is the preferred
+    choice for reliable and exceptional travel services.</p>
+</div><!-- End Section Title -->
+
+<div class="container" data-aos="fade-up" data-aos-delay="100">
+
+  <div class="swiper init-swiper">
+    <script type="application/json" class="swiper-config">
+      {
+        "loop": true,
+        "speed": 600,
+        "autoplay": {
+          "delay": 5000
+        },
+        "slidesPerView": "auto",
+        "pagination": {
+          "el": ".swiper-pagination",
+          "type": "bullets",
+          "clickable": true
+        },
+        "breakpoints": {
+          "320": {
+            "slidesPerView": 1,
+            "spaceBetween": 40
+          },
+          "1200": {
+            "slidesPerView": 2,
+            "spaceBetween": 20
+          }
+        }
+      }
+    </script>
+
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Raghav Singh</h3>
+            <h4>Business Owner</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Phoenix Cabs exceeded all my expectations! Their team was professional, and the service was flawless from start to finish.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Priya Mehta</h3>
+            <h4>Marketing Executive</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              I chose Phoenix Cabs for a family vacation, and I am extremely pleased with their attention to detail and comfort during the journey.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Nitin</h3>
+            <h4>Software Engineer</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Whether it's a business trip or a casual ride, Phoenix Cabs always provides timely and exceptional service. I highly recommend them!
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Ankita Sharma</h3>
+            <h4>Journalist</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Phoenix Cabs made my Char Dham Yatra hassle-free and enjoyable. Their professionalism and care were evident throughout.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Vivek Verma</h3>
+            <h4>Teacher</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              हर बार फीनिक्स कैब्स के साथ मेरी यात्रा शानदार रही है। उनकी सेवाएं हमेशा समय पर और आरामदायक होती हैं।
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Anjali Rathi</h3>
+            <h4>Student</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              मैंने कई बार फीनिक्स कैब्स ली हैं, और हर बार का अनुभव शानदार रहा। गाड़ियाँ साफ-सुथरी और सेफ होती हैं।
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+</div>
+
+</section>
+<!-- /Testimonials Section -->

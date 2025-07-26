@@ -135,6 +135,59 @@ bodyClass: page-specific-class
 - **WhatsApp**: [+91 79834 38214](https://wa.me/+917983438214)
 - **Address**: Phoenix Cabs, River Heaven Colony, Jhajra, Dehradun - 248007, Uttarakhand
 
+## Deployment to GitHub Pages
+
+### Automatic Deployment (Recommended)
+
+This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
+
+#### Setup Steps:
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Deploy Phoenix Cabs website"
+   git push origin main
+   ```
+
+2. **Enable GitHub Pages:**
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Pages**
+   - Under **Source**, select **GitHub Actions**
+   - The site will automatically deploy on every push to the `main` branch
+
+3. **Access Your Site:**
+   - Your site will be available at: `https://[username].github.io/[repository-name]/`
+   - Example: `https://neerajkumar.github.io/phoenix/`
+
+#### Custom Domain (Optional):
+If you have a custom domain:
+1. Update the `cname:` line in `.github/workflows/deploy.yml`
+2. Add a CNAME record in your domain's DNS settings
+
+### Manual Deployment
+
+If you prefer manual deployment:
+
+1. **Build the site:**
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy the `_site` folder:**
+   - Go to GitHub repository **Settings** → **Pages**
+   - Select **Deploy from a branch**
+   - Choose **gh-pages** branch and **/ (root)** folder
+   - Push the contents of `_site/` to the `gh-pages` branch
+
+### GitHub Actions Workflow
+
+The deployment is handled by `.github/workflows/deploy.yml` which:
+- Triggers on every push to `main` branch
+- Installs Node.js and dependencies
+- Builds the Eleventy site
+- Deploys to GitHub Pages automatically
+
 ## Technology Stack
 
 - **Static Site Generator**: Eleventy (11ty)
@@ -144,3 +197,4 @@ bodyClass: page-specific-class
 - **Animations**: AOS (Animate On Scroll)
 - **Form Handling**: EmailJS
 - **Image Slider**: Swiper.js
+- **Deployment**: GitHub Pages with GitHub Actions

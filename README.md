@@ -133,7 +133,7 @@ bodyClass: page-specific-class
 - **Phone**: [+91 79834 38214](tel:+917983438214)
 - **Email**: [rajatshah06@gmail.com](mailto:rajatshah06@gmail.com)
 - **WhatsApp**: [+91 79834 38214](https://wa.me/+917983438214)
-- **Address**: Phoenix Cabs, River Heaven Colony, Jhajra, Dehradun - 248007, Uttarakhand
+- **Address**: Phoenix Cabs, Jhajra, Dehradun - 248007, Uttarakhand
 
 ## Deployment to GitHub Pages
 

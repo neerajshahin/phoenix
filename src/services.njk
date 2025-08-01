@@ -4,16 +4,275 @@ title: Taxi Services in Dehradun - Car Rental, Airport Transfer | Phoenix Cabs
 description: Explore Phoenix Cabs comprehensive taxi services in Dehradun including car rental, airport transfers, Char Dham Yatra, outstation travel, and local sightseeing with professional drivers and well-maintained vehicles.
 keywords: taxi services Dehradun, car rental services, airport transfer Dehradun, Char Dham taxi service, outstation cab booking, local taxi Dehradun, Phoenix Cabs services, Dehradun to Delhi taxi
 bodyClass: services-page
-# canonicalUrl auto-generated
+extraJS: |
+  <script>
+    // Service filtering functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const serviceCards = document.querySelectorAll('.service-card');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          // Add active class to clicked button
+          button.classList.add('active');
+          
+          const filter = button.getAttribute('data-filter');
+          
+          serviceCards.forEach(card => {
+            if (filter === 'all' || card.classList.contains(filter)) {
+              card.style.display = 'block';
+              card.style.animation = 'fadeIn 0.5s ease-in';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .service-filter {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .filter-btn {
+      background: #fff;
+      border: 2px solid #e9ecef;
+      color: #6c757d;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      margin: 0.25rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background: #ff914d;
+      border-color: #ff914d;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 145, 77, 0.3);
+    }
+    
+    .service-card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    }
+    
+    .service-card-header {
+      background: linear-gradient(135deg, #ff914d 0%, #ff7b39 100%);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .service-card-header i {
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    
+    .service-card-header h3 {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .service-card-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .service-card-body p {
+      flex-grow: 1;
+      margin-bottom: 1rem;
+    }
+    
+    .service-card-body .d-flex:last-child {
+      margin-top: auto;
+    }
+    
+    /* Equal height for all service cards */
+    .row.gy-4 {
+      align-items: stretch;
+    }
+    
+    .service-card-body .feature-highlight {
+      margin-bottom: 1rem;
+    }
+    
+    /* Ensure all service cards have minimum height */
+    @media (min-width: 768px) {
+      .service-card {
+        min-height: 450px;
+      }
+    }
+    
+    /* Make sure all content is properly spaced */
+    .service-card-body > * {
+      margin-bottom: 1rem;
+    }
+    
+    .service-card-body > *:last-child {
+      margin-bottom: 0;
+    }
+    
+    .service-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #ff914d;
+      font-size: 1.1rem;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-top: 0.25rem;
+    }
+    
+    .cta-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 4rem 0;
+      margin-top: 4rem;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="100"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    }
+    
+    .feature-highlight {
+      background: #fff3e0;
+      border-left: 4px solid #ff914d;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 10px 10px 0;
+    }
+    
+    .vehicle-showcase {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .vehicle-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+    
+    .vehicle-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .vehicle-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    
+    .quick-book-btn {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .quick-book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .section-header p {
+      font-size: 1.125rem;
+      color: #6c757d;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
 <!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg);
- background-repeat: no-repeat;
-background-position: center;">
+<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat; background-position: center;">
   <div class="container position-relative">
-    <h1>Services</h1>
+    <h1>Our Services</h1>
+    <p class="text-white-50 mb-0">Comprehensive taxi services for all your travel needs</p>
     <nav class="breadcrumbs">
       <ol>
         <li><a href="{{assetPath}}index.html">Home</a></li>
@@ -24,415 +283,444 @@ background-position: center;">
 </div>
 <!-- End Page Title -->
 
-<section id="constructions" class="constructions section">
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Taxi Service</h2>
-    <p>
-      We have various kinds of vehicles available
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Service Categories Filter -->
+<section class="py-5">
   <div class="container">
-    <div class="row gy-4">
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/ciaz.png" alt="" width="100%" />
-              </div>
-              <h3 style="text-align: center;">Maruti Suzuki Ciaz</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="service-filter text-center" data-aos="fade-up">
+      <h3 class="mb-3">Find Your Perfect Service</h3>
+      <div class="d-flex flex-wrap justify-content-center">
+        <button class="filter-btn active" data-filter="all">All Services</button>
+        <button class="filter-btn" data-filter="pilgrimage">Pilgrimage</button>
+        <button class="filter-btn" data-filter="hillstation">Hill Stations</button>
+        <button class="filter-btn" data-filter="outstation">Outstation</button>
+        <button class="filter-btn" data-filter="local">Local & Airport</button>
       </div>
-      <!-- End Card Item -->
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/swift.png" alt="" width="100%" />
-              </div>
-              <h3 style="text-align: center;">Maruti Suzuki Swift</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Card Item -->
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/innova.jpg" alt="" />
-              </div>
-              <h3 style="text-align: center;">Toyota Innova</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Card Item -->
-
-      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/ertiga.png" alt="" />
-              </div>
-              <h3 style="text-align: center;">Maruti Suzuki Ertiga</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Card Item -->
     </div>
   </div>
 </section>
 
-<!-- Char Dham/Do Dham Service Section -->
-<section id="services" class="services section light-background">
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Pilgrimage Services</h2>
-    <p>
-      We provide the world class taxi service
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Vehicle Fleet Showcase -->
+<section class="vehicle-showcase">
   <div class="container">
-    <div class="row gy-4">
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-gopuram"></i>
-          </div>
-          <h3>Taxi for <span class="readmore stretched-link">Char</span> Dham Yatra</h3>
-          <p>
-            Begin your spiritual adventure with our dependable and comfortable taxi service for the <span style="color: #C19208; font-weight: bold;">Char Dham Yatra</span>, providing a safe and memorable journey to the sacred destinations.
-          </p>
-          <a href="{{assetPath}}char-dham/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-gopuram"></i>
-          </div>
-          <h3>Taxi for <span class="readmore stretched-link">Two</span> Dham Yatra</h3>
-          <p>
-            Embark on a spiritual journey with our trusted and comfortable taxi service for the <span style="color: #C19208; font-weight: bold;">Two Dham Yatra</span>, ensuring a safe and unforgettable pilgrimage experience.
-          </p>
-          <a href="{{assetPath}}do-dham/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-plane"></i>
-          </div>
-          <h3>Dehradun to Jolly Grant Airport</h3>
-          <p>
-            Make your trip to the <span style="color: #C19208; font-weight: bold;">Jolly Grant Airport</span> stress-free with Phoenix Cabs. Enjoy a comfortable, timely, and hassle-free ride from anywhere in Dehradun to the airport. Our reliable service ensures that you reach your destination with ease, so you can catch your flight without any worries. Choose Phoenix Cabs for a smooth and efficient travel experience.
-          </p>
-          <a href="{{assetPath}}airport/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-
-      </div>
-
+    <div class="section-header" data-aos="fade-up">
+      <h2>Our Premium Fleet</h2>
+      <p>Choose from our well-maintained vehicles for your comfort and safety</p>
     </div>
-  </div>
-</section>
-<!-- /Services Section -->
-
-<!-- Other Services Section -->
-<section id="services" class="services section light-background">
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Other Services</h2>
-    <p>
-      We provide the world class taxi service
-    </p>
-  </div>
-  <!-- End Section Title -->
-
-  <div class="container">
+    
     <div class="row gy-4">
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="vehicle-card">
+          <img src="{{assetPath}}assets/img/ciaz.png" alt="Maruti Suzuki Ciaz - Comfortable Sedan">
+          <h4>Maruti Suzuki Ciaz</h4>
+          <div class="service-stats">
+            <div class="stat-item">
+              <div class="stat-value">4</div>
+              <div class="stat-label">Passengers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">AC</div>
+              <div class="stat-label">Climate</div>
+            </div>
           </div>
-          <h3>Dehradun to Delhi</h3>
-          <p>
-            Embark on a reliable journey with Phoenix Cabs, starting from the foothills of Dehradun to the bustling heart of Delhi. Whether you're traveling through scenic routes or exploring vibrant cityscapes, our service ensures smooth rides, timely pickups, and unparalleled comfort at every turn. Choose Phoenix Cabs for a memorable travel experience.
-          </p>
-          <a href="/delhi/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
-          </div>
-          <h3>Delhi to Dehradun</h3>
-          <p>
-            Escape the hustle of Delhi and journey to the serene foothills of Dehradun with Phoenix Cabs. Enjoy a relaxing ride through picturesque highways and tranquil views, ensuring a smooth and hassle-free experience from the capital to the heart of Uttarakhand. Trust Phoenix Cabs for safe, reliable, and comfortable travel.
-          </p>
-          <a href="/delhi-dehradun/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
-          </div>
-          <h3>Dehradun to Mathura</h3>
-          <p>
-            Travel from the scenic hills of Dehradun to the spiritual charm of Mathura with Phoenix Cabs. Enjoy a comfortable and hassle-free journey through picturesque landscapes and vibrant towns, ensuring a smooth ride to the city of Lord Krishna. Book your trip with Phoenix Cabs for a safe, reliable, and delightful travel experience.
-          </p>
-          <a href="/mathura/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
-          </div>
-          <h3>Dehradun to Agra</h3>
-          <p>
-            Journey from the tranquil hills of Dehradun to the iconic city of the Taj Mahal with Phoenix Cabs. Experience a smooth and comfortable ride through scenic highways, ensuring a hassle-free trip to Agra's rich heritage and architectural wonders. Choose Phoenix Cabs for a reliable, safe, and memorable travel experience.
-          </p>
-          <a href="/agra/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Mussorie</h3>
-          <p>
-            Escape to the Queen of Hills with Phoenix Cabs, offering a quick and comfortable ride from Dehradun to Mussoorie. Travel through winding mountain roads and breathtaking views, ensuring a safe and pleasant journey to this enchanting hill station. Book your ride with Phoenix Cabs for a seamless and memorable experience.
-          </p>
-          <a href="/mussorie/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Dhanaulti</h3>
-          <p>
-            Experience a serene journey from Dehradun to the tranquil hills of Dhanaulti with Phoenix Cabs. Enjoy the scenic drive through lush forests and winding roads, ensuring a safe and comfortable ride to this peaceful retreat. Trust Phoenix Cabs for a reliable and delightful travel experience amidst nature's beauty.
-          </p>
-          <a href="/dhanaulti/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Mussorie , Haridwar , Rishikesh</h3>
-          <p>
-            Discover the best of Uttarakhand with Phoenix Cabs, offering seamless rides from Dehradun to Mussoorie, Haridwar, and Rishikesh. Whether it's the serene hills of Mussoorie, the spiritual vibes of Haridwar, or the adventurous charm of Rishikesh, enjoy a comfortable and hassle-free journey to these iconic destinations. Book now with Phoenix Cabs for a reliable and unforgettable travel experience.
-          </p>
-          <a href="/mossorie-haridwar-rishikesh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Mussorie , Haridwar</h3>
-          <p>
-            Explore the serene hills of Mussoorie and the spiritual essence of Haridwar with Phoenix Cabs. Enjoy a comfortable and reliable journey from Dehradun, as you travel through scenic routes and iconic landmarks. Whether it's the tranquility of the mountains or the sacred Ganges, Phoenix Cabs ensures a hassle-free and memorable travel experience. Book your ride today!
-          </p>
-          <a href="/mossorie-haridwar/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Auli</h3>
-          <p>
-            Journey from the scenic beauty of Dehradun to the snowy peaks of Auli with Phoenix Cabs. Enjoy a smooth and comfortable ride through the majestic Himalayan roads, ensuring a safe and delightful experience to this popular winter destination. Whether it's skiing or breathtaking views, trust Phoenix Cabs for an unforgettable trip to Auli.
-          </p>
-          <a href="/auli/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Shimla , Manali</h3>
-          <p>
-            Embark on an unforgettable journey from Dehradun to the picturesque hill stations of Shimla and Manali with Phoenix Cabs. Enjoy a comfortable and scenic drive through the beautiful landscapes of Himachal Pradesh, with smooth rides to both the colonial charm of Shimla and the adventure-filled vibes of Manali. Trust Phoenix Cabs for a reliable, safe, and enjoyable travel experience.
-          </p>
-          <a href="/shimla-manali/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
-          </div>
-          <h3>Dehradun Taxi</h3>
-          <p>
-            Travel effortlessly within Dehradun with Phoenix Cabs. Whether you're heading to a business meeting, exploring local attractions, or visiting family, our intercity cab service offers comfort, reliability, and timely travel. Experience hassle-free journeys across Dehradun with Phoenix Cabs, ensuring a smooth ride to your destination every time.
-          </p>
-          <a href="/dehradun/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <p class="text-muted small">Perfect for city rides and short outstation trips</p>
+          <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
         </div>
       </div>
       
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="vehicle-card">
+          <img src="{{assetPath}}assets/img/swift.png" alt="Maruti Suzuki Swift - Compact Car">
+          <h4>Maruti Suzuki Swift</h4>
+          <div class="service-stats">
+            <div class="stat-item">
+              <div class="stat-value">4</div>
+              <div class="stat-label">Passengers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">AC</div>
+              <div class="stat-label">Climate</div>
+            </div>
           </div>
-          <h3>Dehradun to Chandigarh</h3>
-          <p>
-            Travel comfortably from Dehradun to the vibrant city of Chandigarh with Phoenix Cabs. Enjoy a smooth and scenic ride through the picturesque landscapes, ensuring a safe and hassle-free journey to the city known for its modern architecture and lush gardens. Choose Phoenix Cabs for a reliable and enjoyable travel experience.
-          </p>
-          <a href="/chandigarh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <p class="text-muted small">Ideal for couples and small families</p>
+          <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
         </div>
       </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
+      
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="vehicle-card">
+          <img src="{{assetPath}}assets/img/innova.jpg" alt="Toyota Innova - Premium SUV">
+          <h4>Toyota Innova</h4>
+          <div class="service-stats">
+            <div class="stat-item">
+              <div class="stat-value">7</div>
+              <div class="stat-label">Passengers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">AC</div>
+              <div class="stat-label">Climate</div>
+            </div>
           </div>
-          <h3>Dehradun to Rishikesh</h3>
-          <p>
-            Journey from the serene landscapes of Dehradun to the spiritual heart of Rishikesh with Phoenix Cabs. Enjoy a peaceful and comfortable ride along scenic roads, leading you to the tranquil banks of the Ganges. Whether for yoga, adventure, or spirituality, trust Phoenix Cabs to provide a safe, reliable, and memorable journey to Rishikesh.
-          </p>
-          <a href="/rishikesh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <p class="text-muted small">Perfect for groups and long distance travel</p>
+          <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
         </div>
       </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
+      
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="vehicle-card">
+          <img src="{{assetPath}}assets/img/ertiga.png" alt="Maruti Suzuki Ertiga - Family MPV">
+          <h4>Maruti Suzuki Ertiga</h4>
+          <div class="service-stats">
+            <div class="stat-item">
+              <div class="stat-value">7</div>
+              <div class="stat-label">Passengers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">AC</div>
+              <div class="stat-label">Climate</div>
+            </div>
           </div>
-          <h3>Dehradun to Haridwar</h3>
-          <p>
-            Travel from the peaceful hills of Dehradun to the sacred city of Haridwar with Phoenix Cabs. Enjoy a comfortable and scenic journey through beautiful landscapes, leading you to the holy banks of the Ganges. Whether it's for a spiritual retreat or a peaceful visit, Phoenix Cabs ensures a safe, hassle-free, and memorable ride to Haridwar.
-          </p>
-          <a href="/haridwar/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <p class="text-muted small">Spacious and comfortable for families</p>
+          <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
         </div>
       </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Chopta</h3>
-          <p>
-            Embark on a scenic journey from Dehradun to the enchanting meadows of Chopta with Phoenix Cabs. Enjoy a comfortable and hassle-free ride through the picturesque landscapes of Uttarakhand, leading you to this beautiful offbeat destination known for its stunning views and trekking trails. Choose Phoenix Cabs for a safe, reliable, and memorable trip to Chopta.
-          </p>
-          <a href="/chopta/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to Chakrata</h3>
-          <p>
-            Escape to the peaceful hills of Chakrata from Dehradun with Phoenix Cabs. Enjoy a smooth and scenic drive through winding mountain roads, surrounded by lush greenery and breathtaking views. Whether you're looking to relax or explore nature, Phoenix Cabs offers a comfortable and reliable ride to this serene hill station.
-          </p>
-          <a href="/chakrata/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-
-      <!-- End Service Item -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to New Tehri</h3>
-          <p>
-            Discover the tranquil beauty of New Tehri with a comfortable ride from Dehradun in Phoenix Cabs. Enjoy a scenic journey through the winding hills and stunning landscapes, leading you to the peaceful lakeside town known for its breathtaking views of the Tehri Dam. Choose Phoenix Cabs for a smooth, reliable, and memorable travel experience to New Tehri.
-          </p>
-          <a href="/new-tehri/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-      <!-- End Service Item -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
-          </div>
-          <h3>Dehradun to All India Services</h3>
-          <p>
-            Travel seamlessly from Dehradun to various destinations across India with Phoenix Cabs. Whether it's a business trip, personal journey, or special occasion, our all-India services ensure a comfortable and reliable ride, no matter the distance. Experience convenience and safety with Phoenix Cabs as we provide timely, hassle-free journeys to locations across the country.
-          </p>
-          <a href="/all-india/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
-        </div>
-      </div>
-      <!-- End Service Item -->
-
     </div>
   </div>
 </section>
-<!-- Outstation Section -->
+
+<!-- Services Grid -->
+<section class="py-5">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <h2>Our Service Categories</h2>
+      <p>From spiritual journeys to adventure trips, we've got you covered</p>
+    </div>
+    
+    <div class="row gy-4">
+      <!-- Pilgrimage Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card pilgrimage">
+          <div class="service-card-header">
+            <i class="bi bi-building"></i>
+            <h3>Char Dham Yatra</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">10-15</div>
+                <div class="stat-label">Days</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Sacred Sites</div>
+              </div>
+            </div>
+            <p>Complete spiritual circuit covering Yamunotri, Gangotri, Kedarnath, and Badrinath with comfortable accommodation and experienced drivers.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Hotel bookings, permits, and emergency support
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}char-dham/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card pilgrimage">
+          <div class="service-card-header">
+            <i class="bi bi-building"></i>
+            <h3>Do Dham Yatra</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">6-8</div>
+                <div class="stat-label">Days</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Sacred Sites</div>
+              </div>
+            </div>
+            <p>Focused pilgrimage to Kedarnath and Badrinath, perfect for those with limited time but seeking divine blessings.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Helicopter options available for Kedarnath
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}do-dham/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local & Airport Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card local">
+          <div class="service-card-header">
+            <i class="bi bi-airplane"></i>
+            <h3>Airport Transfer</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">30min</div>
+                <div class="stat-label">Duration</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Available</div>
+              </div>
+            </div>
+            <p>Reliable airport transfers to/from Jolly Grant Airport with punctual pickup and comfortable rides.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Flight tracking and waiting time included
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}airport/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hill Station Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-snow"></i>
+            <h3>Mussoorie Trip</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">35km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1.5hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Scenic drive to the Queen of Hills with visits to Mall Road, Gun Hill, and Kempty Falls.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Sightseeing stops and local guide recommendations
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}mussorie/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-snow"></i>
+            <h3>Auli Adventure</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">280km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">8-10hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Mountain adventure to India's premier skiing destination with breathtaking Himalayan views.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Multi-day packages and skiing season specials
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}auli/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outstation Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card outstation">
+          <div class="service-card-header">
+            <i class="bi bi-building-exclamation"></i>
+            <h3>Delhi Route</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">248km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">5-6hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Comfortable interstate travel between Delhi and Dehradun with flexible scheduling and premium vehicles.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> One-way and round-trip options
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}delhi-dehradun/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-water"></i>
+            <h3>Rishikesh Spiritual</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">43km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1.5hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Journey to the Yoga Capital of the World for spiritual retreats, adventure sports, and Ganga Aarti.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Ashram visits and activity bookings
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}rishikesh/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-water"></i>
+            <h3>Haridwar Pilgrimage</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">54km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">2hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Sacred journey to where the Ganges enters the plains, perfect for spiritual purification and temple visits.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Evening Aarti arrangements and temple tours
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}haridwar/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card local">
+          <div class="service-card-header">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Dehradun Local</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">City</div>
+                <div class="stat-label">Coverage</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">Hourly</div>
+                <div class="stat-label">Rental</div>
+              </div>
+            </div>
+            <p>Local city tours, business meetings, shopping trips, and sightseeing within Dehradun and nearby areas.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Half-day and full-day packages available
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}dehradun/index.html" class="btn btn-outline-primary">Learn More</a>
+              <a href="tel:+917983438214" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+  <div class="container text-center position-relative">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h2 class="text-white mb-4" data-aos="fade-up">Ready to Start Your Journey?</h2>
+        <p class="text-white-50 mb-4 lead" data-aos="fade-up" data-aos-delay="100">
+          Book your taxi now and experience the difference with Phoenix Cabs. Professional service, competitive rates, and comfortable rides await you.
+        </p>
+        
+        <div class="row text-center mb-4">
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="text-white">
+              <i class="bi bi-telephone display-4 mb-3 d-block"></i>
+              <h4>24/7 Support</h4>
+              <p class="text-white-50">Round-the-clock customer assistance</p>
+            </div>
+          </div>
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-white">
+              <i class="bi bi-shield-check display-4 mb-3 d-block"></i>
+              <h4>Safe & Reliable</h4>
+              <p class="text-white-50">Professional drivers and well-maintained vehicles</p>
+            </div>
+          </div>
+          <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="text-white">
+              <i class="bi bi-currency-rupee display-4 mb-3 d-block"></i>
+              <h4>Best Rates</h4>
+              <p class="text-white-50">Competitive pricing with no hidden charges</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center" data-aos="fade-up" data-aos-delay="500">
+          <a href="tel:+917983438214" class="btn btn-warning btn-lg px-5 py-3">
+            <i class="bi bi-telephone me-2"></i>Call Now: +91-7983438214
+          </a>
+          <a href="{{assetPath}}fare-calculator/index.html" class="btn btn-outline-light btn-lg px-5 py-3">
+            <i class="bi bi-calculator me-2"></i>Calculate Fare
+          </a>
+        </div>
+        
+        <p class="text-white-50 mt-4 small" data-aos="fade-up" data-aos-delay="600">
+          <i class="bi bi-geo-alt me-1"></i>
+          Phoenix Cabs, Jhajra, Dehradun - 248007
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,13 +1,9 @@
 module.exports = function(eleventyConfig) {
-  // Copy assets directory to output
-  eleventyConfig.addPassthroughCopy("assets");
+  // Copy assets folder to output
+  eleventyConfig.addPassthroughCopy("src/assets");
   
-  // Set development server options
-  eleventyConfig.setServerOptions({
-    port: 8080,
-    host: "127.0.0.1",
-    showAllHosts: true
-  });
+  // Copy favicon files if they exist
+  eleventyConfig.addPassthroughCopy("src/favicon.ico");
   
   // Set input and output directories
   return {
@@ -15,7 +11,11 @@ module.exports = function(eleventyConfig) {
       input: "src",
       output: "_site",
       includes: "_includes",
-      layouts: "_layouts"
-    }
+      layouts: "_layouts",
+      data: "_data"
+    },
+    templateFormats: ["njk", "html", "md", "11ty.js"],
+    htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk"
   };
 };

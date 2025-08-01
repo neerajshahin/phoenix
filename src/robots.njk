@@ -1,0 +1,15 @@
+---
+permalink: /robots.txt
+eleventyExcludeFromCollections: true
+---
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /_*
+Disallow: /assets/temp/
+
+# Sitemap
+Sitemap: {{ site.url }}/sitemap.xml
+
+# Crawl-delay for all bots
+Crawl-delay: 1

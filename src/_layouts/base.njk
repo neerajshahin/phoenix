@@ -4,12 +4,106 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>{{ title or "Phoenix Cabs" }}</title>
-  <meta content="{{ description or '' }}" name="description" />
-  <meta content="{{ keywords or '' }}" name="keywords" />
+  <title>{{ title or (site.name + " - Premium Taxi Service in Dehradun | Car Rental & Cab Booking") }}</title>
+  <meta content="{{ description or site.description }}" name="description" />
+  <meta content="{{ keywords or site.keywords }}" name="keywords" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="{{ title or (site.name + ' - Premium Taxi Service in Dehradun') }}" />
+  <meta property="og:description" content="{{ description or site.description }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+  <meta property="og:image" content="{{ site.url }}{{ ogImage or '/assets/img/phoenix.png' }}" />
+  <meta property="og:site_name" content="{{ site.name }}" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ title or (site.name + ' - Premium Taxi Service in Dehradun') }}" />
+  <meta name="twitter:description" content="{{ description or site.description }}" />
+  <meta name="twitter:image" content="{{ site.url }}{{ ogImage or '/assets/img/phoenix.png' }}" />
+  
+  <!-- Additional SEO Meta Tags -->
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Phoenix Cabs" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="canonical" href="{{ canonicalUrl or (site.url + page.url) }}" />
+  
+  <!-- Google Analytics -->
+  <!-- Replace GA_MEASUREMENT_ID with actual Google Analytics ID when available -->
+  {% if googleAnalyticsId %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ googleAnalyticsId }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ googleAnalyticsId }}');
+  </script>
+  {% endif %}
+  
+  <!-- Local Business Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "{{ site.name }}",
+    "description": "{{ site.description }}",
+    "url": "{{ site.url }}",
+    "telephone": "{{ site.phone }}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Dehradun",
+      "addressRegion": "Uttarakhand",
+      "addressCountry": "IN"
+    },
+    "serviceArea": {
+      "@type": "GeoCircle",
+      "geoMidpoint": {
+        "@type": "GeoCoordinates",
+        "latitude": 30.3165,
+        "longitude": 78.0322
+      },
+      "geoRadius": "500000"
+    },
+    "priceRange": "$$",
+    "openingHours": "Mo-Su 00:00-23:59",
+    "areaServed": ["Dehradun", "Delhi", "Uttarakhand", "India"],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Taxi Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Airport Taxi Service",
+            "description": "Reliable airport transfer service"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Char Dham Yatra",
+            "description": "Spiritual pilgrimage taxi service"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Outstation Travel",
+            "description": "Long distance travel service"
+          }
+        }
+      ]
+    }
+  }
+  </script>
 
   <!-- Favicons -->
   <link href="{{assetPath}}assets/img/phoenix.png" rel="icon" />
+  <link href="{{assetPath}}assets/img/phoenix.png" rel="apple-touch-icon" />
+  <link href="{{assetPath}}assets/img/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect" />

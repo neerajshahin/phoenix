@@ -1,9 +1,10 @@
 ---
 layout: base.njk
-title: Contact - Phoenix Cabs
+title: Contact Phoenix Cabs - Book Taxi in Dehradun | Call +91-7983438214
+description: Contact Phoenix Cabs for reliable taxi service in Dehradun. Call +91-7983438214 for instant booking, get quotes, or inquire about our car rental services. Available 24/7 for all your transportation needs.
+keywords: contact Phoenix Cabs, book taxi Dehradun, Phoenix Cabs phone number, taxi booking contact, Dehradun cab service contact, Phoenix Cabs enquiry
 bodyClass: contact-page
 extraJS: |
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
     // Function to convert the name field to Camel Case
     function convertToCamelCase() {
@@ -17,44 +18,39 @@ extraJS: |
         }
     }
 
-    // Wait for DOM and EmailJS to be ready
+    // Lightweight contact form handler
     document.addEventListener('DOMContentLoaded', function() {
-        // Try multiple ways to access EmailJS
-        const emailJS = window.emailjs || window.EmailJS;
-        
-        if (emailJS) {
-            // Initialize EmailJS v4 SDK
-            emailJS.init({
-                publicKey: "EpgwZgV3MZaqS6Ycd",
+        const contactForm = document.getElementById("contact-form");
+        if (contactForm) {
+            contactForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const message = formData.get('message');
+                
+                // Create mailto link with form data
+                const subject = encodeURIComponent('Phoenix Cabs Inquiry from ' + name);
+                const body = encodeURIComponent(
+                    'Name: ' + name + '\n' +
+                    'Email: ' + email + '\n' +
+                    'Message: ' + message + '\n\n' +
+                    'Please respond to this inquiry at your earliest convenience.'
+                );
+                
+                const mailtoLink = 'mailto:rajatshah06@gmail.com?subject=' + subject + '&body=' + body;
+                
+                // Open email client
+                window.location.href = mailtoLink;
+                
+                // Show success message
+                alert('Thank you for your message! Your email client will now open with your inquiry. You can also call us directly at +91-7983438214 for immediate assistance.');
+                
+                // Reset form
+                this.reset();
             });
-
-            // Add event listener for form submission
-            const contactForm = document.getElementById("contact-form");
-            if (contactForm) {
-                contactForm.addEventListener("submit", function(event) {
-                    event.preventDefault(); // Prevent default form submission
-
-                    emailJS.sendForm("service_7ehj2gb", "template_owrhycg", this)
-                        .then(function(response) {
-                            console.log("SUCCESS!", response.status, response.text);
-                            alert("Email sent successfully!");
-                        })
-                        .catch(function(error) {
-                            console.error("FAILED...", error);
-                            alert("Failed to send email. Please try again.");
-                        });
-                });
-            }
-        } else {
-            console.warn("EmailJS library not available. Contact form will show a fallback message.");
-            // Fallback: Show user a message with contact details
-            const contactForm = document.getElementById("contact-form");
-            if (contactForm) {
-                contactForm.addEventListener("submit", function(event) {
-                    event.preventDefault();
-                    alert("Email service is not available when viewing this page locally. Please contact us directly at rajatshah06@gmail.com or call +91 79834 38214");
-                });
-            }
         }
     });
   </script>
@@ -78,12 +74,12 @@ background-position: center;">
 <!-- Contact Section -->
 <section id="contact" class="contact section">
 
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
+  <div class="container">
 
     <div class="row gy-4">
 
       <div class="col-lg-6">
-        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center">
           <i class="bi bi-geo-alt"></i>
           <h3>Address</h3>
           <center><p>Phoenix Cabs, River Heaven Colony, Jhajra, Dehradun - 248007</p> </center>
@@ -92,7 +88,7 @@ background-position: center;">
 
       
       <div class="col-lg-3 col-md-6">
-        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center">
           <i class="bi bi-telephone"></i>
           <h3>Call Us</h3>
          <center> <p> <a href="tel:+917983438214">+917983438214 </a> </p>
@@ -107,7 +103,7 @@ background-position: center;">
       
       <div class="col-lg-3 col-md-6">
        
-        <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+        <div class="info-item d-flex flex-column justify-content-center align-items-center">
           <i class="bi bi-envelope"></i>
           <h3>Email Us</h3>
            <p> 
@@ -123,7 +119,26 @@ background-position: center;">
 
     <div class="row gy-4 mt-1">
       <div class="col-lg-6">
-        <iframe style="height:100%;width:100%;border:0;" frameborder="0" src="https://www.google.com/maps/embed/v1/place?q=30.3430950,+77.8999885&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+        <div class="map-container" style="position: relative; height: 400px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+          <div class="map-placeholder" id="map-placeholder" style="text-align: center; cursor: pointer; padding: 20px;">
+            <i class="bi bi-geo-alt" style="font-size: 48px; color: #ff914d; margin-bottom: 10px;"></i>
+            <h4>Phoenix Cabs Location</h4>
+            <p style="margin-bottom: 15px;">River Heaven Colony, Jhajra<br>Dehradun - 248007, Uttarakhand</p>
+            <button class="btn btn-primary" onclick="loadMap()">View on Google Maps</button>
+          </div>
+          <iframe id="google-map" style="height:100%;width:100%;border:0;border-radius:8px;display:none;" frameborder="0"></iframe>
+        </div>
+        <script>
+          function loadMap() {
+            const mapPlaceholder = document.getElementById('map-placeholder');
+            const googleMap = document.getElementById('google-map');
+            
+            googleMap.src = 'https://www.google.com/maps/embed/v1/place?q=30.3430950,+77.8999885&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8';
+            
+            mapPlaceholder.style.display = 'none';
+            googleMap.style.display = 'block';
+          }
+        </script>
       </div><!-- End Google Maps -->
 
       <div class="col-lg-6">

@@ -2,25 +2,25 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
     <a href="{{assetPath}}index.html" class="logo d-flex align-items-center">
-      <img src="{{assetPath}}assets/img/phoenix.png" alt="Phoenix Cabs">
+      <img src="{{assetPath}}assets/img/phoenix.png" alt="Phoenix Cabs - Best Taxi Service in Dehradun" title="Phoenix Cabs - Premium Car Rental Service">
     </a>
 
     <nav id="navmenu" class="navmenu">
       <ul>
         <li class="{% if page.url == '/' %}active{% endif %}">
-          <a href="{{assetPath}}index.html">Home</a>
+          <a href="{{assetPath}}index.html" title="Phoenix Cabs Homepage - Best Taxi Service in Dehradun">Home</a>
         </li>
         <li class="{% if '/fare-calculator/' in page.url %}active{% endif %}">
-          <a href="{{assetPath}}fare-calculator/index.html">Fare Calculator</a>
+          <a href="{{assetPath}}fare-calculator/index.html" title="Calculate Taxi Fare & Book Cab Online">Fare Calculator</a>
         </li>
         <li class="{% if '/about/' in page.url %}active{% endif %}">
           <a href="{{assetPath}}about/index.html">About</a>
         </li>
         <li class="{% if '/services/' in page.url %}active{% endif %}">
-          <a href="{{assetPath}}services/index.html">Services</a>
+          <a href="{{assetPath}}services/index.html" title="Phoenix Cabs Taxi Services - Car Rental & Airport Transfer">Services</a>
         </li>
         <li class="{% if '/char-dham/' in page.url %}active{% endif %}">
-          <a href="{{assetPath}}char-dham/index.html">Char Dham Yatra</a>
+          <a href="{{assetPath}}char-dham/index.html" title="Char Dham Yatra Taxi Service - Kedarnath Badrinath">Char Dham Yatra</a>
         </li>
         <li class="{% if '/contact/' in page.url %}active{% endif %}">
           <a href="{{assetPath}}contact/index.html">Contact</a>

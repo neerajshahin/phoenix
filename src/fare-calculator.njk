@@ -1,0 +1,3622 @@
+---
+layout: base.njk
+title: Book Your Ride - Phoenix Cabs
+extraCSS: |
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --dark-color: #1f2937;
+      --light-color: #f1f5f9;
+      --border-color: #e5e7eb;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    }
+
+    /* Global Styles */
+    body {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #f1f5f9;
+      padding-top: 80px; /* Space for header */
+    }
+
+    .booking-container {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      margin: 2rem auto;
+      max-width: 1200px;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* Removed internal header to avoid conflicts with main site navigation */
+
+    /* Main Content */
+    .booking-content {
+      display: flex;
+      min-height: 600px;
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 2rem;
+      background: white;
+      color: #1f2937;
+    }
+
+    .map-section {
+      flex: 1;
+      background: #e2e8f0;
+      position: relative;
+    }
+
+    /* Booking Sections */
+    .booking-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827 !important;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: #4b5563 !important;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    /* Route Container - Google Maps Style */
+    .route-container {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      position: relative;
+    }
+    
+    .swap-handle {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 5;
+      opacity: 0.6;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+    }
+    
+    .swap-handle:hover {
+      opacity: 1;
+      color: #1976d2;
+      background: rgba(25, 118, 210, 0.1);
+    }
+    
+    .route-input.swapping {
+      animation: swapAnimation 0.3s ease-in-out;
+    }
+    
+    @keyframes swapAnimation {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+    
+    .route-input {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px 12px 40px;
+      border-bottom: 1px solid #e8eaed;
+      position: relative;
+    }
+    
+    .route-input:last-child {
+      border-bottom: none;
+    }
+    
+    .route-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .route-icon.origin {
+      color: #4285f4;
+    }
+    
+    .route-icon.destination {
+      color: #ea4335;
+    }
+    
+    .route-icon.waypoint {
+      color: #34a853;
+    }
+    
+    .route-input input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 14px;
+      background: transparent;
+      padding: 0;
+      color: #111827 !important;
+      font-weight: 500;
+    }
+    
+    .route-input input::placeholder {
+      color: #6b7280 !important;
+      font-weight: 400;
+    }
+    
+    .route-input input:focus {
+      color: #111827 !important;
+    }
+    
+    .route-connecting-line {
+      position: absolute;
+      left: 28px;
+      top: 40px;
+      bottom: -12px;
+      width: 2px;
+      background: #dadce0;
+      z-index: 1;
+    }
+    
+    .route-input:last-child .route-connecting-line {
+      display: none;
+    }
+    
+    .add-destination-btn {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      margin-left: 40px;
+      color: #1a73e8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .add-destination-btn:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .remove-destination {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #5f6368;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    
+    .remove-destination:hover {
+      background-color: #f1f3f4;
+    }
+    
+    .route-distance {
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-top: 1px solid #e8eaed;
+      font-size: 13px;
+      color: #5f6368;
+    }
+    
+    #route-distance-text {
+      font-weight: 600;
+      color: #0ea5e9;
+    }
+
+    /* Vehicle Selection */
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .vehicle-card {
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+      position: relative;
+      text-align: center;
+    }
+
+    .vehicle-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .vehicle-card.selected {
+      border-color: var(--primary-color);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.1));
+    }
+
+    .vehicle-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .vehicle-info h4 {
+      margin: 0 0 0.25rem 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827 !important;
+    }
+
+    .vehicle-details {
+      color: #4b5563 !important;
+      font-size: 12px;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .vehicle-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0ea5e9;
+    }
+
+    .vehicle-eta {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    /* Map Styles */
+    #booking-map {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      z-index: 1;
+    }
+
+    /* Fix Leaflet popup z-index and styling */
+    .leaflet-popup {
+      z-index: 1000 !important;
+    }
+    
+    .leaflet-popup-pane {
+      z-index: 1000 !important;
+    }
+    
+    .leaflet-control-container {
+      z-index: 999 !important;
+    }
+    
+    .leaflet-popup-content-wrapper {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: none;
+    }
+    
+    .leaflet-popup-content {
+      color: #1f2937;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 8px 12px;
+    }
+    
+    .leaflet-popup-tip {
+      color: white;
+    }
+
+    .map-overlay {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      right: 1rem;
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+    }
+
+    .popular-destinations {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .destination-chip {
+      background: var(--light-color);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .destination-chip:hover {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* Booking Summary */
+    .booking-summary {
+      background: var(--light-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--border-color);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .booking-actions {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background: var(--light-color);
+      color: var(--dark-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      color: white;
+      font-size: 18px;
+      padding: 1.25rem 2.5rem;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Trip Details */
+    .trip-summary {
+      background: var(--light-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .trip-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .trip-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+
+    /* Real-time Updates */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 12px;
+      color: var(--success-color);
+      font-weight: 500;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--success-color);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    /* Additional sections styling */
+    .section-wrapper {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin: 2rem auto;
+      padding: 2rem;
+      max-width: 1200px;
+      color: #1f2937;
+    }
+    
+    .section-wrapper *,
+    .booking-container * {
+      color: #1f2937;
+    }
+    
+    /* Specific overrides for elements that need different colors */
+    .section-wrapper .btn *,
+    .booking-container .btn *,
+    .section-wrapper .vehicle-price,
+    .booking-container .vehicle-price,
+    .section-wrapper .live-indicator,
+    .booking-container .live-indicator,
+    .section-wrapper .route-distance *,
+    .booking-container .route-distance * {
+      color: inherit !important;
+    }
+
+    /* Trip Duration & Dates Styling */
+    .date-inputs {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .date-input-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .date-input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #374151 !important;
+      font-size: 14px;
+    }
+
+    .date-input-group input[type="date"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+      color: #111827 !important;
+      font-size: 14px;
+      transition: border-color 0.2s ease;
+    }
+
+    .date-input-group input[type="date"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .duration-display {
+      background: var(--light-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .duration-info {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .duration-days,
+    .duration-nights {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .duration-days::before {
+      content: "📅";
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .duration-nights::before {
+      content: "🌙";
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .duration-days,
+    .duration-nights {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-color) !important;
+    }
+
+    .duration-recommendation {
+      font-size: 14px;
+      color: #6b7280 !important;
+      font-style: italic;
+    }
+
+    .duration-options {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .duration-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+      min-width: 120px;
+    }
+
+    .duration-option:hover {
+      border-color: var(--primary-color);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .duration-option input[type="radio"] {
+      margin: 0;
+    }
+
+    .duration-option input[type="radio"]:checked + span {
+      color: var(--primary-color) !important;
+      font-weight: 600;
+    }
+
+    .duration-option span {
+      font-size: 14px;
+      color: #374151 !important;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .alert-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #1e40af !important;
+    }
+
+    /* Multi-day trip styling for vehicle cards */
+    .trip-duration-info {
+      font-size: 11px;
+      color: #059669 !important;
+      font-weight: 600;
+      margin-top: 4px;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .discount-badge {
+      font-size: 10px;
+      color: #dc2626 !important;
+      font-weight: 600;
+      margin-top: 4px;
+      background: rgba(220, 38, 38, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    /* Booking Summary Fare Breakdown Styling */
+    .fare-breakdown {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      font-size: 13px;
+      color: #374151 !important;
+    }
+
+    .breakdown-row.discount-row {
+      color: #dc2626 !important;
+    }
+
+    .breakdown-row.discount-row span:last-child {
+      color: #dc2626 !important;
+      font-weight: 600;
+    }
+
+    .breakdown-divider {
+      border-top: 1px solid #d1d5db;
+      margin: 0.5rem 0;
+    }
+
+    .breakdown-row.total-row {
+      padding: 0.75rem 0 0.25rem 0;
+      font-size: 15px;
+      border-top: 2px solid #e5e7eb;
+      margin-top: 0.5rem;
+    }
+
+    .breakdown-row.total-row span {
+      color: #111827 !important;
+      font-weight: 700;
+    }
+
+    .trip-inclusions {
+      background: rgba(16, 185, 129, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .inclusions-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0 0;
+    }
+
+    .inclusions-list li {
+      padding: 0.25rem 0;
+      font-size: 13px;
+      color: #374151 !important;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .inclusions-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .booking-container {
+        margin: 1rem;
+        border-radius: 16px;
+      }
+
+      .booking-content {
+        flex-direction: column;
+      }
+
+      .map-section {
+        order: -1;
+        height: 300px;
+      }
+
+      .form-section {
+        padding: 1rem;
+      }
+
+      .vehicle-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .step-indicator {
+        padding: 0 1rem;
+      }
+
+      .step-label {
+        display: none;
+      }
+
+      .section-wrapper {
+        margin: 1rem;
+        padding: 1rem;
+      }
+    }
+
+    /* Loading States */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Suggestions Dropdown */
+    .suggestions-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+
+    .suggestion-item {
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.2s ease;
+    }
+
+    .suggestion-item:hover {
+      background: var(--light-color);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-main {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .suggestion-detail {
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+extraJS: |
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // App State
+    let tripData = {
+      origin: null,
+      destination: null,
+      selectedVehicle: null,
+      distance: 0,
+      duration: 0,
+      fare: 0
+    };
+    
+    // Route planning functionality
+    let waypoints = [];
+    let routeMarkers = [];
+    let routePolylines = [];
+    let isReturnTrip = false;
+    
+    // Map variables
+    let bookingMap = null;
+    let originMarker = null;
+    let destinationMarker = null;
+    let routePolyline = null;
+    
+    // Trip duration variables
+    let tripDates = {
+      startDate: null,
+      endDate: null,
+      days: 0,
+      nights: 0
+    };
+    let tripType = 'multi-day';
+    
+    // Session storage keys
+    const STORAGE_KEY = 'phoenix_cabs_booking_state';
+    
+    // Save booking state to session storage
+    function saveBookingState() {
+      try {
+        const state = {
+          tripData: {
+            origin: tripData.origin,
+            destination: tripData.destination,
+            distance: tripData.distance,
+            duration: tripData.duration,
+            fare: tripData.fare,
+            selectedVehicle: tripData.selectedVehicle
+          },
+          tripDates: {
+            startDate: tripDates.startDate ? tripDates.startDate.toISOString() : null,
+            endDate: tripDates.endDate ? tripDates.endDate.toISOString() : null,
+            days: tripDates.days,
+            nights: tripDates.nights
+          },
+          tripType: tripType,
+          isReturnTrip: isReturnTrip,
+          routeInputs: [],
+          timestamp: new Date().getTime()
+        };
+        
+        // Save all route input values
+        const allRouteInputs = document.querySelectorAll('.route-input');
+        allRouteInputs.forEach((element, index) => {
+          const input = element.querySelector('input');
+          const dataType = element.getAttribute('data-type');
+          if (input && input.value.trim()) {
+            state.routeInputs.push({
+              index: index,
+              value: input.value.trim(),
+              type: dataType
+            });
+          }
+        });
+        
+        // Save date input values
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        if (startDateInput) state.startDateValue = startDateInput.value;
+        if (endDateInput) state.endDateValue = endDateInput.value;
+        
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        console.log('📝 Booking state saved:', state);
+      } catch (error) {
+        console.warn('Failed to save booking state:', error);
+      }
+    }
+    
+    // Restore booking state from session storage
+    function restoreBookingState() {
+      try {
+        const savedState = sessionStorage.getItem(STORAGE_KEY);
+        if (!savedState) {
+          console.log('No saved booking state found');
+          return false;
+        }
+        
+        const state = JSON.parse(savedState);
+        
+        // Check if state is too old (older than 24 hours)
+        const now = new Date().getTime();
+        const stateAge = now - (state.timestamp || 0);
+        const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+        
+        if (stateAge > maxAge) {
+          console.log('Booking state expired, clearing');
+          clearBookingState();
+          return false;
+        }
+        
+        console.log('🔄 Restoring booking state:', state);
+        
+        // Restore trip data
+        if (state.tripData) {
+          tripData.origin = state.tripData.origin;
+          tripData.destination = state.tripData.destination;
+          tripData.distance = state.tripData.distance || 0;
+          tripData.duration = state.tripData.duration || 0;
+          tripData.fare = state.tripData.fare || 0;
+          tripData.selectedVehicle = state.tripData.selectedVehicle;
+        }
+        
+        // Restore trip dates
+        if (state.tripDates) {
+          tripDates.startDate = state.tripDates.startDate ? new Date(state.tripDates.startDate) : null;
+          tripDates.endDate = state.tripDates.endDate ? new Date(state.tripDates.endDate) : null;
+          tripDates.days = state.tripDates.days || 0;
+          tripDates.nights = state.tripDates.nights || 0;
+        }
+        
+        // Restore trip type and return trip
+        tripType = state.tripType || 'multi-day';
+        isReturnTrip = state.isReturnTrip || false;
+        
+        // Wait for DOM to be ready, then restore UI
+        setTimeout(() => {
+          restoreUIState(state);
+        }, 500);
+        
+        return true;
+      } catch (error) {
+        console.warn('Failed to restore booking state:', error);
+        clearBookingState();
+        return false;
+      }
+    }
+    
+    // Restore UI elements
+    function restoreUIState(state) {
+      // Restore route inputs
+      if (state.routeInputs && state.routeInputs.length > 0) {
+        state.routeInputs.forEach(inputData => {
+          const allRouteInputs = document.querySelectorAll('.route-input');
+          if (allRouteInputs[inputData.index]) {
+            const input = allRouteInputs[inputData.index].querySelector('input');
+            if (input) {
+              input.value = inputData.value;
+            }
+          }
+        });
+      }
+      
+      // Restore date inputs
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      if (startDateInput && state.startDateValue) {
+        startDateInput.value = state.startDateValue;
+      }
+      if (endDateInput && state.endDateValue) {
+        endDateInput.value = state.endDateValue;
+      }
+      
+      // Restore return trip toggle
+      const returnTripCheckbox = document.querySelector('#return-trip');
+      if (returnTripCheckbox) {
+        returnTripCheckbox.checked = isReturnTrip;
+      }
+      
+      // Restore trip type radio buttons
+      const tripTypeRadio = document.querySelector(`input[name="trip-type"][value="${tripType}"]`);
+      if (tripTypeRadio) {
+        tripTypeRadio.checked = true;
+      }
+      
+      // Restore map and calculations if we have origin and destination
+      if (tripData.origin && tripData.destination) {
+        // Set markers on map
+        if (tripData.origin.lat && tripData.origin.lng) {
+          setOrigin(tripData.origin.lat, tripData.origin.lng, tripData.origin.name);
+        }
+        if (tripData.destination.lat && tripData.destination.lng) {
+          setDestination(tripData.destination.lat, tripData.destination.lng, tripData.destination.name);
+        }
+        
+        // Recalculate route after a short delay
+        setTimeout(() => {
+          calculateSequentialRoute();
+        }, 1000);
+      }
+      
+      // Update displays
+      updateDurationDisplay(tripDates.days || '--', tripDates.nights || '--');
+      updateTripSummary();
+      updateBookingSummary();
+      
+      // Show success message
+      showAlert('Previous booking information restored', 'success');
+    }
+    
+    // Clear booking state
+    function clearBookingState() {
+      try {
+        sessionStorage.removeItem(STORAGE_KEY);
+        console.log('🗑️ Booking state cleared');
+      } catch (error) {
+        console.warn('Failed to clear booking state:', error);
+      }
+    }
+    
+    // Auto-save state whenever important data changes
+    function autoSaveState() {
+      saveBookingState();
+    }
+    
+    // Clear all booking data and reset form
+    function clearAllBookingData() {
+      if (confirm('Are you sure you want to clear all booking information? This action cannot be undone.')) {
+        // Clear session storage
+        clearBookingState();
+        
+        // Reset all variables
+        tripData = {
+          origin: null,
+          destination: null,
+          distance: 0,
+          duration: 0,
+          fare: 0,
+          selectedVehicle: null
+        };
+        
+        tripDates = {
+          startDate: null,
+          endDate: null,
+          days: 0,
+          nights: 0
+        };
+        
+        tripType = 'multi-day';
+        isReturnTrip = false;
+        
+        // Clear all route inputs
+        const allRouteInputs = document.querySelectorAll('.route-input input');
+        allRouteInputs.forEach(input => {
+          input.value = '';
+        });
+        
+        // Clear date inputs
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        if (startDateInput) startDateInput.value = '';
+        if (endDateInput) endDateInput.value = '';
+        
+        // Reset return trip checkbox
+        const returnTripCheckbox = document.querySelector('#return-trip');
+        if (returnTripCheckbox) returnTripCheckbox.checked = false;
+        
+        // Reset trip type to multi-day
+        const tripTypeRadio = document.querySelector('input[name="trip-type"][value="multi-day"]');
+        if (tripTypeRadio) tripTypeRadio.checked = true;
+        
+        // Clear map markers and routes
+        clearMapElements();
+        
+        // Reset displays
+        updateDurationDisplay('--', '--');
+        document.getElementById('duration-recommendation').textContent = 'Select destinations to get duration estimate';
+        updateTripSummary();
+        updateBookingSummary();
+        updateVehicleCards();
+        
+        // Update route distance display
+        const routeDistanceText = document.getElementById('route-distance-text');
+        if (routeDistanceText) {
+          routeDistanceText.textContent = 'Select destinations to calculate distance';
+        }
+        
+        showAlert('All booking information cleared', 'info');
+      }
+    }
+    
+    // Clear map elements
+    function clearMapElements() {
+      if (bookingMap) {
+        // Remove all markers
+        if (originMarker && bookingMap.hasLayer(originMarker)) {
+          bookingMap.removeLayer(originMarker);
+          originMarker = null;
+        }
+        if (destinationMarker && bookingMap.hasLayer(destinationMarker)) {
+          bookingMap.removeLayer(destinationMarker);
+          destinationMarker = null;
+        }
+        
+        // Clear route markers and polylines
+        routeMarkers.forEach(marker => {
+          if (bookingMap.hasLayer(marker)) {
+            bookingMap.removeLayer(marker);
+          }
+        });
+        routeMarkers = [];
+        
+        routePolylines.forEach(polyline => {
+          if (bookingMap.hasLayer(polyline)) {
+            bookingMap.removeLayer(polyline);
+          }
+        });
+        routePolylines = [];
+      }
+    }
+    
+    // Popular destinations with coordinates
+    const popularDestinations = {
+      'Delhi': [28.6139, 77.2090],
+      'Mussoorie': [30.4598, 78.0664],
+      'Haridwar': [29.9457, 78.1642],
+      'Rishikesh': [30.0869, 78.2676],
+      'Jolly Grant Airport': [30.1897, 78.1804],
+      'Auli': [30.5381, 79.5582],
+      'Badrinath': [30.7433, 79.4938],
+      'Kedarnath': [30.7346, 79.0669],
+      'Shimla': [31.1048, 77.1734],
+      'Manali': [32.2396, 77.1887],
+      'Chandigarh': [30.7333, 76.7794]
+    };
+    
+    // Vehicle types with detailed information
+    const vehicles = [
+      {
+        id: 'hatchback',
+        name: 'Hatchback',
+        model: 'Swift, i20, Wagon R',
+        icon: '🚗',
+        capacity: '4 seats',
+        mileage: 18,
+        fuelType: 'petrol',
+        baseRate: 10,
+        driverAllowance: 300,
+        features: ['AC', 'Music System', 'Clean Interior']
+      },
+      {
+        id: 'sedan',
+        name: 'Sedan',
+        model: 'Dzire, Etios, Amaze',
+        icon: '🚙',
+        capacity: '4 seats',
+        mileage: 16,
+        fuelType: 'petrol',
+        baseRate: 12,
+        driverAllowance: 350,
+        features: ['AC', 'Comfortable Seats', 'Spacious']
+      },
+      {
+        id: 'suv',
+        name: 'SUV',
+        model: 'Ertiga, Marazzo, XUV500',
+        icon: '🚐',
+        capacity: '6-7 seats',
+        mileage: 13,
+        fuelType: 'petrol',
+        baseRate: 15,
+        driverAllowance: 400,
+        features: ['AC', '6-7 Seater', 'More Luggage Space']
+      },
+      {
+        id: 'prime-sedan',
+        name: 'Prime Sedan',
+        model: 'City, Verna, Ciaz',
+        icon: '🚘',
+        capacity: '4 seats',
+        mileage: 14,
+        fuelType: 'petrol',
+        baseRate: 16,
+        driverAllowance: 400,
+        features: ['Premium AC', 'Leather Seats', 'Latest Model']
+      },
+      {
+        id: 'prime-suv',
+        name: 'Prime SUV',
+        model: 'Innova, Crysta',
+        icon: '🚌',
+        capacity: '6-7 seats',
+        mileage: 10,
+        fuelType: 'diesel',
+        baseRate: 18,
+        driverAllowance: 500,
+        features: ['Premium Interior', 'Extra Comfort', 'Best for Long Trips']
+      },
+      {
+        id: 'tempo-traveller-12',
+        name: 'Tempo Traveller',
+        model: '12 Seater',
+        icon: '🚐',
+        capacity: '12 seats',
+        mileage: 8,
+        fuelType: 'diesel',
+        baseRate: 20,
+        driverAllowance: 500,
+        features: ['AC', '12 Seater', 'Group Travel', 'Large Luggage Space']
+      },
+      {
+        id: 'tempo-traveller-17',
+        name: 'Tempo Traveller',
+        model: '17 Seater',
+        icon: '🚍',
+        capacity: '17 seats',
+        mileage: 7,
+        fuelType: 'diesel',
+        baseRate: 22,
+        driverAllowance: 600,
+        features: ['AC', '17 Seater', 'Group Travel', 'Extra Large Luggage']
+      },
+      {
+        id: 'tempo-traveller-26',
+        name: 'Tempo Traveller',
+        model: '26 Seater',
+        icon: '🚌',
+        capacity: '26 seats',
+        mileage: 6,
+        fuelType: 'diesel',
+        baseRate: 25,
+        driverAllowance: 700,
+        features: ['AC', '26 Seater', 'Large Group Travel', 'Maximum Comfort']
+      }
+    ];
+    
+    // Fuel prices (current market rates - Jan 2025)
+    const fuelPrices = {
+      petrol: 103.50,
+      diesel: 89.60
+    };
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeMap();
+      setupEventListeners();
+      getCurrentLocation();
+      
+      // Initialize trip dates
+      const today = new Date();
+      const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+      document.getElementById('start-date').min = today.toISOString().split('T')[0];
+      document.getElementById('end-date').min = today.toISOString().split('T')[0];
+      
+      // Try to restore previous booking state
+      const stateRestored = restoreBookingState();
+      
+      // Initial summary update (if no state was restored)
+      if (!stateRestored) {
+        setTimeout(() => {
+          updateBookingSummary();
+          calculateEstimatedDuration();
+        }, 1000);
+      }
+      
+      // Add global listener for input changes
+      document.addEventListener('input', function(e) {
+        if (e.target.matches('.route-input input')) {
+          console.log('🔄 Route input changed, updating summary');
+          setTimeout(() => {
+            updateBookingSummary();
+            autoSaveState(); // Save state when route inputs change
+          }, 100);
+        }
+      });
+      
+      // Auto-save state before page unload
+      window.addEventListener('beforeunload', function() {
+        saveBookingState();
+      });
+      
+      // Save state periodically (every 30 seconds) if user is actively using the page
+      setInterval(() => {
+        if (tripData.origin || tripData.destination || tripDates.days > 0) {
+          autoSaveState();
+        }
+      }, 30000);
+    });
+    
+    // Initialize map
+    function initializeMap() {
+      const phoenixLocation = [30.3165, 78.0322];
+      
+      bookingMap = L.map('booking-map').setView(phoenixLocation, 11);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(bookingMap);
+      
+      // Add click handler for destination selection
+      bookingMap.on('click', function(e) {
+        setDestination(e.latlng.lat, e.latlng.lng, 'Selected Location');
+      });
+    }
+    
+    // Setup event listeners
+    function setupEventListeners() {
+      // Location inputs
+      const originInput = document.getElementById('origin-input');
+      const destinationInput = document.getElementById('destination-input');
+      const swapButton = document.getElementById('swap-locations');
+      
+      if (originInput) {
+        originInput.addEventListener('input', function(e) {
+          if (e.target.value.length > 2) {
+            searchLocation(e.target.value, 'origin');
+          } else {
+            hideLocationSuggestions('origin');
+          }
+        });
+        
+        // Make origin input clickable to change location
+        originInput.addEventListener('click', function() {
+          this.removeAttribute('readonly');
+          this.select();
+        });
+        
+        // Allow manual editing of origin
+        originInput.addEventListener('blur', function() {
+          if (!this.value.trim()) {
+            this.setAttribute('readonly', 'true');
+            getCurrentLocation();
+          }
+        });
+      }
+      
+      if (destinationInput) {
+        destinationInput.addEventListener('input', function(e) {
+          if (e.target.value.length > 2) {
+            searchLocation(e.target.value, 'destination');
+          } else {
+            hideLocationSuggestions('destination');
+          }
+        });
+      }
+      
+      // Setup swap functionality is handled by inline onclick handlers
+      
+      // Popular destinations
+      document.querySelectorAll('.destination-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+          const destination = this.textContent;
+          selectPopularDestination(destination);
+        });
+      });
+      
+      // Location suggestions (event delegation)
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('.suggestion-item')) {
+          const item = e.target.closest('.suggestion-item');
+          const lat = parseFloat(item.dataset.lat);
+          const lng = parseFloat(item.dataset.lng);
+          const name = item.dataset.name;
+          const type = item.dataset.type;
+          
+          if (type === 'waypoint') {
+            const waypointId = item.dataset.waypointId;
+            selectWaypointResult(lat, lng, name, waypointId);
+          } else {
+            selectLocationSuggestion(lat, lng, name, type);
+          }
+        }
+      });
+    }
+    
+    // Get user's current location
+    function getCurrentLocation() {
+      if (!navigator.geolocation) return;
+      
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setOrigin(lat, lng, 'Your Location');
+        },
+        function(error) {
+          // Fallback to Phoenix Cabs location
+          setOrigin(30.3165, 78.0322, 'Phoenix Cabs, Dehradun');
+        }
+      );
+    }
+    
+    // Set origin location
+    function setOrigin(lat, lng, name) {
+      tripData.origin = { lat, lng, name };
+      
+      // Find the actual origin input (first route input)
+      const originInput = document.querySelector('[data-type="origin"] input') || 
+                         document.getElementById('origin-input');
+      if (originInput) {
+        originInput.value = name;
+      }
+      
+      if (originMarker) {
+        bookingMap.removeLayer(originMarker);
+      }
+      
+      originMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: '<div class="marker-origin">A</div>',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30]
+        })
+      }).addTo(bookingMap);
+      
+      updateMapView();
+      calculateSequentialRoute(); // Async call // Async call - will update summary when complete
+    }
+    
+    // Set destination location
+    function setDestination(lat, lng, name) {
+      // Check for duplicate locations
+      const originInput = document.querySelector('[data-type="origin"] input');
+      const existingWaypoints = document.querySelectorAll('[data-type="waypoint"] input');
+      
+      let isDuplicate = false;
+      
+      // Check against origin
+      if (originInput && originInput.value.trim().toLowerCase() === name.toLowerCase()) {
+        isDuplicate = true;
+      }
+      
+      // Check against existing waypoints
+      existingWaypoints.forEach(input => {
+        if (input.value.trim().toLowerCase() === name.toLowerCase()) {
+          isDuplicate = true;
+        }
+      });
+      
+      if (isDuplicate) {
+        alert('This location is already added to your route. Please choose a different destination.');
+        return;
+      }
+      
+      tripData.destination = { lat, lng, name };
+      
+      // Find the actual destination input (last route input)
+      const destinationInput = document.querySelector('[data-type="destination"] input') || 
+                              document.getElementById('destination-input');
+      if (destinationInput) {
+        destinationInput.value = name;
+      }
+      
+      if (destinationMarker) {
+        bookingMap.removeLayer(destinationMarker);
+      }
+      
+      destinationMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: '<div class="marker-destination">B</div>',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30]
+        })
+      }).addTo(bookingMap);
+      
+      updateMapView();
+      calculateSequentialRoute(); // Async call // Async call - will update summary when complete
+    }
+    
+    // Search for locations
+    async function searchLocation(query, type) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`);
+        const results = await response.json();
+        
+        if (results && results.length > 0) {
+          showLocationSuggestions(results, type);
+        }
+      } catch (error) {
+        console.error('Location search failed:', error);
+      }
+    }
+    
+    // Show location suggestions
+    function showLocationSuggestions(results, type) {
+      const dropdown = document.getElementById(`${type}-suggestions`);
+      
+      dropdown.innerHTML = results.map((result, index) => `
+        <div class="suggestion-item" data-lat="${result.lat}" data-lng="${result.lon}" data-name="${result.display_name}" data-type="${type}">
+          <div class="suggestion-main">${result.display_name.split(',')[0]}</div>
+          <div class="suggestion-detail">${result.display_name}</div>
+        </div>
+      `).join('');
+      
+      dropdown.style.display = 'block';
+    }
+    
+    // Hide location suggestions
+    function hideLocationSuggestions(type) {
+      document.getElementById(`${type}-suggestions`).style.display = 'none';
+    }
+    
+    // Select location from suggestions
+    function selectLocationSuggestion(lat, lng, name, type) {
+      const shortName = name.split(',')[0];
+      
+      if (type === 'origin') {
+        setOrigin(lat, lng, shortName);
+      } else {
+        setDestination(lat, lng, shortName);
+      }
+      
+      hideLocationSuggestions(type);
+    }
+    
+    // Select popular destination
+    function selectPopularDestination(destination) {
+      const coords = popularDestinations[destination];
+      if (coords) {
+        setDestination(coords[0], coords[1], destination);
+      }
+    }
+    
+    // Swap origin and destination
+    function swapLocations() {
+      if (!tripData.origin || !tripData.destination) return;
+      
+      const temp = tripData.origin;
+      tripData.origin = tripData.destination;
+      tripData.destination = temp;
+      
+      document.getElementById('origin-input').value = tripData.origin.name;
+      document.getElementById('destination-input').value = tripData.destination.name;
+      
+      // Update markers
+      if (originMarker) bookingMap.removeLayer(originMarker);
+      if (destinationMarker) bookingMap.removeLayer(destinationMarker);
+      
+      originMarker = L.marker([tripData.origin.lat, tripData.origin.lng], {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: '<div class="marker-origin">A</div>',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30]
+        })
+      }).addTo(bookingMap);
+      
+      destinationMarker = L.marker([tripData.destination.lat, tripData.destination.lng], {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: '<div class="marker-destination">B</div>',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30]
+        })
+      }).addTo(bookingMap);
+      
+      calculateSequentialRoute(); // Async call // Async call
+    }
+    
+    // Calculate route and distance
+    function calculateRoute() {
+      if (!tripData.origin || !tripData.destination) return;
+      
+      // Remove existing route
+      if (routePolyline) {
+        bookingMap.removeLayer(routePolyline);
+      }
+      
+      // Calculate distance (Haversine formula with road factor)
+      const distance = calculateDistance(
+        tripData.origin.lat, tripData.origin.lng,
+        tripData.destination.lat, tripData.destination.lng
+      );
+      
+      tripData.distance = Math.round(distance * 1.3); // Add 30% for road distance
+      tripData.duration = Math.round(tripData.distance / 50 * 60); // Assume 50 km/h average
+      
+      // Draw route line
+      routePolyline = L.polyline([
+        [tripData.origin.lat, tripData.origin.lng],
+        [tripData.destination.lat, tripData.destination.lng]
+      ], {
+        color: '#2563eb',
+        weight: 4,
+        opacity: 0.8
+      }).addTo(bookingMap);
+      
+      updateMapView();
+      calculateFares();
+      updateBookingSummary();
+    }
+    
+    // Calculate distance using Haversine formula (fallback)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+    
+    // Get real car route using OSRM
+    async function getOSRMRoute(coordinates) {
+      try {
+        console.log('🚗 Getting OSRM route for coordinates:', coordinates);
+        
+        // Format coordinates for OSRM: lon,lat;lon,lat...
+        const coordString = coordinates.map(coord => `${coord.lng},${coord.lat}`).join(';');
+        
+        // Use public OSRM server (free but rate-limited)
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson&steps=false`;
+        
+        console.log('🌐 OSRM URL:', osrmUrl);
+        
+        const response = await fetch(osrmUrl);
+        
+        if (!response.ok) {
+          throw new Error(`OSRM API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
+          throw new Error('No route found by OSRM');
+        }
+        
+        const route = data.routes[0];
+        
+        console.log('✅ OSRM route received:', {
+          distance: (route.distance / 1000).toFixed(2) + ' km',
+          duration: (route.duration / 60).toFixed(0) + ' min',
+          waypoints: data.waypoints?.length || 0
+        });
+        
+        return {
+          distance: route.distance / 1000, // Convert meters to km
+          duration: route.duration / 60,   // Convert seconds to minutes
+          geometry: route.geometry,        // GeoJSON geometry for polyline
+          success: true
+        };
+        
+      } catch (error) {
+        console.warn('⚠️ OSRM routing failed:', error.message);
+        return {
+          success: false,
+          error: error.message
+        };
+      }
+    }
+    
+    // Calculate route with real car routing
+    async function calculateRealRoute(routePoints) {
+      console.log('🗺️ Calculating real car route for', routePoints.length, 'points');
+      
+      if (routePoints.length < 2) {
+        return null;
+      }
+      
+      try {
+        // Prepare coordinates for OSRM
+        const coordinates = routePoints.map(point => ({
+          lat: point.lat,
+          lng: point.lng,
+          name: point.name
+        }));
+        
+        const osrmResult = await getOSRMRoute(coordinates);
+        
+        if (osrmResult.success) {
+          return {
+            distance: osrmResult.distance,
+            duration: osrmResult.duration,
+            geometry: osrmResult.geometry,
+            routePoints: routePoints,
+            method: 'OSRM'
+          };
+        } else {
+          // Fallback to Haversine calculation
+          console.log('🔄 Falling back to Haversine calculation');
+          return calculateFallbackRoute(routePoints);
+        }
+        
+      } catch (error) {
+        console.error('❌ Route calculation failed:', error);
+        return calculateFallbackRoute(routePoints);
+      }
+    }
+    
+    // Fallback route calculation using Haversine
+    function calculateFallbackRoute(routePoints) {
+      console.log('🔄 Using fallback Haversine calculation');
+      
+      let totalDistance = 0;
+      
+      for (let i = 0; i < routePoints.length - 1; i++) {
+        const segmentDistance = calculateDistance(
+          routePoints[i].lat, routePoints[i].lng,
+          routePoints[i + 1].lat, routePoints[i + 1].lng
+        );
+        totalDistance += segmentDistance;
+      }
+      
+      // Add road factor for Haversine
+      const roadDistance = totalDistance * 1.4; // Increased from 1.3 to 1.4 for mountain roads
+      const estimatedDuration = roadDistance / 45 * 60; // Reduced from 50 to 45 km/h for mountain roads
+      
+      return {
+        distance: roadDistance,
+        duration: estimatedDuration,
+        geometry: null, // No detailed geometry for fallback
+        routePoints: routePoints,
+        method: 'Haversine'
+      };
+    }
+    
+    // Update map view to show both markers
+    function updateMapView() {
+      if (tripData.origin && tripData.destination) {
+        const bounds = L.latLngBounds([
+          [tripData.origin.lat, tripData.origin.lng],
+          [tripData.destination.lat, tripData.destination.lng]
+        ]);
+        bookingMap.fitBounds(bounds, { padding: [50, 50] });
+      } else if (tripData.origin) {
+        bookingMap.setView([tripData.origin.lat, tripData.origin.lng], 13);
+      }
+    }
+    
+    // Calculate fares for all vehicles
+    function calculateFares() {
+      if (!tripData.distance) return;
+      
+      vehicles.forEach(vehicle => {
+        const fuelPrice = fuelPrices[vehicle.fuelType];
+        const fuelCostPerKm = fuelPrice / vehicle.mileage;
+        const baseFare = vehicle.baseRate * tripData.distance;
+        const fuelCost = fuelCostPerKm * tripData.distance;
+        
+        // Calculate multi-day pricing
+        let multiDayMultiplier = 1;
+        let driverAllowance = vehicle.driverAllowance;
+        
+        if (tripDates.days > 1) {
+          // For multi-day trips, add daily driver allowance and accommodation
+          const extraDays = tripDates.days - 1;
+          driverAllowance += extraDays * 800; // ₹800 per extra day for driver
+          
+          // Add accommodation costs for driver (if overnight stay required)
+          if (tripDates.nights > 0) {
+            driverAllowance += tripDates.nights * 1000; // ₹1000 per night for driver accommodation
+          }
+          
+          // Slight discount for longer trips
+          if (tripDates.days >= 3) {
+            multiDayMultiplier = 0.95; // 5% discount for 3+ day trips
+          }
+          if (tripDates.days >= 7) {
+            multiDayMultiplier = 0.90; // 10% discount for week-long trips
+          }
+        }
+        
+        const totalFare = (baseFare + fuelCost) * multiDayMultiplier + driverAllowance;
+        
+        vehicle.calculatedFare = Math.round(totalFare);
+        vehicle.multiDayInfo = {
+          days: tripDates.days,
+          nights: tripDates.nights,
+          driverAllowance: driverAllowance,
+          discount: multiDayMultiplier < 1 ? Math.round((1 - multiDayMultiplier) * 100) : 0
+        };
+      });
+      
+      // Update selected vehicle's fare if one is selected
+      if (tripData.selectedVehicle) {
+        const updatedVehicle = vehicles.find(v => v.id === tripData.selectedVehicle.id);
+        if (updatedVehicle) {
+          tripData.selectedVehicle = updatedVehicle;
+          tripData.fare = updatedVehicle.calculatedFare;
+          console.log('🔄 Updated selected vehicle fare:', tripData.fare);
+        }
+      }
+      
+      updateVehicleCards();
+      
+      // If a vehicle is selected, also update the booking summary to reflect new fare
+      if (tripData.selectedVehicle) {
+        updateBookingSummary();
+      }
+    }
+    
+    // Update vehicle cards with calculated fares
+    function updateVehicleCards() {
+      const vehicleGrid = document.getElementById('vehicle-grid');
+      
+      vehicleGrid.innerHTML = vehicles.map(vehicle => {
+        let priceDisplay = `₹${vehicle.calculatedFare || 'N/A'}`;
+        let additionalInfo = '';
+        
+        if (vehicle.multiDayInfo && vehicle.multiDayInfo.days > 1) {
+          additionalInfo = `<div class="trip-duration-info">
+            ${vehicle.multiDayInfo.days} day${vehicle.multiDayInfo.days > 1 ? 's' : ''}
+            ${vehicle.multiDayInfo.nights > 0 ? `, ${vehicle.multiDayInfo.nights} night${vehicle.multiDayInfo.nights > 1 ? 's' : ''}` : ''}
+          </div>`;
+          
+          if (vehicle.multiDayInfo.discount > 0) {
+            additionalInfo += `<div class="discount-badge">${vehicle.multiDayInfo.discount}% off</div>`;
+          }
+        }
+        
+        const isSelected = tripData.selectedVehicle && tripData.selectedVehicle.id === vehicle.id;
+        
+        return `
+          <div class="vehicle-card ${isSelected ? 'selected' : ''}" onclick="selectVehicle('${vehicle.id}')">
+            <div class="vehicle-icon">${vehicle.icon}</div>
+            <div class="vehicle-info">
+              <h4>${vehicle.name}</h4>
+              <div class="vehicle-details">${vehicle.model} • ${vehicle.capacity}</div>
+              ${additionalInfo}
+            </div>
+            <div class="vehicle-price">${priceDisplay}</div>
+            <div class="vehicle-eta">${tripData.duration ? tripData.duration + ' min' : 'ETA'}</div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // Select vehicle
+    function selectVehicle(vehicleId) {
+      // Remove previous selection
+      document.querySelectorAll('.vehicle-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // Add selection to clicked card
+      event.target.closest('.vehicle-card').classList.add('selected');
+      
+      tripData.selectedVehicle = vehicles.find(v => v.id === vehicleId);
+      tripData.fare = tripData.selectedVehicle.calculatedFare;
+      
+      // Update booking summary
+      updateBookingSummary();
+      autoSaveState(); // Save state when vehicle is selected
+    }
+    
+    
+    // Add waypoint functionality
+    function addWaypoint() {
+      // Convert current destination to a waypoint first
+      const currentDestination = document.querySelector('[data-type="destination"]');
+      const destinationInput = currentDestination ? currentDestination.querySelector('input') : null;
+      const destinationValue = destinationInput ? destinationInput.value.trim() : '';
+      
+      // Check if destination has a value and is not empty
+      if (currentDestination && destinationValue) {
+        // Check for duplicate locations
+        const existingWaypoints = document.querySelectorAll('[data-type="waypoint"] input');
+        const originInput = document.querySelector('[data-type="origin"] input');
+        
+        let isDuplicate = false;
+        
+        // Check against origin
+        if (originInput && originInput.value.trim().toLowerCase() === destinationValue.toLowerCase()) {
+          isDuplicate = true;
+        }
+        
+        // Check against existing waypoints
+        existingWaypoints.forEach(input => {
+          if (input.value.trim().toLowerCase() === destinationValue.toLowerCase()) {
+            isDuplicate = true;
+          }
+        });
+        
+        if (isDuplicate) {
+          alert('This location is already added to your route. Please choose a different destination.');
+          return;
+        }
+        // Convert destination to waypoint
+        const waypointCount = document.querySelectorAll('[data-type="waypoint"]').length + 1;
+        currentDestination.setAttribute('data-type', 'waypoint');
+        currentDestination.setAttribute('data-sequence', waypointCount);
+        
+        // Give it a unique waypoint ID
+        const waypointId = `waypoint-${Date.now()}-${waypointCount}`;
+        currentDestination.id = waypointId;
+        
+        // Store waypoint data with coordinates from current destination
+        if (tripData.destination && tripData.destination.lat && tripData.destination.lng) {
+          const waypointData = {
+            id: waypointId,
+            name: destinationValue,
+            lat: tripData.destination.lat,
+            lng: tripData.destination.lng
+          };
+          
+          // Add to waypoints array
+          waypoints.push(waypointData);
+          console.log(`Added waypoint data:`, waypointData);
+        }
+        
+        // Add swap handle if not present
+        if (!currentDestination.querySelector('.swap-handle')) {
+          const swapHandle = document.createElement('div');
+          swapHandle.className = 'swap-handle';
+          swapHandle.innerHTML = '<i class="bi bi-arrow-up-down"></i>';
+          swapHandle.onclick = function() { swapWithNext(this); };
+          swapHandle.title = 'Swap with next location';
+          currentDestination.insertBefore(swapHandle, currentDestination.firstChild);
+        }
+        
+        // Update the icon to show number
+        const iconDiv = currentDestination.querySelector('.route-icon');
+        iconDiv.className = 'route-icon waypoint';
+        iconDiv.innerHTML = `<div style="background-color: #34a853; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">${waypointCount}</div>`;
+        
+        // Add remove button
+        if (!currentDestination.querySelector('.remove-destination')) {
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'remove-destination';
+          removeBtn.innerHTML = '<i class="bi bi-x" style="font-size: 16px;"></i>';
+          removeBtn.onclick = () => removeWaypoint(waypointId);
+          currentDestination.appendChild(removeBtn);
+        }
+        
+        // Update input search function and remove destination-specific IDs
+        const input = currentDestination.querySelector('input');
+        input.removeAttribute('id');
+        input.setAttribute('oninput', `searchWaypoint(this.value, '${waypointId}')`);
+        
+        // Update suggestions div
+        const suggestionsDiv = currentDestination.querySelector('.suggestions-dropdown');
+        if (suggestionsDiv) {
+          suggestionsDiv.removeAttribute('id');
+        }
+      }
+      
+      // Create new destination
+      const newDestinationId = `destination-${Date.now()}`;
+      const newDestinationHTML = `
+        <div class="route-input" id="${newDestinationId}" data-type="destination">
+          <div class="swap-handle" onclick="swapWithNext(this)" title="Swap with next location">
+            <i class="bi bi-arrow-up-down"></i>
+          </div>
+          <div class="route-connecting-line"></div>
+          <div class="route-icon destination">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <input type="text" id="destination-input" placeholder="Choose destination, or click on the map">
+          <div class="suggestions-dropdown" id="destination-suggestions" style="display: none;"></div>
+        </div>
+      `;
+      
+      // Insert before the add destination button
+      const addBtn = document.querySelector('.add-destination-btn');
+      addBtn.insertAdjacentHTML('beforebegin', newDestinationHTML);
+      
+      // Focus on the new destination input
+      const newInput = document.querySelector(`#${newDestinationId} input`);
+      newInput.focus();
+      
+      // Re-setup event listeners for the new destination input
+      setupDestinationInputListeners();
+      
+      // Swap functionality is handled by inline onclick handlers
+      
+      updateRouteConnectingLines();
+      updateSequenceNumbers();
+      
+      // Clean up any duplicate waypoints
+      removeDuplicateWaypoints();
+    }
+    
+    // Remove duplicate waypoints
+    function removeDuplicateWaypoints() {
+      const waypoints = document.querySelectorAll('[data-type="waypoint"]');
+      const seenLocations = new Set();
+      
+      waypoints.forEach(waypoint => {
+        const input = waypoint.querySelector('input');
+        const location = input.value.trim().toLowerCase();
+        
+        if (seenLocations.has(location)) {
+          // Remove duplicate waypoint
+          waypoint.remove();
+        } else {
+          seenLocations.add(location);
+        }
+      });
+      
+      // Update numbering after cleanup
+      updateSequenceNumbers();
+    }
+    
+    // Setup destination input listeners
+    function setupDestinationInputListeners() {
+      const destinationInput = document.getElementById('destination-input');
+      if (destinationInput) {
+        destinationInput.addEventListener('input', function(e) {
+          if (e.target.value.length > 2) {
+            searchLocation(e.target.value, 'destination');
+          } else {
+            hideLocationSuggestions('destination');
+          }
+        });
+      }
+    }
+    
+    // Swap current location with the next one
+    function swapWithNext(swapHandle) {
+      const currentRoute = swapHandle.closest('.route-input');
+      const nextRoute = currentRoute.nextElementSibling;
+      
+      // Skip if next element is the add button or doesn't exist
+      if (!nextRoute || nextRoute.classList.contains('add-destination-btn')) {
+        return;
+      }
+      
+      // Store location data before swapping
+      const currentInput = currentRoute.querySelector('input');
+      const nextInput = nextRoute.querySelector('input');
+      const currentValue = currentInput.value;
+      const nextValue = nextInput.value;
+      const currentId = currentRoute.id;
+      const nextId = nextRoute.id;
+      
+      // Add swap animation
+      currentRoute.classList.add('swapping');
+      nextRoute.classList.add('swapping');
+      
+      // Get parent container
+      const container = currentRoute.parentNode;
+      
+      // Store the next sibling of nextRoute to insert currentRoute after
+      const afterNext = nextRoute.nextElementSibling;
+      
+      // Simple DOM swap without cloning
+      container.removeChild(currentRoute);
+      container.removeChild(nextRoute);
+      
+      // Re-insert in swapped positions
+      if (afterNext) {
+        container.insertBefore(currentRoute, afterNext);
+        container.insertBefore(nextRoute, currentRoute);
+      } else {
+        container.appendChild(nextRoute);
+        container.appendChild(currentRoute);
+      }
+      
+      // Preserve location data in waypoints array
+      updateWaypointDataAfterSwap(currentId, nextId, currentValue, nextValue);
+      
+      // Update route display after swap
+      updateAfterSwap();
+      
+      // Remove animation class after animation completes
+      setTimeout(() => {
+        currentRoute.classList.remove('swapping');
+        nextRoute.classList.remove('swapping');
+      }, 300);
+    }
+    
+    // Update waypoint data after swap to maintain location coordinates
+    function updateWaypointDataAfterSwap(currentId, nextId, currentValue, nextValue) {
+      // Find waypoint data for both locations
+      let currentData = waypoints.find(wp => wp.id === currentId);
+      let nextData = waypoints.find(wp => wp.id === nextId);
+      
+      // If not found in waypoints, check tripData
+      if (!currentData && tripData.origin && tripData.origin.name === currentValue) {
+        currentData = tripData.origin;
+      }
+      if (!currentData && tripData.destination && tripData.destination.name === currentValue) {
+        currentData = tripData.destination;
+      }
+      if (!nextData && tripData.origin && tripData.origin.name === nextValue) {
+        nextData = tripData.origin;
+      }
+      if (!nextData && tripData.destination && tripData.destination.name === nextValue) {
+        nextData = tripData.destination;
+      }
+      
+      // Update waypoints array with correct IDs
+      if (currentData && nextData) {
+        // Update waypoints array
+        const currentWaypointIndex = waypoints.findIndex(wp => wp.id === currentId);
+        const nextWaypointIndex = waypoints.findIndex(wp => wp.id === nextId);
+        
+        if (currentWaypointIndex !== -1) {
+          waypoints[currentWaypointIndex] = { ...nextData, id: currentId };
+        }
+        if (nextWaypointIndex !== -1) {
+          waypoints[nextWaypointIndex] = { ...currentData, id: nextId };
+        }
+        
+        // Also update tripData if origin/destination are involved
+        if (tripData.origin && tripData.origin.name === currentValue) {
+          tripData.origin = { ...nextData };
+        }
+        if (tripData.origin && tripData.origin.name === nextValue) {
+          tripData.origin = { ...currentData };
+        }
+        if (tripData.destination && tripData.destination.name === currentValue) {
+          tripData.destination = { ...nextData };
+        }
+        if (tripData.destination && tripData.destination.name === nextValue) {
+          tripData.destination = { ...currentData };
+        }
+      }
+    }
+    
+    
+    // Update route after swap
+    function updateAfterSwap() {
+      // Update sequence numbers and icons
+      updateSequenceNumbers();
+      updateRouteTypes();
+      
+      // Update connecting lines
+      updateRouteConnectingLines();
+      
+      // Recalculate route
+      calculateSequentialRoute(); // Async call
+      
+      // Re-setup event listeners
+      setupDestinationInputListeners();
+    }
+    
+    // Update route types (origin, waypoint, destination) after swap
+    function updateRouteTypes() {
+      const routeInputs = document.querySelectorAll('.route-input');
+      
+      routeInputs.forEach((input, index) => {
+        const iconDiv = input.querySelector('.route-icon');
+        const inputField = input.querySelector('input');
+        const inputValue = inputField ? inputField.value.trim() : '';
+        
+        if (index === 0) {
+          // First element is always origin
+          input.setAttribute('data-type', 'origin');
+          iconDiv.className = 'route-icon origin';
+          iconDiv.innerHTML = '<i class="bi bi-record-circle-fill"></i>';
+          
+          // Update tripData.origin if it has coordinates
+          if (inputValue) {
+            // Try to find the location data for the new origin
+            let originData = waypoints.find(wp => wp.name === inputValue);
+            if (!originData && tripData.destination && tripData.destination.name === inputValue) {
+              originData = tripData.destination;
+            }
+            if (originData) {
+              tripData.origin = { ...originData };
+            }
+          }
+        } else if (index === routeInputs.length - 1) {
+          // Last element is always destination
+          input.setAttribute('data-type', 'destination');
+          iconDiv.className = 'route-icon destination';
+          iconDiv.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+          
+          // Update input ID for destination
+          if (inputField) {
+            inputField.id = 'destination-input';
+          }
+          
+          // Update tripData.destination if it has coordinates
+          if (inputValue) {
+            // Try to find the location data for the new destination
+            let destinationData = waypoints.find(wp => wp.name === inputValue);
+            if (!destinationData && tripData.origin && tripData.origin.name === inputValue) {
+              destinationData = tripData.origin;
+            }
+            if (destinationData) {
+              tripData.destination = { ...destinationData };
+            }
+          }
+          
+          // Remove remove button from destination
+          const removeBtn = input.querySelector('.remove-destination');
+          if (removeBtn) {
+            removeBtn.remove();
+          }
+        } else {
+          // Middle elements are waypoints
+          input.setAttribute('data-type', 'waypoint');
+          iconDiv.className = 'route-icon waypoint';
+          const waypointNumber = index;
+          iconDiv.innerHTML = `<div style="background-color: #34a853; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">${waypointNumber}</div>`;
+          
+          // Ensure waypoints have remove buttons
+          if (!input.querySelector('.remove-destination')) {
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-destination';
+            removeBtn.innerHTML = '<i class="bi bi-x" style="font-size: 16px;"></i>';
+            removeBtn.onclick = () => removeWaypoint(input.id);
+            input.appendChild(removeBtn);
+          }
+        }
+      });
+    }
+    
+    function removeWaypoint(waypointId) {
+      const element = document.getElementById(waypointId);
+      if (element) {
+        element.remove();
+        
+        // Remove associated waypoint data
+        waypoints = waypoints.filter(wp => wp.id !== waypointId);
+        
+        // Check if we need to convert the last waypoint back to destination
+        const remainingWaypoints = document.querySelectorAll('[data-type="waypoint"]');
+        const currentDestination = document.querySelector('[data-type="destination"]');
+        
+        // If there are waypoints but no destination, convert the last waypoint to destination
+        if (remainingWaypoints.length > 0 && !currentDestination) {
+          const lastWaypoint = remainingWaypoints[remainingWaypoints.length - 1];
+          lastWaypoint.setAttribute('data-type', 'destination');
+          
+          // Update the icon back to destination
+          const iconDiv = lastWaypoint.querySelector('.route-icon');
+          iconDiv.className = 'route-icon destination';
+          iconDiv.innerHTML = '<i class="bi bi-geo-alt-fill"></i>';
+          
+          // Remove the remove button
+          const removeBtn = lastWaypoint.querySelector('.remove-destination');
+          if (removeBtn) removeBtn.remove();
+          
+          // Update input ID and attributes
+          const input = lastWaypoint.querySelector('input');
+          input.id = 'destination-input';
+          input.removeAttribute('oninput');
+          
+          // Update suggestions div ID
+          const suggestionsDiv = lastWaypoint.querySelector('.suggestions-dropdown');
+          if (suggestionsDiv) {
+            suggestionsDiv.id = 'destination-suggestions';
+          }
+          
+          // Re-setup event listeners
+          setupDestinationInputListeners();
+        }
+        
+        // Recalculate route and update types
+        calculateSequentialRoute(); // Async call
+        updateRouteConnectingLines();
+        updateSequenceNumbers();
+        updateRouteTypes();
+      }
+    }
+    
+    function searchWaypoint(query, waypointId) {
+      clearTimeout(searchTimeout);
+      
+      const suggestionsDiv = document.querySelector(`#${waypointId} .suggestions-dropdown`);
+      
+      if (query.length < 3) {
+        suggestionsDiv.style.display = 'none';
+        return;
+      }
+      
+      searchTimeout = setTimeout(() => {
+        performWaypointSearch(query, waypointId);
+      }, 300);
+    }
+    
+    async function performWaypointSearch(query, waypointId) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`);
+        const results = await response.json();
+        
+        const suggestionsDiv = document.querySelector(`#${waypointId} .suggestions-dropdown`);
+        
+        if (results && results.length > 0) {
+          showWaypointSuggestions(results, waypointId);
+        } else {
+          suggestionsDiv.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Waypoint search failed:', error);
+        const suggestionsDiv = document.querySelector(`#${waypointId} .suggestions-dropdown`);
+        suggestionsDiv.style.display = 'none';
+      }
+    }
+    
+    function showWaypointSuggestions(results, waypointId) {
+      const suggestionsDiv = document.querySelector(`#${waypointId} .suggestions-dropdown`);
+      
+      if (results.length === 0) {
+        suggestionsDiv.style.display = 'none';
+        return;
+      }
+      
+      const suggestionHTML = results.map(result => `
+        <div class="suggestion-item" data-lat="${result.lat}" data-lng="${result.lon}" data-name="${result.display_name}" data-type="waypoint" data-waypoint-id="${waypointId}">
+          <div style="font-weight: 500;">${result.display_name.split(',')[0]}</div>
+          <div style="font-size: 12px; color: #5f6368;">${result.display_name}</div>
+        </div>
+      `).join('');
+      
+      suggestionsDiv.innerHTML = suggestionHTML;
+      suggestionsDiv.style.display = 'block';
+    }
+    
+    function selectWaypointResult(lat, lng, displayName, waypointId) {
+      const waypointName = displayName.split(',')[0];
+      
+      // Check for duplicate locations
+      const originInput = document.querySelector('[data-type="origin"] input');
+      const destinationInput = document.querySelector('[data-type="destination"] input');
+      const existingWaypoints = document.querySelectorAll('[data-type="waypoint"] input');
+      
+      let isDuplicate = false;
+      
+      // Check against origin
+      if (originInput && originInput.value.trim().toLowerCase() === waypointName.toLowerCase()) {
+        isDuplicate = true;
+      }
+      
+      // Check against destination
+      if (destinationInput && destinationInput.value.trim().toLowerCase() === waypointName.toLowerCase()) {
+        isDuplicate = true;
+      }
+      
+      // Check against other waypoints (excluding current waypoint)
+      existingWaypoints.forEach(input => {
+        if (input.closest('.route-input').id !== waypointId && 
+            input.value.trim().toLowerCase() === waypointName.toLowerCase()) {
+          isDuplicate = true;
+        }
+      });
+      
+      if (isDuplicate) {
+        alert('This location is already added to your route. Please choose a different location.');
+        return;
+      }
+      
+      // Update the input field
+      const input = document.querySelector(`#${waypointId} input`);
+      input.value = waypointName;
+      
+      // Add/update waypoint data
+      const existingIndex = waypoints.findIndex(wp => wp.id === waypointId);
+      const waypointData = {
+        id: waypointId,
+        lat: lat,
+        lng: lng,
+        name: waypointName
+      };
+      
+      if (existingIndex >= 0) {
+        waypoints[existingIndex] = waypointData;
+      } else {
+        waypoints.push(waypointData);
+      }
+      
+      // Hide suggestions
+      const suggestionsDiv = document.querySelector(`#${waypointId} .suggestions-dropdown`);
+      suggestionsDiv.style.display = 'none';
+      
+      // Recalculate sequential route
+      calculateSequentialRoute(); // Async call
+    }
+    
+    // Toggle return trip functionality
+    function toggleReturnTrip() {
+      const returnCheckbox = document.getElementById('return-trip');
+      isReturnTrip = returnCheckbox.checked;
+      
+      // Recalculate route with return trip consideration
+      calculateSequentialRoute(); // Async call
+    }
+    
+    // Calculate sequential route through all waypoints
+    async function calculateSequentialRoute() {
+      console.log('🗺️ === Starting Real Route Calculation ===');
+      
+      // Build route points array by reading DOM in order
+      const routePoints = [];
+      const allRouteInputs = document.querySelectorAll('.route-input');
+      
+      console.log(`Found ${allRouteInputs.length} route inputs total`);
+      
+      // Process each route input in DOM order
+      allRouteInputs.forEach((element, index) => {
+        const input = element.querySelector('input');
+        const inputValue = input ? input.value.trim() : '';
+        const dataType = element.getAttribute('data-type');
+        
+        console.log(`Route ${index}: Type="${dataType}", Value="${inputValue}"`);
+        
+        if (inputValue) {
+          let locationData = null;
+          
+          // Find location data based on type and value
+          if (dataType === 'origin') {
+            locationData = tripData.origin;
+          } else if (dataType === 'destination') {
+            locationData = tripData.destination;
+          } else if (dataType === 'waypoint') {
+            // Find waypoint data with detailed logging
+            console.log(`Looking for waypoint data for element ID: ${element.id}, value: ${inputValue}`);
+            console.log('Available waypoints:', waypoints);
+            
+            locationData = waypoints.find(wp => wp.id === element.id);
+            if (!locationData) {
+              locationData = waypoints.find(wp => wp.name === inputValue);
+            }
+            
+            // Fallback to tripData if waypoint was moved
+            if (!locationData) {
+              console.log('Waypoint not found in waypoints array, checking tripData...');
+              if (tripData.origin && tripData.origin.name === inputValue) {
+                locationData = tripData.origin;
+                console.log('Found in tripData.origin');
+              } else if (tripData.destination && tripData.destination.name === inputValue) {
+                locationData = tripData.destination;
+                console.log('Found in tripData.destination');
+              }
+            } else {
+              console.log('Found waypoint data:', locationData);
+            }
+          }
+          
+          if (locationData && locationData.lat && locationData.lng) {
+            console.log(`✓ Adding ${dataType}: ${inputValue} at ${locationData.lat}, ${locationData.lng}`);
+            routePoints.push({
+              lat: locationData.lat,
+              lng: locationData.lng,
+              name: inputValue,
+              type: dataType
+            });
+          } else {
+            console.log(`✗ Missing coordinates for ${dataType}: ${inputValue}`);
+          }
+        }
+      });
+      
+      console.log(`Final route points: ${routePoints.length}`);
+      routePoints.forEach((point, index) => {
+        console.log(`  ${index}: ${point.name} (${point.type}) at ${point.lat}, ${point.lng}`);
+      });
+      
+      if (routePoints.length < 2) {
+        console.log('Not enough points for route calculation');
+        return;
+      }
+      
+      // Prepare route for calculation (including return trip)
+      let routeForCalculation = [...routePoints];
+      if (isReturnTrip && routePoints.length >= 2) {
+        routeForCalculation.push({ ...routePoints[0], name: routePoints[0].name + ' (Return)' });
+      }
+      
+      // Calculate real car route using OSRM
+      const routeResult = await calculateRealRoute(routeForCalculation);
+      
+      if (!routeResult) {
+        console.error('❌ Failed to calculate route');
+        return;
+      }
+      
+      console.log(`✅ Route calculated using ${routeResult.method}:`);
+      console.log(`   Distance: ${routeResult.distance.toFixed(2)} km`);
+      console.log(`   Duration: ${routeResult.duration.toFixed(0)} min`);
+      
+      // Update trip data with real route information
+      tripData.distance = Math.round(routeResult.distance);
+      tripData.duration = Math.round(routeResult.duration);
+      
+      // Update map with route visualization
+      updateMapRoute(routeForCalculation, routeResult.geometry);
+      
+      // Update displays
+      updateRouteDisplay(routeForCalculation, routeResult.distance, routeResult.method);
+      calculateEstimatedDuration(); // Calculate estimated duration based on distance
+      calculateFares(); // This now updates selected vehicle fare
+      updateBookingSummary(); // Update booking summary with new fare when route changes
+      
+      console.log('🗺️ === Route Calculation Complete ===');
+    }
+    
+    // Helper functions for route calculation
+    function getOriginLocation() {
+      // Get the first route input (always origin)
+      const firstRouteInput = document.querySelector('.route-input[data-type="origin"]');
+      if (!firstRouteInput) {
+        return { lat: 30.3165, lng: 78.0322, name: 'Phoenix Cabs, Dehradun' };
+      }
+      
+      const input = firstRouteInput.querySelector('input');
+      const inputValue = input ? input.value.trim() : '';
+      
+      // Try to find location data from tripData first
+      if (tripData.origin && tripData.origin.name === inputValue) {
+        return tripData.origin;
+      }
+      
+      // If no match in tripData, return default
+      if (!inputValue) {
+        return { lat: 30.3165, lng: 78.0322, name: 'Phoenix Cabs, Dehradun' };
+      }
+      
+      // Try to find from stored waypoints or tripData
+      return tripData.origin || { lat: 30.3165, lng: 78.0322, name: inputValue };
+    }
+    
+    function getDestinationLocation() {
+      // Get the last route input (always destination)
+      const destinationRouteInput = document.querySelector('.route-input[data-type="destination"]');
+      if (!destinationRouteInput) {
+        return null;
+      }
+      
+      const input = destinationRouteInput.querySelector('input');
+      const inputValue = input ? input.value.trim() : '';
+      
+      if (!inputValue) {
+        return null;
+      }
+      
+      // Try to find location data from tripData first
+      if (tripData.destination && tripData.destination.name === inputValue) {
+        return tripData.destination;
+      }
+      
+      // Try to find from waypoints if destination was moved
+      const waypointData = waypoints.find(wp => wp.name === inputValue);
+      if (waypointData) {
+        return { lat: waypointData.lat, lng: waypointData.lng, name: waypointData.name };
+      }
+      
+      return tripData.destination || null;
+    }
+    
+    function updateRouteDisplay(routePoints, totalDistance, routeMethod = 'Unknown') {
+      const routeDistanceText = document.getElementById('route-distance-text');
+      if (routeDistanceText) {
+        // Simply display the route points as they are (they already include return point if needed)
+        let routeText = routePoints.map(point => point.name).join(' → ');
+        
+        const tripType = isReturnTrip ? ' (Round Trip)' : ' (One Way)';
+        
+        // Add route method indicator
+        let routeMethodIcon = '';
+        let routeMethodText = '';
+        let routeMethodColor = '#1565c0';
+        
+        if (routeMethod === 'OSRM') {
+          routeMethodIcon = '🛣️';
+          routeMethodText = 'Car route';
+          routeMethodColor = '#10b981';
+        } else if (routeMethod === 'Haversine') {
+          routeMethodIcon = '📏';
+          routeMethodText = 'Estimated distance';
+          routeMethodColor = '#f59e0b';
+        }
+        
+        routeDistanceText.innerHTML = `
+          <div><strong>${Math.round(totalDistance)} km</strong> total distance${tripType}</div>
+          <div style="font-size: 11px; color: ${routeMethodColor}; margin-top: 2px;">
+            <span style="margin-right: 4px;">${routeMethodIcon}</span>${routeMethodText}
+          </div>
+          <div style="font-size: 11px; color: #1565c0; margin-top: 2px;">${routeText}</div>
+        `;
+      }
+    }
+    
+    function updateMapRoute(routePoints, routeGeometry = null) {
+      // Only update map if it's initialized
+      if (!bookingMap) {
+        console.log('Map not initialized, skipping update');
+        return;
+      }
+      
+      if (!routePoints || routePoints.length === 0) {
+        console.log('No route points provided');
+        return;
+      }
+      
+      console.log(`\n🗺️ UPDATING MAP ROUTE with ${routePoints.length} points:`);
+      routePoints.forEach((point, index) => {
+        console.log(`  ${index + 1}. ${point.name} at [${point.lat}, ${point.lng}]`);
+      });
+      
+      if (routeGeometry) {
+        console.log('🛣️ Using real road geometry from OSRM');
+      } else {
+        console.log('📏 Using straight-line visualization (fallback)');
+      }
+      
+      // Clear ALL existing markers and polylines
+      console.log('🧹 Clearing existing map elements...');
+      if (originMarker && bookingMap.hasLayer(originMarker)) {
+        bookingMap.removeLayer(originMarker);
+      }
+      if (destinationMarker && bookingMap.hasLayer(destinationMarker)) {
+        bookingMap.removeLayer(destinationMarker);
+      }
+      
+      routeMarkers.forEach(marker => {
+        if (bookingMap.hasLayer(marker)) {
+          bookingMap.removeLayer(marker);
+        }
+      });
+      routePolylines.forEach(polyline => {
+        if (bookingMap.hasLayer(polyline)) {
+          bookingMap.removeLayer(polyline);
+        }
+      });
+      routeMarkers = [];
+      routePolylines = [];
+      
+      
+      // Add markers for each point
+      routePoints.forEach((point, index) => {
+        let iconHtml;
+        
+        if (index === 0) {
+          iconHtml = '<div style="background-color: #4285f4; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">A</div>';
+        } else if (index === routePoints.length - 1) {
+          iconHtml = '<div style="background-color: #ea4335; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">B</div>';
+        } else {
+          iconHtml = `<div style="background-color: #34a853; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">${index}</div>`;
+        }
+        
+        const marker = L.marker([point.lat, point.lng], {
+          icon: L.divIcon({
+            className: 'custom-div-icon',
+            html: iconHtml,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+          })
+        }).addTo(bookingMap);
+        
+        marker.bindPopup(point.name);
+        routeMarkers.push(marker);
+      });
+      
+      // Draw route polylines
+      if (routePoints.length > 1) {
+        if (routeGeometry && routeGeometry.coordinates) {
+          // Use real OSRM route geometry
+          console.log('🛣️ Drawing real road route from OSRM');
+          
+          // Convert GeoJSON coordinates to Leaflet format [lat, lng]
+          const latLngs = routeGeometry.coordinates.map(coord => [coord[1], coord[0]]);
+          
+          const polyline = L.polyline(latLngs, {
+            color: '#0ea5e9',
+            weight: 5,
+            opacity: 0.9,
+            dashArray: null
+          }).addTo(bookingMap);
+          
+          routePolylines.push(polyline);
+          console.log(`✅ Real road route polyline drawn with ${latLngs.length} points`);
+          
+        } else {
+          // Fallback to straight lines between points
+          console.log(`📏 Drawing ${routePoints.length - 1} straight-line polylines (fallback)`);
+          for (let i = 0; i < routePoints.length - 1; i++) {
+            console.log(`Drawing polyline ${i}: ${routePoints[i].name} → ${routePoints[i + 1].name}`);
+            const polyline = L.polyline([
+              [routePoints[i].lat, routePoints[i].lng],
+              [routePoints[i + 1].lat, routePoints[i + 1].lng]
+            ], {
+              color: '#0ea5e9',
+              weight: 4,
+              opacity: 0.7,
+              dashArray: '10, 5' // Dashed line to indicate it's not real roads
+            }).addTo(bookingMap);
+            
+            routePolylines.push(polyline);
+          }
+        }
+        console.log(`Total polylines drawn: ${routePolylines.length}`);
+      }
+      
+      // Fit map to show all points
+      const bounds = L.latLngBounds(routePoints.map(p => [p.lat, p.lng]));
+      bookingMap.fitBounds(bounds, { padding: [20, 20] });
+    }
+    
+    function updateRouteConnectingLines() {
+      // Update the visual connecting lines between route inputs
+      const routeInputs = document.querySelectorAll('.route-input');
+      routeInputs.forEach((input, index) => {
+        const line = input.querySelector('.route-connecting-line');
+        if (line) {
+          if (index === routeInputs.length - 1) {
+            line.style.display = 'none';
+          } else {
+            line.style.display = 'block';
+          }
+        }
+      });
+    }
+    
+    // Update sequence numbers for waypoints
+    function updateSequenceNumbers() {
+      const waypointInputs = document.querySelectorAll('[data-type="waypoint"]');
+      waypointInputs.forEach((input, index) => {
+        const iconDiv = input.querySelector('.route-icon.waypoint div');
+        if (iconDiv) {
+          iconDiv.textContent = index + 1;
+          // Update the styling to ensure consistent appearance
+          iconDiv.style.backgroundColor = '#34a853';
+          iconDiv.style.color = 'white';
+          iconDiv.style.borderRadius = '50%';
+          iconDiv.style.width = '16px';
+          iconDiv.style.height = '16px';
+          iconDiv.style.display = 'flex';
+          iconDiv.style.alignItems = 'center';
+          iconDiv.style.justifyContent = 'center';
+          iconDiv.style.fontSize = '10px';
+          iconDiv.style.fontWeight = 'bold';
+        }
+        input.setAttribute('data-sequence', index + 1);
+      });
+    }
+
+    // Update booking summary
+    function updateBookingSummary() {
+      console.log('🔄 updateBookingSummary called', { origin: tripData.origin, destination: tripData.destination, distance: tripData.distance });
+      const summary = document.getElementById('booking-summary');
+      if (!summary) {
+        console.log('❌ Booking summary element not found');
+        return;
+      }
+      
+      // Check if we have any route content to show
+      const allRouteInputs = document.querySelectorAll('.route-input');
+      const routeNames = [];
+      
+      allRouteInputs.forEach((element) => {
+        const input = element.querySelector('input');
+        const inputValue = input ? input.value.trim() : '';
+        if (inputValue) {
+          routeNames.push(inputValue);
+        }
+      });
+      
+      // Show summary if there's at least 2 locations (origin + destination)
+      if (routeNames.length < 2 && (!tripData.origin || !tripData.destination)) {
+        console.log('❌ Hiding summary - insufficient route data', {
+          routeNamesCount: routeNames.length,
+          routeNames: routeNames,
+          hasOrigin: !!tripData.origin,
+          hasDestination: !!tripData.destination,
+          originData: tripData.origin,
+          destinationData: tripData.destination
+        });
+        summary.style.display = 'none';
+        return;
+      }
+      
+      console.log('✅ Showing summary - routeNames:', routeNames);
+      summary.style.display = 'block';
+      
+      // Build route description from already collected routeNames
+      let routeDescription = '';
+      
+      if (routeNames.length > 2) {
+        routeDescription = `${routeNames[0]} → ${routeNames.slice(1, -1).join(' → ')} → ${routeNames[routeNames.length - 1]}`;
+      } else if (routeNames.length === 2) {
+        routeDescription = `${routeNames[0]} → ${routeNames[1]}`;
+      } else if (routeNames.length === 1) {
+        routeDescription = routeNames[0];
+      }
+      
+      console.log('📍 Final route description:', routeDescription);
+      
+      // Build the summary HTML
+      let summaryHTML = `
+        <h4 class="section-title">
+          <i class="bi bi-receipt"></i>
+          Booking Summary
+        </h4>
+        <div class="summary-row">
+          <span><i class="bi bi-geo-alt me-2"></i>Route</span>
+          <span>${routeDescription}</span>
+        </div>
+      `;
+      
+      if (tripData.distance > 0) {
+        summaryHTML += `
+          <div class="summary-row">
+            <span><i class="bi bi-speedometer2 me-2"></i>Distance</span>
+            <span>${tripData.distance} km ${isReturnTrip ? '(Round Trip)' : '(One Way)'}</span>
+          </div>
+          <div class="summary-row">
+            <span><i class="bi bi-clock me-2"></i>Duration</span>
+            <span>~${tripData.duration} min</span>
+          </div>
+        `;
+      }
+      
+      if (tripData.selectedVehicle) {
+        const vehicle = tripData.selectedVehicle;
+        console.log('📊 Booking Summary - Selected Vehicle:', vehicle.name, 'Fare:', tripData.fare);
+        
+        const fuelPrice = fuelPrices[vehicle.fuelType];
+        const fuelCostPerKm = fuelPrice / vehicle.mileage;
+        const baseFare = vehicle.baseRate * tripData.distance;
+        const fuelCost = fuelCostPerKm * tripData.distance;
+        
+        // Calculate multi-day costs
+        let multiDayMultiplier = 1;
+        let baseDrriverAllowance = vehicle.driverAllowance;
+        let extraDayCharges = 0;
+        let accommodationCharges = 0;
+        let discount = 0;
+        
+        if (tripDates.days > 1) {
+          const extraDays = tripDates.days - 1;
+          extraDayCharges = extraDays * 800;
+          
+          if (tripDates.nights > 0) {
+            accommodationCharges = tripDates.nights * 1000;
+          }
+          
+          if (tripDates.days >= 3) {
+            multiDayMultiplier = 0.95;
+            discount = Math.round((baseFare + fuelCost) * 0.05);
+          }
+          if (tripDates.days >= 7) {
+            multiDayMultiplier = 0.90;
+            discount = Math.round((baseFare + fuelCost) * 0.10);
+          }
+        }
+        
+        const discountedBaseFare = Math.round((baseFare + fuelCost) * multiDayMultiplier);
+        const totalDriverAllowance = baseDrriverAllowance + extraDayCharges + accommodationCharges;
+        
+        summaryHTML += `
+          <div class="summary-row">
+            <span><i class="bi bi-car-front me-2"></i>Vehicle</span>
+            <span>${vehicle.name} (${vehicle.model})</span>
+          </div>
+          
+          <div class="fare-breakdown">
+            <h5 style="margin: 1rem 0 0.5rem 0; color: #374151; font-size: 14px; font-weight: 600;">
+              <i class="bi bi-receipt me-2"></i>Fare Breakdown
+            </h5>
+            
+            <div class="breakdown-row">
+              <span>Base Fare (₹${vehicle.baseRate}/km × ${tripData.distance}km)</span>
+              <span>₹${Math.round(baseFare)}</span>
+            </div>
+            
+            <div class="breakdown-row">
+              <span>Fuel Cost (₹${fuelPrice.toFixed(2)}/${vehicle.fuelType} ÷ ${vehicle.mileage}km/L)</span>
+              <span>₹${Math.round(fuelCost)}</span>
+            </div>
+            
+            <div class="breakdown-row">
+              <span>Driver Allowance (Base)</span>
+              <span>₹${baseDrriverAllowance}</span>
+            </div>`;
+            
+        if (tripDates.days > 1) {
+          if (extraDayCharges > 0) {
+            summaryHTML += `
+              <div class="breakdown-row">
+                <span>Extra Days (${tripDates.days - 1} day${tripDates.days - 1 > 1 ? 's' : ''} × ₹800)</span>
+                <span>₹${extraDayCharges}</span>
+              </div>`;
+          }
+          
+          if (accommodationCharges > 0) {
+            summaryHTML += `
+              <div class="breakdown-row">
+                <span>Driver Accommodation (${tripDates.nights} night${tripDates.nights > 1 ? 's' : ''} × ₹1000)</span>
+                <span>₹${accommodationCharges}</span>
+              </div>`;
+          }
+          
+          if (discount > 0) {
+            const discountPercent = tripDates.days >= 7 ? 10 : 5;
+            summaryHTML += `
+              <div class="breakdown-row discount-row">
+                <span>Multi-day Discount (${discountPercent}% off)</span>
+                <span>-₹${discount}</span>
+              </div>`;
+          }
+        }
+        
+        summaryHTML += `
+            <div class="breakdown-divider"></div>
+            <div class="breakdown-row total-row">
+              <span><strong>Total Fare</strong></span>
+              <span><strong>₹${tripData.fare}</strong></span>
+            </div>
+          </div>
+          
+          <div class="trip-inclusions">
+            <h6 style="margin: 1rem 0 0.5rem 0; color: #374151; font-size: 13px; font-weight: 600;">
+              <i class="bi bi-check-circle me-2" style="color: #10b981;"></i>Inclusions
+            </h6>
+            <ul class="inclusions-list">
+              <li>Professional driver</li>
+              <li>Fuel & maintenance</li>
+              <li>Toll charges</li>
+              <li>State taxes</li>
+              ${tripDates.nights > 0 ? '<li>Driver accommodation</li>' : ''}
+              ${tripDates.days > 1 ? '<li>Multi-day driver allowance</li>' : ''}
+            </ul>
+          </div>
+        `;
+      } else if (tripData.distance > 0) {
+        summaryHTML += `
+          <div class="summary-row" style="color: #6b7280; font-style: italic;">
+            <span>Select a vehicle to see detailed pricing</span>
+            <span></span>
+          </div>
+        `;
+      }
+      
+      summary.innerHTML = summaryHTML;
+    }
+    
+    // Book now function
+    function bookNow() {
+      showAlert('Redirecting to booking confirmation...', 'success');
+      // Here you would typically send data to your backend
+      setTimeout(() => {
+        window.location.href = 'tel:+917983438214';
+      }, 2000);
+    }
+    
+    // Trip duration and date functions
+    function updateTripDates() {
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      
+      const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+      const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+      
+      tripDates.startDate = startDate;
+      tripDates.endDate = endDate;
+      
+      // Special handling for day trips
+      if (tripType === 'day-trip') {
+        if (startDate) {
+          // For day trips, end date should always match start date
+          endDateInput.value = startDateInput.value;
+          tripDates.startDate = startDate;
+          tripDates.endDate = startDate;
+          tripDates.days = 1;
+          tripDates.nights = 0;
+          
+          updateDurationDisplay(1, 0);
+          updateTripSummary();
+          calculateFares();
+          autoSaveState();
+        }
+      } else {
+        // Multi-day trip logic
+        if (startDate && endDate && startDate <= endDate) {
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const days = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // Include both start and end day
+          const nights = Math.max(0, days - 1);
+          
+          tripDates.days = days;
+          tripDates.nights = nights;
+          
+          updateDurationDisplay(days, nights);
+          updateTripSummary();
+          calculateFares(); // Recalculate fares based on new dates
+          autoSaveState(); // Save state when dates change
+        } else if (startDate && endDate && startDate > endDate) {
+          showAlert('End date must be after start date', 'error');
+          endDateInput.value = '';
+        } else if (startDate && !endDate && tripDates.nights > 0) {
+          // If only start date is set and we have estimated nights, auto-set end date
+          const autoEndDate = new Date(startDate.getTime() + (tripDates.nights * 24 * 60 * 60 * 1000));
+          endDateInput.value = autoEndDate.toISOString().split('T')[0];
+          tripDates.endDate = autoEndDate;
+          
+          updateDurationDisplay(tripDates.days, tripDates.nights);
+          updateTripSummary();
+          calculateFares();
+          autoSaveState();
+          
+          console.log(`📅 Auto-set end date based on ${tripDates.nights} nights: ${autoEndDate.toDateString()}`);
+        } else {
+          // If dates are cleared, calculate estimated duration based on distance
+          calculateEstimatedDuration();
+        }
+      }
+    }
+    
+    function updateTripType() {
+      const selectedType = document.querySelector('input[name="trip-type"]:checked').value;
+      tripType = selectedType;
+      
+      const startDateInput = document.getElementById('start-date');
+      const endDateInput = document.getElementById('end-date');
+      
+      if (tripType === 'day-trip') {
+        // For day trips, set both dates to tomorrow if not already set
+        const today = new Date();
+        const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+        const tomorrowString = tomorrow.toISOString().split('T')[0];
+        
+        if (!startDateInput.value) {
+          startDateInput.value = tomorrowString;
+        }
+        // For day trip, end date should be same as start date
+        endDateInput.value = startDateInput.value || tomorrowString;
+        
+        // Update trip dates data
+        const selectedDate = new Date(startDateInput.value);
+        tripDates.startDate = selectedDate;
+        tripDates.endDate = selectedDate;
+        tripDates.days = 1;
+        tripDates.nights = 0;
+        
+        updateDurationDisplay(1, 0);
+        updateTripSummary();
+      } else if (tripType === 'multi-day') {
+        // Calculate estimated duration based on distance
+        calculateEstimatedDuration();
+        
+        // Update end date based on estimated duration and current start date
+        if (startDateInput.value && tripDates.nights > 0) {
+          const startDate = new Date(startDateInput.value);
+          const endDate = new Date(startDate.getTime() + (tripDates.nights * 24 * 60 * 60 * 1000));
+          endDateInput.value = endDate.toISOString().split('T')[0];
+          
+          tripDates.startDate = startDate;
+          tripDates.endDate = endDate;
+          
+          console.log(`📅 Manual multi-day: Updated end date to ${endDate.toDateString()} based on ${tripDates.nights} nights`);
+        }
+      }
+      
+      updateTripSummary();
+      calculateFares();
+      autoSaveState(); // Save state when trip type changes
+    }
+    
+    function calculateEstimatedDuration() {
+      if (!tripData.distance || tripData.distance === 0) {
+        updateDurationDisplay('--', '--');
+        document.getElementById('duration-recommendation').textContent = 'Select destinations to get duration estimate';
+        return;
+      }
+      
+      let estimatedDays = 1; // Default minimum
+      let estimatedNights = 0;
+      const distance = tripData.distance;
+      
+      // Automatically determine trip type based on distance
+      let suggestedTripType = 'day-trip';
+      
+      if (distance <= 100) {
+        // Short distances should be day trips
+        suggestedTripType = 'day-trip';
+        estimatedDays = 1;
+        estimatedNights = 0;
+      } else if (distance <= 300) {
+        suggestedTripType = 'multi-day';
+        estimatedDays = 2;
+        estimatedNights = 1;
+      } else if (distance <= 600) {
+        suggestedTripType = 'multi-day';
+        estimatedDays = 3;
+        estimatedNights = 2;
+      } else if (distance <= 1000) {
+        suggestedTripType = 'multi-day';
+        estimatedDays = 4;
+        estimatedNights = 3;
+      } else {
+        // For very long distances, estimate 1 day per 250km
+        suggestedTripType = 'multi-day';
+        estimatedDays = Math.max(2, Math.ceil(distance / 250));
+        estimatedNights = estimatedDays - 1;
+      }
+      
+      // Add extra days for return trips (only if it's naturally a multi-day trip)
+      if (isReturnTrip && estimatedDays > 1) {
+        estimatedDays += 1;
+        estimatedNights += 1;
+      }
+      
+      // Auto-select the appropriate trip type radio button
+      if (tripType !== 'custom') {
+        tripType = suggestedTripType;
+        const radioButton = document.querySelector(`input[name="trip-type"][value="${suggestedTripType}"]`);
+        if (radioButton) {
+          radioButton.checked = true;
+        }
+        
+        // If auto-selected as day trip, populate dates
+        if (suggestedTripType === 'day-trip') {
+          const today = new Date();
+          const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+          const tomorrowString = tomorrow.toISOString().split('T')[0];
+          
+          const startDateInput = document.getElementById('start-date');
+          const endDateInput = document.getElementById('end-date');
+          
+          if (startDateInput && !startDateInput.value) {
+            startDateInput.value = tomorrowString;
+          }
+          if (endDateInput) {
+            endDateInput.value = startDateInput ? startDateInput.value : tomorrowString;
+          }
+          
+          // Update trip dates data
+          const selectedDate = new Date(startDateInput ? startDateInput.value : tomorrowString);
+          tripDates.startDate = selectedDate;
+          tripDates.endDate = selectedDate;
+        } else if (suggestedTripType === 'multi-day') {
+          // If auto-selected as multi-day, populate dates based on estimated duration
+          const today = new Date();
+          const startDateInput = document.getElementById('start-date');
+          const endDateInput = document.getElementById('end-date');
+          
+          let startDate;
+          if (!startDateInput.value) {
+            startDate = new Date(today.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+            startDateInput.value = startDate.toISOString().split('T')[0];
+          } else {
+            startDate = new Date(startDateInput.value);
+          }
+          
+          // Calculate end date based on estimated nights
+          const endDate = new Date(startDate.getTime() + (estimatedNights * 24 * 60 * 60 * 1000));
+          if (endDateInput) {
+            endDateInput.value = endDate.toISOString().split('T')[0];
+          }
+          
+          // Update trip dates data
+          tripDates.startDate = startDate;
+          tripDates.endDate = endDate;
+          
+          console.log(`📅 Auto multi-day dates: ${startDate.toDateString()} to ${endDate.toDateString()}`);
+        }
+      }
+      
+      // Override with custom logic if user has manually selected trip type
+      if (tripType === 'day-trip') {
+        estimatedDays = 1;
+        estimatedNights = 0;
+      }
+      
+      tripDates.days = estimatedDays;
+      tripDates.nights = estimatedNights;
+      
+      updateDurationDisplay(estimatedDays, estimatedNights);
+      updateRecommendationText(estimatedDays, estimatedNights);
+      
+      // Auto-set dates for multi-day trips based on estimated duration
+      if (tripType !== 'day-trip') {
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        let startDate;
+        let endDate;
+        
+        // If no start date set, use tomorrow
+        if (!startDateInput.value) {
+          const today = new Date();
+          startDate = new Date(today.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+          startDateInput.value = startDate.toISOString().split('T')[0];
+        } else {
+          startDate = new Date(startDateInput.value);
+        }
+        
+        // Calculate end date based on estimated nights
+        endDate = new Date(startDate.getTime() + (estimatedNights * 24 * 60 * 60 * 1000));
+        endDateInput.value = endDate.toISOString().split('T')[0];
+        
+        // Update trip dates data
+        tripDates.startDate = startDate;
+        tripDates.endDate = endDate;
+        
+        console.log(`📅 Multi-day dates set: ${startDate.toDateString()} to ${endDate.toDateString()} (${estimatedDays} days, ${estimatedNights} nights)`);
+      }
+    }
+    
+    function updateDurationDisplay(days, nights) {
+      document.getElementById('duration-days').textContent = days === '--' ? '-- days' : `${days} day${days !== 1 ? 's' : ''}`;
+      document.getElementById('duration-nights').textContent = nights === '--' ? '-- nights' : `${nights} night${nights !== 1 ? 's' : ''}`;
+    }
+    
+    function updateRecommendationText(days, nights) {
+      const recommendationEl = document.getElementById('duration-recommendation');
+      
+      if (days === '--') {
+        recommendationEl.textContent = 'Select destinations to get duration estimate';
+        return;
+      }
+      
+      let recommendation = `Recommended for ${tripData.distance}km trip`;
+      
+      if (tripType === 'day-trip') {
+        recommendation += ' - Perfect for a day excursion';
+      } else {
+        if (days <= 2) {
+          recommendation += ' - Short getaway';
+        } else if (days <= 4) {
+          recommendation += ' - Extended trip with sightseeing';
+        } else {
+          recommendation += ' - Comprehensive tour experience';
+        }
+      }
+      
+      recommendationEl.textContent = recommendation;
+    }
+    
+    function updateTripSummary() {
+      const summaryEl = document.getElementById('trip-summary-info');
+      const summaryTextEl = document.getElementById('trip-summary-text');
+      
+      if (tripDates.days > 0) {
+        let summaryText = `Trip Duration: ${tripDates.days} day${tripDates.days !== 1 ? 's' : ''}`;
+        
+        if (tripDates.nights > 0) {
+          summaryText += `, ${tripDates.nights} night${tripDates.nights !== 1 ? 's' : ''}`;
+        }
+        
+        if (tripDates.startDate && tripDates.endDate) {
+          const startStr = tripDates.startDate.toLocaleDateString('en-IN', { 
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
+          });
+          const endStr = tripDates.endDate.toLocaleDateString('en-IN', { 
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
+          });
+          summaryText += ` | ${startStr} to ${endStr}`;
+        }
+        
+        if (tripDates.nights > 0) {
+          summaryText += ` | Accommodation needed for ${tripDates.nights} night${tripDates.nights !== 1 ? 's' : ''}`;
+        }
+        
+        summaryTextEl.textContent = summaryText;
+        summaryEl.style.display = 'block';
+      } else {
+        summaryEl.style.display = 'none';
+      }
+    }
+    
+    // Show alert
+    function showAlert(message, type = 'info') {
+      // Create alert element
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      `;
+      alert.textContent = message;
+      
+      document.body.appendChild(alert);
+      
+      // Animate in
+      setTimeout(() => {
+        alert.style.transform = 'translateX(0)';
+      }, 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        alert.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          document.body.removeChild(alert);
+        }, 300);
+      }, 3000);
+    }
+    
+    // Add custom marker styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .marker-origin, .marker-destination {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
+      
+      .marker-origin {
+        background: #10b981;
+      }
+      
+      .marker-destination {
+        background: #ef4444;
+      }
+      
+      .feature-tag {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-right: 4px;
+        margin-top: 4px;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+---
+
+{%- set assetPath = "../" if page.url != "/" else "" -%}
+
+<!-- Modern Booking Interface -->
+<div class="booking-container">
+  <!-- Header removed to avoid conflicts with main site navigation -->
+
+  <!-- Main Content -->
+  <div class="booking-content">
+    <!-- Form Section -->
+    <div class="form-section">
+      <!-- Location Selection -->
+      <div class="booking-section">
+        <h3 class="section-title">
+          <i class="bi bi-geo-alt"></i>
+          Where to?
+        </h3>
+        <p class="section-subtitle">Select your pickup and drop-off locations</p>
+        
+        <div class="route-container">
+          <div class="route-input" data-type="origin">
+            <div class="swap-handle" onclick="swapWithNext(this)" title="Swap with next location">
+              <i class="bi bi-arrow-up-down"></i>
+            </div>
+            <div class="route-connecting-line"></div>
+            <div class="route-icon origin">
+              <i class="bi bi-record-circle-fill"></i>
+            </div>
+            <input type="text" id="origin-input" placeholder="Your location" readonly>
+            <div class="suggestions-dropdown" id="origin-suggestions" style="display: none;"></div>
+          </div>
+          
+          <div class="route-input" data-type="destination">
+            <div class="swap-handle" onclick="swapWithNext(this)" title="Swap with next location">
+              <i class="bi bi-arrow-up-down"></i>
+            </div>
+            <div class="route-connecting-line"></div>
+            <div class="route-icon destination">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <input type="text" id="destination-input" placeholder="Choose destination, or click on the map">
+            <div class="suggestions-dropdown" id="destination-suggestions" style="display: none;"></div>
+          </div>
+          
+          <button type="button" class="add-destination-btn" onclick="addWaypoint()">
+            <i class="bi bi-plus-circle me-2"></i>Add destination
+          </button>
+          
+          <div class="route-options" style="padding: 8px 16px; border-top: 1px solid #e8eaed; background: #f8f9fa;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="return-trip" onchange="toggleReturnTrip()">
+                <label class="form-check-label" for="return-trip" style="font-size: 13px;">
+                  <i class="bi bi-arrow-left-right me-1"></i>Return trip
+                </label>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="getCurrentLocation()">
+                <i class="bi bi-geo-alt"></i> Use My Location
+              </button>
+            </div>
+          </div>
+          
+          <div class="route-distance" style="display: block; padding: 12px 16px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-top: 1px solid #1a73e8;">
+            <span id="route-distance-text" style="color: #1a73e8; font-weight: 500;">Select destinations to calculate distance</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h4 style="margin: 0; color: var(--dark-color); font-size: 1rem;">Popular Destinations</h4>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllBookingData()" style="font-size: 12px; padding: 0.25rem 0.75rem;">
+              <i class="bi bi-trash3 me-1"></i>Clear All
+            </button>
+          </div>
+          <div class="popular-destinations">
+            <div class="destination-chip">Delhi</div>
+            <div class="destination-chip">Mussoorie</div>
+            <div class="destination-chip">Haridwar</div>
+            <div class="destination-chip">Rishikesh</div>
+            <div class="destination-chip">Jolly Grant Airport</div>
+            <div class="destination-chip">Kedarnath</div>
+            <div class="destination-chip">Badrinath</div>
+            <div class="destination-chip">Shimla</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Map Section -->
+    <div class="map-section">
+      <div id="booking-map"></div>
+      
+      <div class="map-overlay">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h6 style="margin: 0; color: var(--dark-color);">
+            <i class="bi bi-map me-2"></i>Interactive Route Map
+          </h6>
+          <button class="btn" style="padding: 0.5rem; font-size: 12px; background: var(--light-color);" onclick="getCurrentLocation()">
+            <i class="bi bi-crosshair"></i> My Location
+          </button>
+        </div>
+        <p style="margin: 0.5rem 0 0 0; font-size: 14px; color: #6b7280;">
+          Click on the map to set your destination or use the search above
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trip Duration & Dates Section -->
+  <div class="section-wrapper">
+    <h3 class="section-title">
+      <i class="bi bi-calendar-event"></i>
+      Trip Duration & Dates
+    </h3>
+    <p class="section-subtitle">Select your trip dates and duration preferences</p>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="trip-dates">
+          <h4 style="margin-bottom: 1rem; color: #111827; font-size: 1rem;">Trip Dates</h4>
+          <div class="date-inputs">
+            <div class="date-input-group">
+              <label for="start-date">Start Date</label>
+              <input type="date" id="start-date" class="form-control" onchange="updateTripDates()">
+            </div>
+            <div class="date-input-group">
+              <label for="end-date">End Date</label>
+              <input type="date" id="end-date" class="form-control" onchange="updateTripDates()">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="trip-duration">
+          <h4 style="margin-bottom: 1rem; color: #111827; font-size: 1rem;">Estimated Duration</h4>
+          <div class="duration-display" id="duration-display">
+            <div class="duration-info">
+              <span class="duration-days" id="duration-days">-- days</span>
+              <span class="duration-nights" id="duration-nights">-- nights</span>
+            </div>
+            <div class="duration-recommendation" id="duration-recommendation">
+              Select destinations to get duration estimate
+            </div>
+          </div>
+          
+          <div class="duration-options" style="margin-top: 1rem;">
+            <label class="duration-option">
+              <input type="radio" name="trip-type" value="day-trip" onchange="updateTripType()">
+              <span>Day Trip</span>
+            </label>
+            <label class="duration-option">
+              <input type="radio" name="trip-type" value="multi-day" checked onchange="updateTripType()">
+              <span>Multi-day Trip</span>
+            </label>
+            <label class="duration-option">
+              <input type="radio" name="trip-type" value="custom" onchange="updateTripType()">
+              <span>Custom Duration</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="trip-summary-info" id="trip-summary-info" style="display: none;">
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <span id="trip-summary-text"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle Selection Section -->
+  <div class="section-wrapper">
+    <h3 class="section-title">
+      <i class="bi bi-car-front"></i>
+      Choose Your Vehicle
+    </h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <p class="section-subtitle" style="margin-bottom: 0;">Select from our fleet of well-maintained vehicles</p>
+      <div class="live-indicator">
+        <div class="pulse"></div>
+        <span>Live pricing</span>
+      </div>
+    </div>
+
+    <div class="vehicle-grid" id="vehicle-grid">
+      <!-- Vehicle cards will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Booking Summary Section -->
+  <div class="section-wrapper">
+    <div id="booking-summary" style="display: none;">
+      <!-- Summary will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Book Now Section -->
+  <div class="section-wrapper">
+    <div class="booking-actions">
+      <div style="background: var(--light-color); border-radius: 12px; padding: 1.5rem; margin: 2rem 0;">
+        <h4 style="margin-bottom: 1rem; color: var(--dark-color);">
+          <i class="bi bi-shield-check me-2" style="color: var(--success-color);"></i>
+          Why Choose Phoenix Cabs?
+        </h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li style="padding: 0.5rem 0;"><i class="bi bi-check-circle-fill me-2" style="color: var(--success-color);"></i> Professional & experienced drivers</li>
+          <li style="padding: 0.5rem 0;"><i class="bi bi-check-circle-fill me-2" style="color: var(--success-color);"></i> Well-maintained & clean vehicles</li>
+          <li style="padding: 0.5rem 0;"><i class="bi bi-check-circle-fill me-2" style="color: var(--success-color);"></i> 24/7 customer support</li>
+          <li style="padding: 0.5rem 0;"><i class="bi bi-check-circle-fill me-2" style="color: var(--success-color);"></i> Transparent pricing with no hidden charges</li>
+        </ul>
+      </div>
+
+      <button class="btn btn-success btn-lg" onclick="bookNow()" style="font-size: 1.25rem; padding: 1.5rem 3rem;">
+        <i class="bi bi-telephone-fill me-2"></i>Book Now - Call +91 79834 38214
+      </button>
+    </div>
+  </div>
+</div>

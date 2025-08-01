@@ -10,6 +10,9 @@
         <li class="{% if page.url == '/' %}active{% endif %}">
           <a href="{{assetPath}}index.html">Home</a>
         </li>
+        <li class="{% if '/fare-calculator/' in page.url %}active{% endif %}">
+          <a href="{{assetPath}}fare-calculator/index.html">Fare Calculator</a>
+        </li>
         <li class="{% if '/about/' in page.url %}active{% endif %}">
           <a href="{{assetPath}}about/index.html">About</a>
         </li>

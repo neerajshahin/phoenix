@@ -1,0 +1,1249 @@
+---
+layout: base.njk
+title: Services - Phoenix Cabs
+bodyClass: services-page
+extraCSS: |
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .calculator-card {
+      transition: all 0.3s ease;
+    }
+    .calculator-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.15) !important;
+    }
+    .fare-results, .map-interface {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #distance-map {
+      height: 400px;
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+    }
+    .map-controls {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+    .location-input {
+      margin-bottom: 8px;
+    }
+    .preset-destinations {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .preset-btn {
+      padding: 4px 8px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover {
+      background: #f8f9fa;
+      border-color: #007bff;
+    }
+    .route-info {
+      background: #e3f2fd;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      border-left: 4px solid #2196f3;
+    }
+    .collapse {
+      transition: all 0.3s ease;
+    }
+  </style>
+extraJS: |
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Map variables
+    let distanceMap = null;
+    let originMarker = null;
+    let destinationMarker = null;
+    let routeControl = null;
+    let currentRoute = null;
+    
+    // Popular destinations with coordinates
+    const popularDestinations = {
+      'Delhi': [28.6139, 77.2090],
+      'Mussoorie': [30.4598, 78.0664],
+      'Haridwar': [29.9457, 78.1642],
+      'Rishikesh': [30.0869, 78.2676],
+      'Jolly Grant Airport': [30.1897, 78.1804],
+      'Auli': [30.5381, 79.5582],
+      'Badrinath': [30.7433, 79.4938],
+      'Kedarnath': [30.7346, 79.0669],
+      'Gangotri': [30.9993, 78.9411],
+      'Yamunotri': [31.0117, 78.4411]
+    };
+    
+    // Phoenix Cabs location (Dehradun)
+    const phoenixLocation = [30.3165, 78.0322];
+
+    // Vehicle configurations for fare calculation
+    const vehicles = [
+      { type: 'PRIME SUV', model: 'Innova', mileage: 10, fuelType: 'diesel', driverAllowance: 600 },
+      { type: 'PRIME SEDAN', model: 'Etios', mileage: 14, fuelType: 'petrol', driverAllowance: 500 },
+      { type: 'SUV', model: 'Ertiga', mileage: 13, fuelType: 'petrol', driverAllowance: 500 },
+      { type: 'SEDAN', model: 'Dzire', mileage: 16, fuelType: 'petrol', driverAllowance: 400 },
+      { type: 'HATCHBACK', model: 'Swift', mileage: 18, fuelType: 'petrol', driverAllowance: 400 },
+    ];
+
+    // Default fuel prices (will be used if API fails)
+    const defaultFuelPrices = {
+      petrol: 96.50,
+      diesel: 87.80
+    };
+
+    // Live fuel prices (will be updated from API)
+    let liveFuelPrices = { ...defaultFuelPrices };
+    let lastFetchTime = 0;
+    let isLoading = false;
+
+    // Fuel API configuration
+    const FUEL_API = {
+      url: 'https://daily-petrol-diesel-lpg-cng-fuel-prices-in-india.p.rapidapi.com/v1/fuel-prices/today/india/uttarakhand/dehradun',
+      headers: {
+        'X-RapidAPI-Host': 'daily-petrol-diesel-lpg-cng-fuel-prices-in-india.p.rapidapi.com',
+        'X-RapidAPI-Key': '71e1fe2d25mshc1ea5fe4921585bp17025djsnd07d13c079a9'
+      }
+    };
+
+    // Fetch live fuel prices from API
+    async function fetchLiveFuelPrices() {
+      const now = Date.now();
+      
+      // Don't fetch if we've fetched in the last 30 minutes
+      if (now - lastFetchTime < 30 * 60 * 1000) {
+        return liveFuelPrices;
+      }
+
+      if (isLoading) {
+        return liveFuelPrices;
+      }
+
+      try {
+        isLoading = true;
+        
+        const response = await fetch(FUEL_API.url, {
+          method: 'GET',
+          headers: FUEL_API.headers
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data && data.fuel) {
+          liveFuelPrices = {
+            petrol: parseFloat(data.fuel.petrol.retailPrice) || defaultFuelPrices.petrol,
+            diesel: parseFloat(data.fuel.diesel.retailPrice) || defaultFuelPrices.diesel
+          };
+          lastFetchTime = now;
+          console.log('✅ Live fuel prices updated:', liveFuelPrices);
+          
+          // Update the price display if it exists
+          updatePriceDisplay();
+        } else {
+          throw new Error('Invalid API response format');
+        }
+      } catch (error) {
+        console.warn('⚠️ Failed to fetch live fuel prices, using defaults:', error.message);
+        liveFuelPrices = { ...defaultFuelPrices };
+      } finally {
+        isLoading = false;
+      }
+
+      return liveFuelPrices;
+    }
+
+    // Update price display in the UI
+    function updatePriceDisplay() {
+      const priceDisplay = document.getElementById('fuel-price-display');
+      if (priceDisplay) {
+        const isLive = lastFetchTime > 0;
+        const status = isLive ? '🟢 Live Prices' : '🟡 Default Prices';
+        const lastUpdate = isLive ? new Date(lastFetchTime).toLocaleTimeString() : 'N/A';
+        
+        priceDisplay.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">${status} (Last updated: ${lastUpdate})</small>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="refreshFuelPrices()">
+              <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <strong>Petrol:</strong> ₹${liveFuelPrices.petrol.toFixed(2)}/L
+            </div>
+            <div class="col-6">
+              <strong>Diesel:</strong> ₹${liveFuelPrices.diesel.toFixed(2)}/L
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Manual refresh function
+    async function refreshFuelPrices() {
+      const refreshBtn = document.querySelector('#fuel-price-display button');
+      if (refreshBtn) {
+        refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Loading...';
+        refreshBtn.disabled = true;
+      }
+      
+      // Force refresh by resetting lastFetchTime
+      lastFetchTime = 0;
+      await fetchLiveFuelPrices();
+      
+      if (refreshBtn) {
+        refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh';
+        refreshBtn.disabled = false;
+      }
+    }
+
+    // Get seasonal multiplier
+    function getSeasonalMultiplier() {
+      const month = new Date().getMonth() + 1;
+      return [5, 6, 12, 1].includes(month) ? 1.15 : 1.0;
+    }
+
+    // Get distance multiplier
+    function getDistanceMultiplier(distance) {
+      if (distance <= 100) return 1.0;
+      if (distance <= 200) return 1.1;
+      if (distance <= 300) return 1.2;
+      if (distance <= 500) return 1.3;
+      return 1.4;
+    }
+
+    // Calculate fare for a vehicle
+    function calculateFare(vehicle, fuelPrice, distance, charges, seasonalMultiplier) {
+      let { hillDriveSurcharge = 0, nightCharge = 0 } = charges;
+      
+      const fuelCostPerKm = fuelPrice / vehicle.mileage;
+      const baseRatePerKm = fuelCostPerKm * 1.5;
+      
+      const distanceMultiplier = getDistanceMultiplier(distance);
+      const adjustedRatePerKm = baseRatePerKm * distanceMultiplier;
+      
+      const baseDistance = 100;
+      const extraBlockSize = 50;
+      
+      const baseFare = Math.min(distance, baseDistance) * adjustedRatePerKm;
+      const extraDistance = Math.max(0, distance - baseDistance);
+      const extraBlocks = Math.ceil(extraDistance / extraBlockSize);
+      const extraFare = extraBlocks * extraBlockSize * adjustedRatePerKm;
+      
+      let total = baseFare + extraFare + vehicle.driverAllowance + hillDriveSurcharge + nightCharge;
+      total *= seasonalMultiplier;
+      
+      return {
+        vehicleType: vehicle.type,
+        model: vehicle.model,
+        fuelType: vehicle.fuelType.toUpperCase(),
+        mileage: vehicle.mileage,
+        fuelPrice: `₹${fuelPrice.toFixed(2)}/litre`,
+        baseRatePerKm: `₹${baseRatePerKm.toFixed(2)}`,
+        baseFare: baseFare.toFixed(2),
+        extraFare: extraFare.toFixed(2),
+        driverAllowance: vehicle.driverAllowance,
+        hillDriveSurcharge,
+        nightCharge,
+        distanceMultiplier,
+        seasonalMultiplier,
+        totalFare: total.toFixed(2),
+      };
+    }
+
+    // Calculate fare estimates
+    async function calculateFareEstimate() {
+      const distance = parseFloat(document.getElementById('calc-distance').value);
+      const includeHillDrive = document.getElementById('calc-hillDrive').checked;
+      const includeNightCharge = document.getElementById('calc-nightCharge').checked;
+      
+      if (!distance || distance <= 0) {
+        alert('Please enter a valid distance');
+        return;
+      }
+      
+      // Show loading state
+      const calcBtn = document.querySelector('button[onclick="calculateFareEstimate()"]');
+      const originalText = calcBtn.innerHTML;
+      calcBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculating...';
+      calcBtn.disabled = true;
+      
+      try {
+        // Fetch live fuel prices first
+        await fetchLiveFuelPrices();
+        
+        const hillDriveSurcharge = includeHillDrive ? 400 : 0;
+        const nightCharge = includeNightCharge ? 300 : 0;
+        const seasonalMultiplier = getSeasonalMultiplier();
+        
+        const results = vehicles.map(vehicle => {
+          const fuelPrice = liveFuelPrices[vehicle.fuelType];
+          return calculateFare(vehicle, fuelPrice, distance, { hillDriveSurcharge, nightCharge }, seasonalMultiplier);
+        });
+        
+        displayResults(results, distance, hillDriveSurcharge, nightCharge, seasonalMultiplier);
+      } finally {
+        // Restore button state
+        calcBtn.innerHTML = originalText;
+        calcBtn.disabled = false;
+      }
+    }
+
+    // Display calculation results
+    function displayResults(results, distance, hillDriveSurcharge, nightCharge, seasonalMultiplier) {
+      const resultsDiv = document.getElementById('calc-results');
+      
+      const rows = results.map(item => `
+        <tr>
+          <td><strong>${item.vehicleType}</strong><br><small>${item.model}</small></td>
+          <td>${item.fuelType}<br><small>${item.mileage} km/l</small></td>
+          <td>${item.fuelPrice}</td>
+          <td>₹${item.totalFare}</td>
+        </tr>
+      `).join('');
+      
+      resultsDiv.innerHTML = `
+        <div class="fare-results mt-4">
+          <h4 class="text-center mb-3">Fare Estimate for ${distance} km</h4>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p><strong>Seasonal Multiplier:</strong> ${seasonalMultiplier}x</p>
+              <p><strong>Hill Drive Surcharge:</strong> ₹${hillDriveSurcharge}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Night Charge:</strong> ₹${nightCharge}</p>
+              <p><strong>Base Rate:</strong> Fuel cost × 1.5</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Vehicle Type</th>
+                  <th>Fuel Info</th>
+                  <th>Fuel Price</th>
+                  <th>Total Fare</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <div class="text-center mt-3">
+            <p class="text-muted"><small>* Prices are estimates and may vary based on actual fuel prices and route conditions</small></p>
+            <a href="tel:+917983438214" class="btn btn-primary">Book Now - Call +91 79834 38214</a>
+          </div>
+        </div>
+      `;
+    }
+
+    // Map functionality
+
+    // Toggle distance map display
+    function toggleDistanceMap() {
+      const mapSection = document.getElementById('distance-map-section');
+      const mapToggleBtn = document.getElementById('map-toggle-btn');
+      
+      if (!mapSection || !mapToggleBtn) {
+        console.error('Map elements not found');
+        return;
+      }
+      
+      if (mapSection.style.display === 'none') {
+        mapSection.style.display = 'block';
+        mapToggleBtn.innerHTML = '<i class="bi bi-map-fill"></i> Map';
+        
+        // Initialize map if not already done
+        setTimeout(() => {
+          if (!distanceMap) {
+            initializeMap();
+          }
+        }, 100);
+      } else {
+        mapSection.style.display = 'none';
+        mapToggleBtn.innerHTML = '<i class="bi bi-map"></i> Map';
+      }
+    }
+
+    // Initialize Leaflet map
+    function initializeMap() {
+      // Check if Leaflet is loaded
+      if (typeof L === 'undefined') {
+        console.error('Leaflet library not loaded');
+        return;
+      }
+
+      const phoenixLocation = [30.3431, 77.8999]; // Phoenix Cabs location
+
+      // Initialize map
+      distanceMap = L.map('distance-map').setView(phoenixLocation, 10);
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(distanceMap);
+
+      // Add origin marker (Phoenix Cabs)
+      originMarker = L.marker(phoenixLocation, {
+        draggable: false,
+        icon: L.divIcon({
+          className: 'custom-div-icon',
+          html: '<div style="background-color: #28a745; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">P</div>',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        })
+      }).addTo(distanceMap);
+
+      originMarker.bindPopup('Phoenix Cabs, Dehradun').openPopup();
+
+      // Add click handler for selecting destination
+      distanceMap.on('click', function(e) {
+        setDestinationMarker(e.latlng);
+      });
+
+      console.log('Map initialized successfully');
+    }
+
+    // Set destination marker and calculate route
+    function setDestinationMarker(latlng) {
+      if (destinationMarker) {
+        distanceMap.removeLayer(destinationMarker);
+      }
+
+      destinationMarker = L.marker(latlng, {
+        draggable: true,
+        icon: L.divIcon({
+          className: 'custom-div-icon',
+          html: '<div style="background-color: #dc3545; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">D</div>',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10]
+        })
+      }).addTo(distanceMap);
+
+      destinationMarker.bindPopup('Destination').openPopup();
+
+      // Add drag handler for destination marker
+      destinationMarker.on('dragend', function() {
+        calculateRoute();
+      });
+
+      calculateRoute();
+    }
+
+    // Calculate route between origin and destination
+    function calculateRoute() {
+      if (!originMarker || !destinationMarker) return;
+
+      const origin = originMarker.getLatLng();
+      const destination = destinationMarker.getLatLng();
+
+      // Remove existing route
+      if (routeControl) {
+        distanceMap.removeControl(routeControl);
+      }
+
+      // Create new route using Leaflet Routing Machine
+      // Since we don't have routing machine, we'll use simple distance calculation
+      const distance = calculateDistance(origin.lat, origin.lng, destination.lat, destination.lng);
+      
+      // Draw a simple line for visual feedback
+      if (currentRoute) {
+        distanceMap.removeLayer(currentRoute);
+      }
+      
+      currentRoute = L.polyline([origin, destination], {
+        color: '#007bff',
+        weight: 4,
+        opacity: 0.7
+      }).addTo(distanceMap);
+
+      // Show route info
+      showRouteInfo(distance);
+    }
+
+    // Calculate distance between two points (Haversine formula)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in kilometers
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = R * c;
+      return Math.round(distance * 1.2); // Add 20% for road distance vs straight line
+    }
+
+    // Show route information
+    function showRouteInfo(distance) {
+      const routeInfo = document.getElementById('route-info');
+      const routeText = document.getElementById('route-text');
+      
+      if (routeText) {
+        routeText.textContent = `Distance: ${distance} km (estimated road distance)`;
+      }
+      
+      if (routeInfo) {
+        routeInfo.style.display = 'block';
+      }
+      
+      // Store distance for use
+      window.mapCalculatedDistance = distance;
+    }
+
+    // Apply map-calculated distance to the form
+    function applyMapDistance() {
+      if (window.mapCalculatedDistance) {
+        const distanceInput = document.getElementById('calc-distance');
+        if (distanceInput) {
+          distanceInput.value = window.mapCalculatedDistance;
+        }
+        toggleDistanceMap(); // Close the map
+        
+        // Show success message
+        const routeInfo = document.getElementById('route-info');
+        if (routeInfo) {
+          routeInfo.innerHTML = `
+            <div class="alert alert-success py-2 mb-0">
+              <i class="bi bi-check-circle-fill"></i> Distance applied: ${window.mapCalculatedDistance} km
+            </div>
+          `;
+          
+          // Hide success message after 2 seconds
+          setTimeout(() => {
+            if (routeInfo) {
+              routeInfo.style.display = 'none';
+            }
+          }, 2000);
+        }
+      }
+    }
+
+    // Select popular destination
+    function selectDestination(destinationName) {
+      if (!distanceMap) {
+        console.error('Map not initialized');
+        return;
+      }
+
+      const coordinates = popularDestinations[destinationName];
+      if (coordinates) {
+        const latlng = L.latLng(coordinates[0], coordinates[1]);
+        setDestinationMarker(latlng);
+        
+        // Update destination input
+        const destinationInput = document.getElementById('destination-input');
+        if (destinationInput) {
+          destinationInput.value = destinationName;
+        }
+        
+        // Center map on route
+        if (originMarker) {
+          const bounds = L.latLngBounds([originMarker.getLatLng(), latlng]);
+          distanceMap.fitBounds(bounds, { padding: [20, 20] });
+        }
+      }
+    }
+
+    // Location search functionality
+    let searchTimeout = null;
+    
+    function searchLocation(query) {
+      clearTimeout(searchTimeout);
+      
+      if (query.length < 3) {
+        hideSuggestions();
+        return;
+      }
+      
+      searchTimeout = setTimeout(() => {
+        performLocationSearch(query);
+      }, 300);
+    }
+    
+    async function performLocationSearch(query) {
+      try {
+        // Using Nominatim (OpenStreetMap) geocoding service
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`);
+        const results = await response.json();
+        
+        if (results && results.length > 0) {
+          showSuggestions(results);
+        } else {
+          hideSuggestions();
+        }
+      } catch (error) {
+        console.error('Location search failed:', error);
+        hideSuggestions();
+      }
+    }
+    
+    function showSuggestions(results) {
+      const suggestionsDiv = document.getElementById('search-suggestions');
+      
+      if (results.length === 0) {
+        hideSuggestions();
+        return;
+      }
+      
+      const suggestionHTML = results.map(result => `
+        <div class="suggestion-item p-2 border-bottom cursor-pointer" 
+             onclick="selectSearchResult(${result.lat}, ${result.lon}, '${result.display_name.replace(/'/g, '&#39;')}')"
+             style="cursor: pointer;">
+          <div class="fw-bold small">${result.display_name.split(',')[0]}</div>
+          <div class="text-muted" style="font-size: 0.75rem;">${result.display_name}</div>
+        </div>
+      `).join('');
+      
+      suggestionsDiv.innerHTML = suggestionHTML;
+      suggestionsDiv.style.display = 'block';
+    }
+    
+    function hideSuggestions() {
+      const suggestionsDiv = document.getElementById('search-suggestions');
+      suggestionsDiv.style.display = 'none';
+    }
+    
+    function selectSearchResult(lat, lng, displayName) {
+      const latlng = L.latLng(lat, lng);
+      setDestinationMarker(latlng);
+      
+      // Update destination input
+      document.getElementById('destination-input').value = displayName.split(',')[0];
+      
+      // Center map on route
+      const bounds = L.latLngBounds([originMarker.getLatLng(), latlng]);
+      distanceMap.fitBounds(bounds, { padding: [20, 20] });
+      
+      hideSuggestions();
+    }
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+      const searchContainer = document.querySelector('.position-relative');
+      if (searchContainer && !searchContainer.contains(event.target)) {
+        hideSuggestions();
+      }
+    });
+
+    // Initialize calculator on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default values
+      document.getElementById('calc-distance').value = 150;
+      
+      // Initialize fuel price display
+      updatePriceDisplay();
+      
+      // Fetch live prices on page load (don't wait for calculation)
+      fetchLiveFuelPrices();
+    });
+  </script>
+---
+{%- set assetPath = "../" if page.url != "/" else "" -%}
+
+<!-- Page Title -->
+<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg);
+ background-repeat: no-repeat;
+background-position: center;">
+  <div class="container position-relative">
+    <h1>Services</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{{assetPath}}index.html">Home</a></li>
+        <li class="current">Services</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<section id="constructions" class="constructions section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Taxi Service</h2>
+    <p>
+      We have various kinds of vehicles available
+    </p>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-item">
+          <div class="row">
+            <div class="col-xl-11">
+              <div class="card-bg">
+                <img src="{{assetPath}}assets/img/ciaz.png" alt="" width="100%" />
+              </div>
+              <h3 style="text-align: center;">Maruti Suzuki Ciaz</h3>
+              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
+                style="margin-bottom: 1rem;">
+                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Card Item -->
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-item">
+          <div class="row">
+            <div class="col-xl-11">
+              <div class="card-bg">
+                <img src="{{assetPath}}assets/img/swift.png" alt="" width="100%" />
+              </div>
+              <h3 style="text-align: center;">Maruti Suzuki Swift</h3>
+              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
+                style="margin-bottom: 1rem;">
+                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Card Item -->
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-item">
+          <div class="row">
+            <div class="col-xl-11">
+              <div class="card-bg">
+                <img src="{{assetPath}}assets/img/innova.jpg" alt="" />
+              </div>
+              <h3 style="text-align: center;">Toyota Innova</h3>
+              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
+                style="margin-bottom: 1rem;">
+                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Card Item -->
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="card-item">
+          <div class="row">
+            <div class="col-xl-11">
+              <div class="card-bg">
+                <img src="{{assetPath}}assets/img/ertiga.png" alt="" />
+              </div>
+              <h3 style="text-align: center;">Maruti Suzuki Ertiga</h3>
+              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
+                style="margin-bottom: 1rem;">
+                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Card Item -->
+    </div>
+  </div>
+</section>
+
+<!-- Char Dham/Do Dham Service Section -->
+<section id="services" class="services section light-background">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Pilgrimage Services</h2>
+    <p>
+      We provide the world class taxi service
+    </p>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-gopuram"></i>
+          </div>
+          <h3>Taxi for <span class="readmore stretched-link">Char</span> Dham Yatra</h3>
+          <p>
+            Begin your spiritual adventure with our dependable and comfortable taxi service for the <span style="color: #C19208; font-weight: bold;">Char Dham Yatra</span>, providing a safe and memorable journey to the sacred destinations.
+          </p>
+          <a href="{{assetPath}}char-dham/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-gopuram"></i>
+          </div>
+          <h3>Taxi for <span class="readmore stretched-link">Two</span> Dham Yatra</h3>
+          <p>
+            Embark on a spiritual journey with our trusted and comfortable taxi service for the <span style="color: #C19208; font-weight: bold;">Two Dham Yatra</span>, ensuring a safe and unforgettable pilgrimage experience.
+          </p>
+          <a href="{{assetPath}}do-dham/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-plane"></i>
+          </div>
+          <h3>Dehradun to Jolly Grant Airport</h3>
+          <p>
+            Make your trip to the <span style="color: #C19208; font-weight: bold;">Jolly Grant Airport</span> stress-free with Phoenix Cabs. Enjoy a comfortable, timely, and hassle-free ride from anywhere in Dehradun to the airport. Our reliable service ensures that you reach your destination with ease, so you can catch your flight without any worries. Choose Phoenix Cabs for a smooth and efficient travel experience.
+          </p>
+          <a href="{{assetPath}}airport/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- /Services Section -->
+
+
+<!-- Other Services Section -->
+<section id="services" class="services section light-background">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Other Services</h2>
+    <p>
+      We provide the world class taxi service
+    </p>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-4">
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Delhi</h3>
+          <p>
+            Embark on a reliable journey with Phoenix Cabs, starting from the foothills of Dehradun to the bustling heart of Delhi. Whether you're traveling through scenic routes or exploring vibrant cityscapes, our service ensures smooth rides, timely pickups, and unparalleled comfort at every turn. Choose Phoenix Cabs for a memorable travel experience.
+          </p>
+          <a href="/delhi/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Delhi to Dehradun</h3>
+          <p>
+            Escape the hustle of Delhi and journey to the serene foothills of Dehradun with Phoenix Cabs. Enjoy a relaxing ride through picturesque highways and tranquil views, ensuring a smooth and hassle-free experience from the capital to the heart of Uttarakhand. Trust Phoenix Cabs for safe, reliable, and comfortable travel.
+          </p>
+          <a href="/delhi-dehradun/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Mathura</h3>
+          <p>
+            Travel from the scenic hills of Dehradun to the spiritual charm of Mathura with Phoenix Cabs. Enjoy a comfortable and hassle-free journey through picturesque landscapes and vibrant towns, ensuring a smooth ride to the city of Lord Krishna. Book your trip with Phoenix Cabs for a safe, reliable, and delightful travel experience.
+          </p>
+          <a href="/mathura/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Agra</h3>
+          <p>
+            Journey from the tranquil hills of Dehradun to the iconic city of the Taj Mahal with Phoenix Cabs. Experience a smooth and comfortable ride through scenic highways, ensuring a hassle-free trip to Agra's rich heritage and architectural wonders. Choose Phoenix Cabs for a reliable, safe, and memorable travel experience.
+          </p>
+          <a href="/agra/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Mussorie</h3>
+          <p>
+            Escape to the Queen of Hills with Phoenix Cabs, offering a quick and comfortable ride from Dehradun to Mussoorie. Travel through winding mountain roads and breathtaking views, ensuring a safe and pleasant journey to this enchanting hill station. Book your ride with Phoenix Cabs for a seamless and memorable experience.
+          </p>
+          <a href="/mussorie/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Dhanaulti</h3>
+          <p>
+            Experience a serene journey from Dehradun to the tranquil hills of Dhanaulti with Phoenix Cabs. Enjoy the scenic drive through lush forests and winding roads, ensuring a safe and comfortable ride to this peaceful retreat. Trust Phoenix Cabs for a reliable and delightful travel experience amidst nature's beauty.
+          </p>
+          <a href="/dhanaulti/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Mussorie , Haridwar , Rishikesh</h3>
+          <p>
+            Discover the best of Uttarakhand with Phoenix Cabs, offering seamless rides from Dehradun to Mussoorie, Haridwar, and Rishikesh. Whether it's the serene hills of Mussoorie, the spiritual vibes of Haridwar, or the adventurous charm of Rishikesh, enjoy a comfortable and hassle-free journey to these iconic destinations. Book now with Phoenix Cabs for a reliable and unforgettable travel experience.
+          </p>
+          <a href="/mossorie-haridwar-rishikesh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Mussorie , Haridwar</h3>
+          <p>
+            Explore the serene hills of Mussoorie and the spiritual essence of Haridwar with Phoenix Cabs. Enjoy a comfortable and reliable journey from Dehradun, as you travel through scenic routes and iconic landmarks. Whether it's the tranquility of the mountains or the sacred Ganges, Phoenix Cabs ensures a hassle-free and memorable travel experience. Book your ride today!
+          </p>
+          <a href="/mossorie-haridwar/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Auli</h3>
+          <p>
+            Journey from the scenic beauty of Dehradun to the snowy peaks of Auli with Phoenix Cabs. Enjoy a smooth and comfortable ride through the majestic Himalayan roads, ensuring a safe and delightful experience to this popular winter destination. Whether it's skiing or breathtaking views, trust Phoenix Cabs for an unforgettable trip to Auli.
+          </p>
+          <a href="/auli/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Shimla , Manali</h3>
+          <p>
+            Embark on an unforgettable journey from Dehradun to the picturesque hill stations of Shimla and Manali with Phoenix Cabs. Enjoy a comfortable and scenic drive through the beautiful landscapes of Himachal Pradesh, with smooth rides to both the colonial charm of Shimla and the adventure-filled vibes of Manali. Trust Phoenix Cabs for a reliable, safe, and enjoyable travel experience.
+          </p>
+          <a href="/shimla-manali/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun Taxi</h3>
+          <p>
+            Travel effortlessly within Dehradun with Phoenix Cabs. Whether you're heading to a business meeting, exploring local attractions, or visiting family, our intercity cab service offers comfort, reliability, and timely travel. Experience hassle-free journeys across Dehradun with Phoenix Cabs, ensuring a smooth ride to your destination every time.
+          </p>
+          <a href="/dehradun/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Chandigarh</h3>
+          <p>
+            Travel comfortably from Dehradun to the vibrant city of Chandigarh with Phoenix Cabs. Enjoy a smooth and scenic ride through the picturesque landscapes, ensuring a safe and hassle-free journey to the city known for its modern architecture and lush gardens. Choose Phoenix Cabs for a reliable and enjoyable travel experience.
+          </p>
+          <a href="/chandigarh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Rishikesh</h3>
+          <p>
+            Journey from the serene landscapes of Dehradun to the spiritual heart of Rishikesh with Phoenix Cabs. Enjoy a peaceful and comfortable ride along scenic roads, leading you to the tranquil banks of the Ganges. Whether for yoga, adventure, or spirituality, trust Phoenix Cabs to provide a safe, reliable, and memorable journey to Rishikesh.
+          </p>
+          <a href="/rishikesh/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-taxi"></i>
+          </div>
+          <h3>Dehradun to Haridwar</h3>
+          <p>
+            Travel from the peaceful hills of Dehradun to the sacred city of Haridwar with Phoenix Cabs. Enjoy a comfortable and scenic journey through beautiful landscapes, leading you to the holy banks of the Ganges. Whether it's for a spiritual retreat or a peaceful visit, Phoenix Cabs ensures a safe, hassle-free, and memorable ride to Haridwar.
+          </p>
+          <a href="/haridwar/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Chopta</h3>
+          <p>
+            Embark on a scenic journey from Dehradun to the enchanting meadows of Chopta with Phoenix Cabs. Enjoy a comfortable and hassle-free ride through the picturesque landscapes of Uttarakhand, leading you to this beautiful offbeat destination known for its stunning views and trekking trails. Choose Phoenix Cabs for a safe, reliable, and memorable trip to Chopta.
+          </p>
+          <a href="/chopta/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to Chakrata</h3>
+          <p>
+            Escape to the peaceful hills of Chakrata from Dehradun with Phoenix Cabs. Enjoy a smooth and scenic drive through winding mountain roads, surrounded by lush greenery and breathtaking views. Whether you're looking to relax or explore nature, Phoenix Cabs offers a comfortable and reliable ride to this serene hill station.
+          </p>
+          <a href="/chakrata/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to New Tehri</h3>
+          <p>
+            Discover the tranquil beauty of New Tehri with a comfortable ride from Dehradun in Phoenix Cabs. Enjoy a scenic journey through the winding hills and stunning landscapes, leading you to the peaceful lakeside town known for its breathtaking views of the Tehri Dam. Choose Phoenix Cabs for a smooth, reliable, and memorable travel experience to New Tehri.
+          </p>
+          <a href="/new-tehri/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+      <!-- End Service Item -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-item position-relative">
+          <div class="icon">
+            <i class="fa-solid fa-mountain"></i>
+          </div>
+          <h3>Dehradun to All India Services</h3>
+          <p>
+            Travel seamlessly from Dehradun to various destinations across India with Phoenix Cabs. Whether it's a business trip, personal journey, or special occasion, our all-India services ensure a comfortable and reliable ride, no matter the distance. Experience convenience and safety with Phoenix Cabs as we provide timely, hassle-free journeys to locations across the country.
+          </p>
+          <a href="/all-india/" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      <!-- End Service Item -->
+
+    </div>
+  </div>
+</section>
+<!-- Outstation Section -->
+
+<section id="testimonials" class="testimonials section">
+
+<!-- Section Title -->
+<div class="container section-title" data-aos="fade-up">
+  <h2>Our Client Says</h2>
+  <p>Read the experiences of our satisfied customers and discover why Phoenix Cabs is the preferred
+    choice for reliable and exceptional travel services.</p>
+</div><!-- End Section Title -->
+
+<div class="container" data-aos="fade-up" data-aos-delay="100">
+
+  <div class="swiper init-swiper">
+    <script type="application/json" class="swiper-config">
+      {
+        "loop": true,
+        "speed": 600,
+        "autoplay": {
+          "delay": 5000
+        },
+        "slidesPerView": "auto",
+        "pagination": {
+          "el": ".swiper-pagination",
+          "type": "bullets",
+          "clickable": true
+        },
+        "breakpoints": {
+          "320": {
+            "slidesPerView": 1,
+            "spaceBetween": 40
+          },
+          "1200": {
+            "slidesPerView": 2,
+            "spaceBetween": 20
+          }
+        }
+      }
+    </script>
+
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Raghav Singh</h3>
+            <h4>Business Owner</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Phoenix Cabs exceeded all my expectations! Their team was professional, and the service was flawless from start to finish.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Priya Mehta</h3>
+            <h4>Marketing Executive</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              I chose Phoenix Cabs for a family vacation, and I am extremely pleased with their attention to detail and comfort during the journey.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Nitin</h3>
+            <h4>Software Engineer</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Whether it's a business trip or a casual ride, Phoenix Cabs always provides timely and exceptional service. I highly recommend them!
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Ankita Sharma</h3>
+            <h4>Journalist</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              Phoenix Cabs made my Char Dham Yatra hassle-free and enjoyable. Their professionalism and care were evident throughout.
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Vivek Verma</h3>
+            <h4>Teacher</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              हर बार फीनिक्स कैब्स के साथ मेरी यात्रा शानदार रही है। उनकी सेवाएं हमेशा समय पर और आरामदायक होती हैं।
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+      <div class="swiper-slide">
+        <div class="testimonial-wrap">
+          <div class="testimonial-item">
+            <h3>Anjali Rathi</h3>
+            <h4>Student</h4>
+            <div class="stars">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <p>
+              <i class="bi bi-quote quote-icon-left"></i>
+              मैंने कई बार फीनिक्स कैब्स ली हैं, और हर बार का अनुभव शानदार रहा। गाड़ियाँ साफ-सुथरी और सेफ होती हैं।
+              <i class="bi bi-quote quote-icon-right"></i>
+            </p>
+          </div>
+        </div>
+      </div><!-- End testimonial item -->
+
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+</div>
+
+</section>
+<!-- /Testimonials Section -->

@@ -5,6 +5,9 @@ module.exports = function(eleventyConfig) {
   // Copy favicon files if they exist
   eleventyConfig.addPassthroughCopy("src/favicon.ico");
   
+  // Add .nojekyll file to prevent Jekyll processing on GitHub Pages
+  eleventyConfig.addPassthroughCopy({".nojekyll": ".nojekyll"});
+  
   // Set input and output directories
   return {
     dir: {

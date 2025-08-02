@@ -3006,7 +3006,7 @@ extraJS: |
       showAlert('Redirecting to booking confirmation...', 'success');
       // Here you would typically send data to your backend
       setTimeout(() => {
-        window.location.href = 'tel:+917983438214';
+        window.location.href = 'tel:{{ site.phone }}';
       }, 2000);
     }
     
@@ -3617,7 +3617,7 @@ extraJS: |
       </div>
 
       <button class="btn btn-success btn-lg" onclick="bookNow()" style="font-size: 1.25rem; padding: 1.5rem 3rem;">
-        <i class="bi bi-telephone-fill me-2"></i>Book Now - Call +91 79834 38214
+        <i class="bi bi-telephone-fill me-2"></i>Book Now - Call {{ site.phone }}
       </button>
     </div>
   </div>

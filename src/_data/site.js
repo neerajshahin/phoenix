@@ -7,6 +7,7 @@ module.exports = {
   // Business information
   phone: "+91-7983438214",
   whatsapp: "+917983438214",
+  email: "rajatshah06@gmail.com",
   
   // SEO defaults
   keywords: "Phoenix Cabs, taxi service Dehradun, car rental Dehradun, cab booking, airport taxi, Char Dham Yatra, Delhi taxi, Uttarakhand travel, outstation cab",

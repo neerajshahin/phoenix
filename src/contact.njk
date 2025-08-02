@@ -1,7 +1,7 @@
 ---
 layout: base.njk
-title: Contact Phoenix Cabs - Book Taxi in Dehradun | Call +91-7983438214
-description: Contact Phoenix Cabs for reliable taxi service in Dehradun. Call +91-7983438214 for instant booking, get quotes, or inquire about our car rental services. Available 24/7 for all your transportation needs.
+title: Contact Phoenix Cabs - Book Taxi in Dehradun | Call {{ site.phone }}
+description: Contact Phoenix Cabs for reliable taxi service in Dehradun. Call {{ site.phone }} for instant booking, get quotes, or inquire about our car rental services. Available 24/7 for all your transportation needs.
 keywords: contact Phoenix Cabs, book taxi Dehradun, Phoenix Cabs phone number, taxi booking contact, Dehradun cab service contact, Phoenix Cabs enquiry
 bodyClass: contact-page
 extraJS: |
@@ -40,13 +40,13 @@ extraJS: |
                     'Please respond to this inquiry at your earliest convenience.'
                 );
                 
-                const mailtoLink = 'mailto:rajatshah06@gmail.com?subject=' + subject + '&body=' + body;
+                const mailtoLink = 'mailto:{{ site.email }}?subject=' + subject + '&body=' + body;
                 
                 // Open email client
                 window.location.href = mailtoLink;
                 
                 // Show success message
-                alert('Thank you for your message! Your email client will now open with your inquiry. You can also call us directly at +91-7983438214 for immediate assistance.');
+                alert('Thank you for your message! Your email client will now open with your inquiry. You can also call us directly at {{ site.phone }} for immediate assistance.');
                 
                 // Reset form
                 this.reset();
@@ -91,7 +91,7 @@ background-position: center;">
         <div class="info-item d-flex flex-column justify-content-center align-items-center">
           <i class="bi bi-telephone"></i>
           <h3>Call Us</h3>
-         <center> <p> <a href="tel:+917983438214">+917983438214 </a> </p>
+         <center> <p> <a href="tel:{{ site.phone }}">{{ site.phone }} </a> </p>
          </center>
         </div>
 
@@ -107,7 +107,7 @@ background-position: center;">
           <i class="bi bi-envelope"></i>
           <h3>Email Us</h3>
            <p> 
-            <a href="mailto:rajatshah06@gmail.com">rajatshah06@gmail.com</a>
+            <a href="mailto:{{ site.email }}">{{ site.email }}</a>
           </p>
         </div>
        

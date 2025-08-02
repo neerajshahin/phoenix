@@ -133,6 +133,7 @@
 
 .accent-text {
   color: var(--accent-color);
+  -webkit-text-fill-color: var(--accent-color);
   position: relative;
 }
 

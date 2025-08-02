@@ -7,21 +7,31 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Noida</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li><a href="{{assetPath}}services/index.html">Services</a></li>
-        <li class="current">Noida</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Premium Travel</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Noida</span></h1>
+          <p class="hero-subtitle">
+            Experience seamless travel from Dehradun to Noida with Phoenix Cabs' premium taxi service. Whether you're heading for business, leisure, or family visits, our reliable and comfortable rides ensure a hassle-free journey.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Noida</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Service Details Section -->
 <section id="service-details" class="service-details section">
@@ -29,7 +39,7 @@ background-position: center;">
     <div class="row gy-4">
       <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
         <div class="service-box">
-          <img src="{{assetPath}}assets/img/noida-service.jpeg" alt="Dehradun to Noida Taxi Service - Premium Travel" class="img-fluid services-img">
+          <img src="{{assetPath}}assets/img/char-dhamm.jpg" alt="Dehradun to Noida Taxi Service - Premium Travel" class="img-fluid services-img">
           <h2>Dehradun to Noida Taxi Service</h2>
           <p>
             Experience seamless travel from Dehradun to Noida with Phoenix Cabs' premium taxi service. Whether you're heading for business, leisure, or family visits, our reliable and comfortable rides ensure a hassle-free journey.
@@ -113,3 +123,4 @@ background-position: center;">
   </div>
 </section>
 <!-- /Service Details Section -->
+

@@ -109,6 +109,11 @@
   overflow: hidden;
 }
 
+/* Add top padding to hero section to accommodate header */
+.about-hero.modern-hero {
+  padding-top: 4rem;
+}
+
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -269,15 +274,19 @@
 
 /* Vehicle Cards */
 .vehicle-card .card-image {
-  position: relative;
+  height: 300px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
 }
 
 .vehicle-card .card-image img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 100%;
+  width: auto;
+  object-fit: contain; /* ensures the image maintains its aspect ratio */
 }
 
 .card-badge {
@@ -648,12 +657,16 @@ html {
 
 /* About Hero Section */
 .about-hero {
-  min-height: 75vh;
+  min-height: 50vh;
   position: relative;
 }
 
 .min-vh-75 {
   min-height: 75vh;
+}
+
+.min-vh-50 {
+  min-height: 50vh;
 }
 
 .hero-content {
@@ -688,6 +701,7 @@ html {
 
 .hero-image {
   position: relative;
+  margin-top: 2rem;
 }
 
 .hero-badge {
@@ -3979,3 +3993,133 @@ section,
   color: #fff; /* Icon color */
   font-size: 35px; /* Adjust icon size */
 }
+
+
+.service-filter {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .service-card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    }
+
+    .service-card-header {
+      background: linear-gradient(135deg, #ff914d 0%, #ff7b39 100%);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .service-card-header i {
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+
+    .service-card-header h3 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .service-card-body {
+      padding: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      color: #ff914d;
+      font-size: 1.1rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-top: 0.25rem;
+    }
+
+    .feature-highlight {
+      background: #fff3e0;
+      border-left: 3px solid #ff914d;
+      padding: 0.5rem 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.875rem;
+    }
+
+    .quick-book-btn {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .quick-book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+      color: white;
+      text-decoration: none;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-header p {
+      font-size: 1.125rem;
+      color: #6c757d;
+      max-width: 600px;
+      margin: 0 auto;
+    }

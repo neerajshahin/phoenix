@@ -54,79 +54,207 @@ extraJS: |
         }
     });
   </script>
+  <style>
+    .service-card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    }
+    
+    .service-card-header {
+      background: linear-gradient(135deg, #ff914d 0%, #ff7b39 100%);
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .service-card-header i {
+      font-size: 1.5rem;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+    
+    .service-card-header h3 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .service-card-body {
+      padding: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .feature-highlight {
+      background: #fff3e0;
+      border-left: 3px solid #ff914d;
+      padding: 0.5rem 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.875rem;
+    }
+    
+    .quick-book-btn {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .quick-book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+      color: white;
+      text-decoration: none;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .section-header p {
+      font-size: 1.125rem;
+      color: #6c757d;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-size: cover; background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Contact</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current">Contact</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Get In Touch</span>
+          <h1 class="hero-title">Contact <span class="accent-text">Phoenix Cabs</span></h1>
+          <p class="hero-subtitle">
+            Ready to book your ride or have questions about our services? We're here to help you 24/7. Get in touch with Phoenix Cabs for reliable taxi service in Dehradun and beyond.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Contact</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div><!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Contact Section -->
-<section id="contact" class="contact section">
-
+<section id="contact" class="contact section py-5" data-aos="fade-up">
   <div class="container">
-
+    <div class="section-header">
+      <h2>Get In Touch</h2>
+      <p>Ready to book your ride? Contact us through any of these convenient methods</p>
+    </div>
+    
     <div class="row gy-4">
-
       <div class="col-lg-6">
-        <div class="info-item d-flex flex-column justify-content-center align-items-center">
-          <i class="bi bi-geo-alt"></i>
-          <h3>Address</h3>
-          <center><p>Phoenix Cabs, Jhajra, Dehradun - 248007</p> </center>
+        <div class="service-card">
+          <div class="service-card-header">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Visit Our Office</h3>
+          </div>
+          <div class="service-card-body text-center">
+            <p><strong>Phoenix Cabs</strong><br>Jhajra, Dehradun - 248007<br>Uttarakhand, India</p>
+            <div class="feature-highlight">
+              <i class="bi bi-clock-fill text-primary me-2"></i>
+              <strong>Operating Hours:</strong> 24/7 Service Available
+            </div>
+          </div>
         </div>
-      </div><!-- End Info Item -->
-
-      
-      <div class="col-lg-3 col-md-6">
-        <div class="info-item d-flex flex-column justify-content-center align-items-center">
-          <i class="bi bi-telephone"></i>
-          <h3>Call Us</h3>
-         <center> <p> <a href="tel:{{ site.phone }}">{{ site.phone }} </a> </p>
-         </center>
-        </div>
-
       </div>
 
-   
-      <!-- End Info Item -->
-
-      
       <div class="col-lg-3 col-md-6">
-       
-        <div class="info-item d-flex flex-column justify-content-center align-items-center">
-          <i class="bi bi-envelope"></i>
-          <h3>Email Us</h3>
-           <p> 
-            <a href="mailto:{{ site.email }}">{{ site.email }}</a>
-          </p>
+        <div class="service-card">
+          <div class="service-card-header">
+            <i class="bi bi-telephone"></i>
+            <h3>Call Us</h3>
+          </div>
+          <div class="service-card-body text-center">
+            <p><a href="tel:{{ site.phone }}" class="text-decoration-none fw-bold text-primary">{{ site.phone }}</a></p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Available:</strong> 24/7 Instant Booking
+            </div>
+            <a href="tel:{{ site.phone }}" class="quick-book-btn mt-2">Call Now</a>
+          </div>
         </div>
-       
       </div>
-      
-   <!-- End Info Item -->
 
+      <div class="col-lg-3 col-md-6">
+        <div class="service-card">
+          <div class="service-card-header">
+            <i class="bi bi-envelope"></i>
+            <h3>Email Us</h3>
+          </div>
+          <div class="service-card-body text-center">
+            <p><a href="mailto:{{ site.email }}" class="text-decoration-none fw-bold text-primary">{{ site.email }}</a></p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Response:</strong> Within 24 Hours
+            </div>
+            <a href="mailto:{{ site.email }}" class="quick-book-btn mt-2">Send Email</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="row gy-4 mt-1">
-      <div class="col-lg-6">
-        <div class="map-container" style="position: relative; height: 400px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-          <div class="map-placeholder" id="map-placeholder" style="text-align: center; cursor: pointer; padding: 20px;">
-            <i class="bi bi-geo-alt" style="font-size: 48px; color: #ff914d; margin-bottom: 10px;"></i>
-            <h4>Phoenix Cabs Location</h4>
-            <p style="margin-bottom: 15px;">Jhajra<br>Dehradun - 248007, Uttarakhand</p>
-            <button class="btn btn-primary" onclick="loadMap()">View on Google Maps</button>
+    <div class="row gy-4 mt-5">
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card">
+          <div class="service-card-header">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Find Us Here</h3>
           </div>
-          <iframe id="google-map" style="height:100%;width:100%;border:0;border-radius:8px;display:none;" frameborder="0"></iframe>
+          <div class="service-card-body">
+            <div class="map-container" style="position: relative; height: 300px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <div class="map-placeholder" id="map-placeholder" style="text-align: center; cursor: pointer; padding: 20px;">
+                <i class="bi bi-geo-alt" style="font-size: 48px; color: #ff914d; margin-bottom: 10px;"></i>
+                <h4>Phoenix Cabs Location</h4>
+                <p style="margin-bottom: 15px;">Jhajra<br>Dehradun - 248007, Uttarakhand</p>
+                <button class="btn btn-primary" onclick="loadMap()">View on Google Maps</button>
+              </div>
+              <iframe id="google-map" style="height:100%;width:100%;border:0;border-radius:8px;display:none;" frameborder="0"></iframe>
+            </div>
+          </div>
         </div>
         <script>
           function loadMap() {
@@ -139,45 +267,53 @@ background-position: center;">
             googleMap.style.display = 'block';
           }
         </script>
-      </div><!-- End Google Maps -->
+      </div>
 
-      <div class="col-lg-6">
-        <form id="contact-form" class="php-email-form">
-          <div class="row gy-4">
-              <div class="col-md-12">
-                  <input 
-                      type="text" 
-                      name="name" 
-                      id="name" 
-                      class="form-control" 
-                      placeholder="Your Name" 
-                      required 
-                      onblur="convertToCamelCase()">
-              </div>
-              <div class="col-md-12">
-                  <input 
-                      type="email" 
-                      name="email" 
-                      class="form-control" 
-                      placeholder="Your Email" 
-                      required>
-              </div>
-              <div class="col-md-12">
-                  <textarea 
-                      name="message" 
-                      rows="6" 
-                      class="form-control" 
-                      placeholder="Message" 
-                      required></textarea>
-              </div>
-              <div class="col-md-12 text-center">
-                  <button type="submit">Send Message</button>
-              </div>
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card">
+          <div class="service-card-header">
+            <i class="bi bi-envelope"></i>
+            <h3>Send Us a Message</h3>
           </div>
-      </form>
-      
-      </div><!-- End Contact Form -->
-
+          <div class="service-card-body">
+            <form id="contact-form" class="php-email-form">
+              <div class="row gy-3">
+                  <div class="col-md-12">
+                      <input 
+                          type="text" 
+                          name="name" 
+                          id="name" 
+                          class="form-control" 
+                          placeholder="Your Name" 
+                          required 
+                          onblur="convertToCamelCase()">
+                  </div>
+                  <div class="col-md-12">
+                      <input 
+                          type="email" 
+                          name="email" 
+                          class="form-control" 
+                          placeholder="Your Email" 
+                          required>
+                  </div>
+                  <div class="col-md-12">
+                      <textarea 
+                          name="message" 
+                          rows="5" 
+                          class="form-control" 
+                          placeholder="Your Message (Travel requirements, pickup location, etc.)" 
+                          required></textarea>
+                  </div>
+                  <div class="col-md-12">
+                      <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-send me-2"></i>Send Message
+                      </button>
+                  </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

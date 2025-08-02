@@ -7,21 +7,31 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Char Dham Yatra</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li><a href="{{assetPath}}services/index.html">Services</a></li>
-        <li class="current">Char Dham Yatra</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Sacred Journey</span>
+          <h1 class="hero-title">Char Dham <span class="accent-text">Yatra</span></h1>
+          <p class="hero-subtitle">
+            Embark on the most sacred pilgrimage of Hinduism with Phoenix Cabs. Visit the four holy shrines - Yamunotri, Gangotri, Kedarnath, and Badrinath - nestled in the pristine Garhwal Himalayas with our experienced drivers and comfortable vehicles.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Char Dham Yatra</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Service Details Section -->
 <section id="service-details" class="service-details section">
@@ -39,18 +49,18 @@ background-position: center;">
             <div class="col-md-6">
               <h3>Yatra Details</h3>
               <ul>
-                <li><i class="bi bi-geo-alt"></i> <strong>Total Distance:</strong> 1,500+ km circuit</li>
-                <li><i class="bi bi-clock"></i> <strong>Duration:</strong> 10-15 days complete yatra</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Circuit Distance:</strong> 1,500+ km</li>
+                <li><i class="bi bi-clock"></i> <strong>Duration:</strong> 10-15 days</li>
                 <li><i class="bi bi-road"></i> <strong>Base:</strong> Starting from Dehradun/Haridwar</li>
-                <li><i class="bi bi-car-front"></i> <strong>Vehicle Options:</strong> SUVs, Tempo Travellers for groups</li>
+                <li><i class="bi bi-car-front"></i> <strong>Vehicles:</strong> SUVs, Tempo Travellers</li>
               </ul>
             </div>
             <div class="col-md-6">
               <h3>Best Time for Yatra</h3>
               <ul>
-                <li><i class="bi bi-sun"></i> <strong>Season:</strong> May to June & September to October</li>
-                <li><i class="bi bi-cloud-rain"></i> <strong>Avoid:</strong> July to August (Heavy rains)</li>
-                <li><i class="bi bi-snow"></i> <strong>Winter:</strong> November to April (Shrines closed)</li>
+                <li><i class="bi bi-sun"></i> <strong>Peak Season:</strong> May-June & Sep-Oct</li>
+                <li><i class="bi bi-cloud-rain"></i> <strong>Avoid:</strong> July-August (Heavy rains)</li>
+                <li><i class="bi bi-snow"></i> <strong>Winter:</strong> Nov-April (Shrines closed)</li>
               </ul>
             </div>
           </div>
@@ -58,37 +68,37 @@ background-position: center;">
           <h3>The Four Sacred Dhams</h3>
           <div class="row">
             <div class="col-md-6">
-              <h4>1. Yamunotri (यमुनोत्री)</h4>
+              <h4>Yamunotri (यमुनोत्री)</h4>
               <ul>
-                <li><i class="bi bi-check-circle"></i> <strong>Distance:</strong> 210 km from Dehradun</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Altitude:</strong> 3,293 meters</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Deity:</strong> Goddess Yamuna</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Trek:</strong> 6 km from Janki Chatti</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> 210 km from Dehradun</li>
+                <li><i class="bi bi-mountain"></i> <strong>Altitude:</strong> 3,293 meters</li>
+                <li><i class="bi bi-heart"></i> <strong>Deity:</strong> Goddess Yamuna</li>
+                <li><i class="bi bi-person-walking"></i> <strong>Trek:</strong> 6 km from Janki Chatti</li>
               </ul>
-
-              <h4>2. Gangotri (गंगोत्री)</h4>
+              
+              <h4>Gangotri (गंगोत्री)</h4>
               <ul>
-                <li><i class="bi bi-check-circle"></i> <strong>Distance:</strong> 249 km from Dehradun</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Altitude:</strong> 3,100 meters</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Deity:</strong> Goddess Ganga</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Access:</strong> Direct road connectivity</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> 249 km from Dehradun</li>
+                <li><i class="bi bi-mountain"></i> <strong>Altitude:</strong> 3,100 meters</li>
+                <li><i class="bi bi-heart"></i> <strong>Deity:</strong> Goddess Ganga</li>
+                <li><i class="bi bi-road"></i> <strong>Access:</strong> Direct road connectivity</li>
               </ul>
             </div>
             <div class="col-md-6">
-              <h4>3. Kedarnath (केदारनाथ)</h4>
+              <h4>Kedarnath (केदारनाथ)</h4>
               <ul>
-                <li><i class="bi bi-check-circle"></i> <strong>Distance:</strong> 223 km from Dehradun</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Altitude:</strong> 3,583 meters</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Deity:</strong> Lord Shiva</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Trek:</strong> 16 km from Gaurikund</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> 223 km from Dehradun</li>
+                <li><i class="bi bi-mountain"></i> <strong>Altitude:</strong> 3,583 meters</li>
+                <li><i class="bi bi-heart"></i> <strong>Deity:</strong> Lord Shiva</li>
+                <li><i class="bi bi-person-walking"></i> <strong>Trek:</strong> 16 km from Gaurikund</li>
               </ul>
-
-              <h4>4. Badrinath (बद्रीनाथ)</h4>
+              
+              <h4>Badrinath (बद्रीनाथ)</h4>
               <ul>
-                <li><i class="bi bi-check-circle"></i> <strong>Distance:</strong> 315 km from Dehradun</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Altitude:</strong> 3,133 meters</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Deity:</strong> Lord Vishnu</li>
-                <li><i class="bi bi-check-circle"></i> <strong>Access:</strong> Direct road connectivity</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> 315 km from Dehradun</li>
+                <li><i class="bi bi-mountain"></i> <strong>Altitude:</strong> 3,133 meters</li>
+                <li><i class="bi bi-heart"></i> <strong>Deity:</strong> Lord Vishnu</li>
+                <li><i class="bi bi-road"></i> <strong>Access:</strong> Direct road connectivity</li>
               </ul>
             </div>
           </div>
@@ -100,15 +110,13 @@ background-position: center;">
                 <li><i class="bi bi-shield-check"></i> Experienced pilgrimage drivers</li>
                 <li><i class="bi bi-gear"></i> High-altitude capable vehicles</li>
                 <li><i class="bi bi-clock"></i> Flexible itinerary planning</li>
-                <li><i class="bi bi-heart"></i> Respectful of religious customs</li>
               </ul>
             </div>
             <div class="col-md-6">
               <ul>
                 <li><i class="bi bi-telephone"></i> 24/7 emergency support</li>
                 <li><i class="bi bi-currency-rupee"></i> Transparent package pricing</li>
-                <li><i class="bi bi-house"></i> Hotel booking assistance</li>
-                <li><i class="bi bi-map"></i> Complete route guidance</li>
+                <li><i class="bi bi-heart"></i> Respectful of religious customs</li>
               </ul>
             </div>
           </div>
@@ -119,16 +127,6 @@ background-position: center;">
             <strong>Deluxe Package (14 Days):</strong> Premium accommodation and guided tours<br>
             <strong>Budget Package (10 Days):</strong> Essential pilgrimage with basic facilities<br>
             <strong>Helicopter Package:</strong> Kedarnath helicopter service available<br>
-            <strong>Senior Citizen Special:</strong> Customized for elderly pilgrims
-          </p>
-
-          <h3>Important Yatra Information</h3>
-          <p>
-            <strong>Registration:</strong> Online registration required for Kedarnath<br>
-            <strong>Health Checkup:</strong> Medical fitness advised due to high altitude<br>
-            <strong>Weather Updates:</strong> Regular monitoring of road and weather conditions<br>
-            <strong>Emergency Contacts:</strong> 24/7 helpline and emergency response<br>
-            <strong>Accommodation:</strong> Pre-booking recommended during peak season
           </p>
 
           <p>
@@ -140,23 +138,23 @@ background-position: center;">
       <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
         <div class="services-list">
           <a href="{{assetPath}}services/index.html" class="active">All Services</a>
-          <a href="{{assetPath}}do-dham/index.html">Do Dham Yatra</a>
           <a href="{{assetPath}}haridwar/index.html">Haridwar</a>
-          <a href="{{assetPath}}rishikesh/index.html">Rishikesh</a>
-          <a href="{{assetPath}}auli/index.html">Auli</a>
-          <a href="{{assetPath}}chopta/index.html">Chopta</a>
+          <a href="{{assetPath}}do-dham/index.html">Do Dham Yatra</a>
+          <a href="{{assetPath}}dehradun/index.html">Dehradun Local</a>
+          <a href="{{assetPath}}delhi-dehradun/index.html">Delhi Route</a>
+          <a href="{{assetPath}}noida/index.html">Noida</a>
         </div>
 
         <div class="help-box d-flex flex-column justify-content-center align-items-center">
           <i class="bi bi-headset help-icon"></i>
-          <h4>Sacred Journey</h4>
+          <h4>Sacred Journey Support</h4>
           <p class="d-flex align-items-center mt-2 mb-0">
             <i class="bi bi-telephone me-2"></i>
             <span>{{ site.phone }}</span>
           </p>
           <p class="d-flex align-items-center mt-1 mb-0">
             <i class="bi bi-whatsapp me-2"></i>
-            <span>Pilgrimage Specialists</span>
+            <span>Premium Taxi Service</span>
           </p>
         </div>
       </div>

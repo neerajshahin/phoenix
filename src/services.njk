@@ -13,6 +13,15 @@ extraJS: |
       
       filterButtons.forEach(button => {
         button.addEventListener('click', () => {
+          // Scroll to Our Service Categories section smoothly
+          const servicesSection = document.getElementById('service-categories-section');
+          if (servicesSection) {
+            servicesSection.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+          
           // Remove active class from all buttons
           filterButtons.forEach(btn => btn.classList.remove('active'));
           // Add active class to clicked button
@@ -20,12 +29,31 @@ extraJS: |
           
           const filter = button.getAttribute('data-filter');
           
+          // First hide all cards with fade out
           serviceCards.forEach(card => {
-            if (filter === 'all' || card.classList.contains(filter)) {
-              card.style.display = 'block';
-              card.style.animation = 'fadeIn 0.5s ease-in';
-            } else {
-              card.style.display = 'none';
+            const cardParent = card.closest('.col-lg-4, .col-md-6');
+            if (cardParent) {
+              if (filter === 'all' || card.classList.contains(filter)) {
+                cardParent.style.display = 'block';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                // Animate in after a short delay
+                setTimeout(() => {
+                  card.style.transition = 'all 0.5s ease';
+                  card.style.opacity = '1';
+                  card.style.transform = 'translateY(0)';
+                }, 100);
+              } else {
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(-20px)';
+                
+                // Hide the parent column after animation
+                setTimeout(() => {
+                  cardParent.style.display = 'none';
+                }, 300);
+              }
             }
           });
         });
@@ -85,25 +113,25 @@ extraJS: |
     
     .service-card-header {
       background: linear-gradient(135deg, #ff914d 0%, #ff7b39 100%);
-      padding: 1.5rem;
+      padding: 1rem;
       text-align: center;
     }
     
     .service-card-header i {
-      font-size: 2.5rem;
+      font-size: 1.5rem;
       color: white;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
     
     .service-card-header h3 {
       color: white;
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 600;
       margin: 0;
     }
     
     .service-card-body {
-      padding: 1.5rem;
+      padding: 1rem;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -111,7 +139,9 @@ extraJS: |
     
     .service-card-body p {
       flex-grow: 1;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
     
     .service-card-body .d-flex:last-child {
@@ -127,10 +157,10 @@ extraJS: |
       margin-bottom: 1rem;
     }
     
-    /* Ensure all service cards have minimum height */
+    /* Make service cards compact */
     @media (min-width: 768px) {
       .service-card {
-        min-height: 450px;
+        min-height: 250px;
       }
     }
     
@@ -146,10 +176,10 @@ extraJS: |
     .service-stats {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1rem;
-      padding: 1rem;
+      margin-bottom: 0.75rem;
+      padding: 0.75rem;
       background: #f8f9fa;
-      border-radius: 10px;
+      border-radius: 8px;
     }
     
     .stat-item {
@@ -190,10 +220,11 @@ extraJS: |
     
     .feature-highlight {
       background: #fff3e0;
-      border-left: 4px solid #ff914d;
-      padding: 1rem;
-      margin: 1rem 0;
-      border-radius: 0 10px 10px 0;
+      border-left: 3px solid #ff914d;
+      padding: 0.5rem 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.875rem;
     }
     
     .vehicle-showcase {
@@ -227,13 +258,14 @@ extraJS: |
       background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
       color: white;
       border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 25px;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
       font-weight: 600;
       text-decoration: none;
       display: inline-block;
       transition: all 0.3s ease;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
     }
     
     .quick-book-btn:hover {
@@ -268,23 +300,32 @@ extraJS: |
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat; background-position: center;">
-  <div class="container position-relative">
-    <h1>Our Services</h1>
-    <p class="text-white-50 mb-0">Comprehensive taxi services for all your travel needs</p>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current">Services</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Our Services</span>
+          <h1 class="hero-title">Comprehensive <span class="accent-text">Taxi Services</span> for All Your Needs</h1>
+          <p class="hero-subtitle">
+            From spiritual journeys to business travel, airport transfers to sightseeing tours - Phoenix Cabs offers reliable and comfortable transportation solutions across Uttarakhand and India.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Services</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Service Categories Filter -->
-<section class="py-5">
+<section class="py-5" id="services-section">
   <div class="container">
     <div class="service-filter text-center" data-aos="fade-up">
       <h3 class="mb-3">Find Your Perfect Service</h3>
@@ -294,6 +335,292 @@ extraJS: |
         <button class="filter-btn" data-filter="hillstation">Hill Stations</button>
         <button class="filter-btn" data-filter="outstation">Outstation</button>
         <button class="filter-btn" data-filter="local">Local & Airport</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Grid -->
+<section class="py-5" id="service-categories-section">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up">
+      <h2>Our Service Categories</h2>
+      <p>From spiritual journeys to adventure trips, we've got you covered</p>
+    </div>
+    
+    <div class="row gy-4">
+      <!-- Pilgrimage Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card pilgrimage">
+          <div class="service-card-header">
+            <i class="bi bi-building"></i>
+            <h3>Char Dham Yatra</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">10-15</div>
+                <div class="stat-label">Days</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Sacred Sites</div>
+              </div>
+            </div>
+            <p>Complete spiritual circuit covering Yamunotri, Gangotri, Kedarnath, and Badrinath with comfortable accommodation and experienced drivers.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Hotel bookings, permits, and emergency support
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}char-dham/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card pilgrimage">
+          <div class="service-card-header">
+            <i class="bi bi-building"></i>
+            <h3>Do Dham Yatra</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">6-8</div>
+                <div class="stat-label">Days</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Sacred Sites</div>
+              </div>
+            </div>
+            <p>Focused pilgrimage to Kedarnath and Badrinath, perfect for those with limited time but seeking divine blessings.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Helicopter options available for Kedarnath
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}do-dham/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local & Airport Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card local">
+          <div class="service-card-header">
+            <i class="bi bi-airplane"></i>
+            <h3>Airport Transfer</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">30min</div>
+                <div class="stat-label">Duration</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Available</div>
+              </div>
+            </div>
+            <p>Reliable airport transfers to/from Jolly Grant Airport with punctual pickup and comfortable rides.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Flight tracking and waiting time included
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}airport/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hill Station Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-snow"></i>
+            <h3>Mussoorie Trip</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">35km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1.5hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Scenic drive to the Queen of Hills with visits to Mall Road, Gun Hill, and Kempty Falls.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Sightseeing stops and local guide recommendations
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}mussorie/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-snow"></i>
+            <h3>Auli Adventure</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">280km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">8-10hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Mountain adventure to India's premier skiing destination with breathtaking Himalayan views.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Multi-day packages and skiing season specials
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}auli/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outstation Services -->
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card outstation">
+          <div class="service-card-header">
+            <i class="bi bi-building-exclamation"></i>
+            <h3>Delhi Route</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">248km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">5-6hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Comfortable interstate travel between Delhi and Dehradun with flexible scheduling and premium vehicles.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> One-way and round-trip options
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}delhi-dehradun/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-water"></i>
+            <h3>Rishikesh Spiritual</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">43km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">1.5hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Journey to the Yoga Capital of the World for spiritual retreats, adventure sports, and Ganga Aarti.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Ashram visits and activity bookings
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}rishikesh/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card hillstation">
+          <div class="service-card-header">
+            <i class="bi bi-water"></i>
+            <h3>Haridwar Pilgrimage</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">54km</div>
+                <div class="stat-label">Distance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">2hr</div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+            <p>Sacred journey to where the Ganges enters the plains, perfect for spiritual purification and temple visits.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Evening Aarti arrangements and temple tours
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}haridwar/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="service-card local">
+          <div class="service-card-header">
+            <i class="bi bi-geo-alt"></i>
+            <h3>Dehradun Local</h3>
+          </div>
+          <div class="service-card-body">
+            <div class="service-stats">
+              <div class="stat-item">
+                <div class="stat-value">City</div>
+                <div class="stat-label">Coverage</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">Hourly</div>
+                <div class="stat-label">Rental</div>
+              </div>
+            </div>
+            <p>Local city tours, business meetings, shopping trips, and sightseeing within Dehradun and nearby areas.</p>
+            <div class="feature-highlight">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              <strong>Includes:</strong> Half-day and full-day packages available
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{assetPath}}dehradun/index.html" class="btn btn-outline-primary btn-sm">Learn More</a>
+              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -381,292 +708,6 @@ extraJS: |
           </div>
           <p class="text-muted small">Spacious and comfortable for families</p>
           <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Services Grid -->
-<section class="py-5">
-  <div class="container">
-    <div class="section-header" data-aos="fade-up">
-      <h2>Our Service Categories</h2>
-      <p>From spiritual journeys to adventure trips, we've got you covered</p>
-    </div>
-    
-    <div class="row gy-4">
-      <!-- Pilgrimage Services -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-card pilgrimage">
-          <div class="service-card-header">
-            <i class="bi bi-building"></i>
-            <h3>Char Dham Yatra</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">10-15</div>
-                <div class="stat-label">Days</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">4</div>
-                <div class="stat-label">Sacred Sites</div>
-              </div>
-            </div>
-            <p>Complete spiritual circuit covering Yamunotri, Gangotri, Kedarnath, and Badrinath with comfortable accommodation and experienced drivers.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Hotel bookings, permits, and emergency support
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}char-dham/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-card pilgrimage">
-          <div class="service-card-header">
-            <i class="bi bi-building"></i>
-            <h3>Do Dham Yatra</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">6-8</div>
-                <div class="stat-label">Days</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Sacred Sites</div>
-              </div>
-            </div>
-            <p>Focused pilgrimage to Kedarnath and Badrinath, perfect for those with limited time but seeking divine blessings.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Helicopter options available for Kedarnath
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}do-dham/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Local & Airport Services -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-card local">
-          <div class="service-card-header">
-            <i class="bi bi-airplane"></i>
-            <h3>Airport Transfer</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">30min</div>
-                <div class="stat-label">Duration</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">24/7</div>
-                <div class="stat-label">Available</div>
-              </div>
-            </div>
-            <p>Reliable airport transfers to/from Jolly Grant Airport with punctual pickup and comfortable rides.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Flight tracking and waiting time included
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}airport/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hill Station Services -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-card hillstation">
-          <div class="service-card-header">
-            <i class="bi bi-snow"></i>
-            <h3>Mussoorie Trip</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">35km</div>
-                <div class="stat-label">Distance</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">1.5hr</div>
-                <div class="stat-label">Duration</div>
-              </div>
-            </div>
-            <p>Scenic drive to the Queen of Hills with visits to Mall Road, Gun Hill, and Kempty Falls.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Sightseeing stops and local guide recommendations
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}mussorie/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-card hillstation">
-          <div class="service-card-header">
-            <i class="bi bi-snow"></i>
-            <h3>Auli Adventure</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">280km</div>
-                <div class="stat-label">Distance</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">8-10hr</div>
-                <div class="stat-label">Duration</div>
-              </div>
-            </div>
-            <p>Mountain adventure to India's premier skiing destination with breathtaking Himalayan views.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Multi-day packages and skiing season specials
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}auli/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Outstation Services -->
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-card outstation">
-          <div class="service-card-header">
-            <i class="bi bi-building-exclamation"></i>
-            <h3>Delhi Route</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">248km</div>
-                <div class="stat-label">Distance</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">5-6hr</div>
-                <div class="stat-label">Duration</div>
-              </div>
-            </div>
-            <p>Comfortable interstate travel between Delhi and Dehradun with flexible scheduling and premium vehicles.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> One-way and round-trip options
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}delhi-dehradun/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-card hillstation">
-          <div class="service-card-header">
-            <i class="bi bi-water"></i>
-            <h3>Rishikesh Spiritual</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">43km</div>
-                <div class="stat-label">Distance</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">1.5hr</div>
-                <div class="stat-label">Duration</div>
-              </div>
-            </div>
-            <p>Journey to the Yoga Capital of the World for spiritual retreats, adventure sports, and Ganga Aarti.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Ashram visits and activity bookings
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}rishikesh/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-card hillstation">
-          <div class="service-card-header">
-            <i class="bi bi-water"></i>
-            <h3>Haridwar Pilgrimage</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">54km</div>
-                <div class="stat-label">Distance</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">2hr</div>
-                <div class="stat-label">Duration</div>
-              </div>
-            </div>
-            <p>Sacred journey to where the Ganges enters the plains, perfect for spiritual purification and temple visits.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Evening Aarti arrangements and temple tours
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}haridwar/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-card local">
-          <div class="service-card-header">
-            <i class="bi bi-geo-alt"></i>
-            <h3>Dehradun Local</h3>
-          </div>
-          <div class="service-card-body">
-            <div class="service-stats">
-              <div class="stat-item">
-                <div class="stat-value">City</div>
-                <div class="stat-label">Coverage</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">Hourly</div>
-                <div class="stat-label">Rental</div>
-              </div>
-            </div>
-            <p>Local city tours, business meetings, shopping trips, and sightseeing within Dehradun and nearby areas.</p>
-            <div class="feature-highlight">
-              <i class="bi bi-check-circle-fill text-success me-2"></i>
-              <strong>Includes:</strong> Half-day and full-day packages available
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="{{assetPath}}dehradun/index.html" class="btn btn-outline-primary">Learn More</a>
-              <a href="tel:{{ site.phone }}" class="quick-book-btn">Book Now</a>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -4,12 +4,17 @@
   "description": "Phoenix Cabs website built with Eleventy",
   "main": "index.js",
   "scripts": {
-    "build": "eleventy",
-    "serve": "eleventy --serve",
-    "start": "eleventy --serve --watch"
+    "build": "node -r dotenv/config node_modules/.bin/eleventy",
+    "serve": "node -r dotenv/config node_modules/.bin/eleventy --serve",
+    "start": "node -r dotenv/config node_modules/.bin/eleventy --serve --watch"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "^2.0.1",
+    "dotenv": "^17.2.1"
   },
-  "keywords": ["eleventy", "static-site-generator", "phoenix-cabs"]
+  "keywords": [
+    "eleventy",
+    "static-site-generator",
+    "phoenix-cabs"
+  ]
 }

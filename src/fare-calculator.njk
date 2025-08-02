@@ -1213,100 +1213,100 @@ extraJS: |
     // Vehicle types with detailed information
     const vehicles = [
       {
-        id: 'hatchback',
-        name: 'Hatchback',
-        model: 'Swift, i20, Wagon R',
-        icon: '🚗',
-        capacity: '4 seats',
-        mileage: 18,
-        fuelType: 'petrol',
-        baseRate: 10,
-        driverAllowance: 300,
-        features: ['AC', 'Music System', 'Clean Interior']
+        "id": "hatchback",
+        "name": "Hatchback",
+        "model": "Swift, i20, Wagon R",
+        "icon": "🚗", // Compact car
+        "capacity": "4 seats",
+        "mileage": 16,
+        "fuelType": "petrol",
+        "baseRate": 13,
+        "driverAllowance": 350, // Standard driver allowance
+        "features": ["AC", "Music System", "Clean Interior"]
       },
       {
-        id: 'sedan',
-        name: 'Sedan',
-        model: 'Dzire, Etios, Amaze',
-        icon: '🚙',
-        capacity: '4 seats',
-        mileage: 16,
-        fuelType: 'petrol',
-        baseRate: 12,
-        driverAllowance: 350,
-        features: ['AC', 'Comfortable Seats', 'Spacious']
+        "id": "sedan",
+        "name": "Sedan",
+        "model": "Dzire, Etios, Amaze",
+        "icon": "🚘", // Sedan
+        "capacity": "4 seats",
+        "mileage": 14,
+        "fuelType": "petrol",
+        "baseRate": 15,
+        "driverAllowance": 400, // Standard driver allowance
+        "features": ["AC", "Comfortable Seats", "Spacious"]
       },
       {
-        id: 'suv',
-        name: 'SUV',
-        model: 'Ertiga, Marazzo, XUV500',
-        icon: '🚐',
-        capacity: '6-7 seats',
-        mileage: 13,
-        fuelType: 'petrol',
-        baseRate: 15,
-        driverAllowance: 400,
-        features: ['AC', '6-7 Seater', 'More Luggage Space']
+        "id": "suv",
+        "name": "SUV",
+        "model": "Ertiga, Marazzo, XUV500",
+        "icon": "🚙", // SUV
+        "capacity": "6-7 seats",
+        "mileage": 11,
+        "fuelType": "petrol",
+        "baseRate": 17,
+        "driverAllowance": 450, // Increased driver allowance for larger vehicle
+        "features": ["AC", "6-7 Seater", "More Luggage Space"]
       },
       {
-        id: 'prime-sedan',
-        name: 'Prime Sedan',
-        model: 'City, Verna, Ciaz',
-        icon: '🏎️',
-        capacity: '4 seats',
-        mileage: 14,
-        fuelType: 'petrol',
-        baseRate: 16,
-        driverAllowance: 400,
-        features: ['Premium AC', 'Leather Seats', 'Latest Model']
+        "id": "prime-sedan",
+        "name": "Prime Sedan",
+        "model": "City, Verna, Ciaz",
+        "icon": "🚖", // Premium sedan (like a taxi)
+        "capacity": "4 seats",
+        "mileage": 12,
+        "fuelType": "petrol",
+        "baseRate": 19,
+        "driverAllowance": 500, // Higher driver allowance
+        "features": ["Premium AC", "Leather Seats", "Latest Model"]
       },
       {
-        id: 'prime-suv',
-        name: 'Prime SUV',
-        model: 'Innova, Crysta',
-        icon: '🚜',
-        capacity: '6-7 seats',
-        mileage: 10,
-        fuelType: 'diesel',
-        baseRate: 18,
-        driverAllowance: 500,
-        features: ['Premium Interior', 'Extra Comfort', 'Best for Long Trips']
+        "id": "prime-suv",
+        "name": "Prime SUV",
+        "model": "Innova, Crysta",
+        "icon": "🚙", // Larger premium SUV
+        "capacity": "6-7 seats",
+        "mileage": 10,
+        "fuelType": "diesel",
+        "baseRate": 22,
+        "driverAllowance": 600,
+        "features": ["Premium Interior", "Extra Comfort", "Best for Long Trips"]
       },
       {
-        id: 'tempo-traveller-12',
-        name: 'Tempo Traveller',
-        model: '12 Seater',
-        icon: '🚌',
-        capacity: '12 seats',
-        mileage: 8,
-        fuelType: 'diesel',
-        baseRate: 20,
-        driverAllowance: 500,
-        features: ['AC', '12 Seater', 'Group Travel', 'Large Luggage Space']
+        "id": "tempo-traveller-12",
+        "name": "Tempo Traveller",
+        "model": "12 Seater",
+        "icon": "🚐", // Minibus/van
+        "capacity": "12 seats",
+        "mileage": 9, 
+        "fuelType": "diesel",
+        "baseRate": 25,
+        "driverAllowance": 700,
+        "features": ["AC", "12 Seater", "Group Travel", "Large Luggage Space"]
       },
       {
-        id: 'tempo-traveller-17',
-        name: 'Tempo Traveller',
-        model: '17 Seater',
-        icon: '🚐',
-        capacity: '17 seats',
-        mileage: 7,
-        fuelType: 'diesel',
-        baseRate: 22,
-        driverAllowance: 600,
-        features: ['AC', '17 Seater', 'Group Travel', 'Extra Large Luggage']
+        "id": "tempo-traveller-17",
+        "name": "Tempo Traveller",
+        "model": "17 Seater",
+        "icon": "🚌", // Bus-like vehicle
+        "capacity": "17 seats",
+        "mileage": 8, 
+        "fuelType": "diesel",
+        "baseRate": 28,
+        "driverAllowance": 800, // Higher driver allowance
+        "features": ["AC", "17 Seater", "Group Travel", "Extra Large Luggage"]
       },
       {
-        id: 'tempo-traveller-26',
-        name: 'Tempo Traveller',
-        model: '26 Seater',
-        icon: '🚍',
-        capacity: '26 seats',
-        mileage: 6,
-        fuelType: 'diesel',
-        baseRate: 25,
-        driverAllowance: 700,
-        features: ['AC', '26 Seater', 'Large Group Travel', 'Maximum Comfort']
+        "id": "tempo-traveller-26",
+        "name": "Tempo Traveller",
+        "model": "26 Seater",
+        "icon": "🚍", // Large bus
+        "capacity": "26 seats",
+        "mileage": 7,
+        "fuelType": "diesel",
+        "baseRate": 30, 
+        "driverAllowance": 1000,
+        "features": ["AC", "26 Seater", "Large Group Travel", "Maximum Comfort"]
       }
     ];
     

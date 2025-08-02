@@ -35,6 +35,8 @@ jobs:
         
       - name: Build with Eleventy
         run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

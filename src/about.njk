@@ -8,142 +8,249 @@ canonicalUrl: https://phoenix-cabs.netlify.app/about/
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg);
- background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>About</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current">About</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- About Section -->
-<section id="alt-services" class="alt-services section">
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-    <div class="row justify-content-around gy-4">
-      <div class="features-image col-lg-6" data-aos="fade-up" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/traveller.jpg" alt="" />
+    <div class="row align-items-center min-vh-75">
+      <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">About Us</span>
+          <h1 class="hero-title">Dehradun's Most <span class="accent-text">Trusted</span> Taxi Service</h1>
+          <p class="hero-subtitle">
+            With years of experience and thousands of satisfied customers, Phoenix Cabs has established itself as the premier taxi service provider in Dehradun and across Uttarakhand.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">About</span>
+          </nav>
+        </div>
       </div>
-
-      <div class="col-lg-5 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
-        <h3>
-          Why to choose  Phoenix Cabs Taxies over others
-        </h3>
-        <p>
-          Choosing  Phoenix Cabs for your taxi service needs
-          ensures a reliable and enjoyable travel experience. We pride
-          ourselves on offering top-notch services that stand out from the
-          competition. Here are a few reasons why you should choose us:
-        </p>
-
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="300">
-          <i class="bi bi-easel flex-shrink-0"></i>
-          <div>
-            <h4>
-              <a href="{{assetPath}}about/index.html" class="stretched-link">Experienced Drivers</a>
-            </h4>
-            <p>Our drivers are highly experienced and professional.</p>
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+        <div class="hero-image">
+          <img src="{{assetPath}}assets/img/traveller.jpg" alt="Phoenix Cabs - Professional Taxi Service" class="img-fluid rounded-4">
+          <div class="hero-badge">
+            <div class="badge-content">
+              <h4>10+ Years</h4>
+              <p>Serving Dehradun</p>
+            </div>
           </div>
-        </div>
-        <!-- End Icon Box -->
-
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="400">
-          <i class="bi bi-car-front"></i>
-          <div>
-            <h4><a href="{{assetPath}}about/index.html" class="stretched-link">Best Cars</a></h4>
-            <p>
-              We maintain a fleet of high-quality, well-maintained cars.
-            </p>
-          </div>
-        </div>
-        <!-- End Icon Box -->
-
-        <div class="icon-box d-flex position-relative" data-aos="fade-up" data-aos-delay="500">
-          <i class="bi-shield-fill-check"></i>
-          <div>
-            <h4>
-              <a href="{{assetPath}}about/index.html" class="stretched-link">Safety and Comfort</a>
-            </h4>
-            <p>
-              Safety and comfort are our top priorities for every journey
-            </p>
-          </div>
-        </div>
-        <!-- End Icon Box -->
-        
-        <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-          style="margin-top: 1rem">
-          <a href="tel:+917983438214" class="call-us-button btn-get-started">CALL NOW
-          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- /About Section -->
+<!-- End Modern Hero Section -->
 
-<!-- Stats Counter Section -->
-<section id="stats-counter" class="stats-counter section">
-  <div class="container" data-aos="fade-up" data-aos-delay="100">
-    <div class="row gy-4">
-      <div class="col-lg-4 col-md-8">
-        <div class="stats-item d-flex align-items-center w-100 h-100">
-          <i class="bi bi-emoji-smile color-blue flex-shrink-0"></i>
-          <div>
-            <span data-purecounter-start="0" data-purecounter-end="5500" data-purecounter-duration="1"
-              class="purecounter"></span>
-            <p>Happy Clients</p>
+<!-- About Story Section -->
+<section class="about-story section light-background">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+        <div class="story-content">
+          <span class="section-badge">Our Story</span>
+          <h2 class="section-title">Built on Trust, <span class="accent-text">Driven by Excellence</span></h2>
+          <p class="section-description">
+            Phoenix Cabs was founded with a simple mission: to provide reliable, safe, and comfortable transportation services to the people of Dehradun and beyond. Over the years, we've grown from a small local service to become the most trusted taxi service provider in Uttarakhand.
+          </p>
+          
+          <div class="story-highlights">
+            <div class="highlight-item">
+              <div class="highlight-icon">
+                <i class="fas fa-medal"></i>
+              </div>
+              <div class="highlight-content">
+                <h4>10+ Years of Excellence</h4>
+                <p>Serving customers with dedication and professionalism since our inception.</p>
+              </div>
+            </div>
+            
+            <div class="highlight-item">
+              <div class="highlight-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="highlight-content">
+                <h4>5500+ Happy Customers</h4>
+                <p>Building lasting relationships through exceptional service quality.</p>
+              </div>
+            </div>
+            
+            <div class="highlight-item">
+              <div class="highlight-icon">
+                <i class="fas fa-map-marked-alt"></i>
+              </div>
+              <div class="highlight-content">
+                <h4>40+ Destinations Covered</h4>
+                <p>From local trips to long-distance journeys across India.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- End Stats Item -->
-
-      <div class="col-lg-4 col-md-8">
-        <div class="stats-item d-flex align-items-center w-100 h-100">
-          <i class="bi bi-journal-richtext color-orange flex-shrink-0"></i>
-          <div>
-            <span data-purecounter-start="0" data-purecounter-end="40" data-purecounter-duration="1"
-              class="purecounter"></span>
-            <p>Destinations</p>
+      
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+        <div class="story-image">
+          <img src="{{assetPath}}assets/img/innova.jpg" alt="Phoenix Cabs Fleet" class="img-fluid rounded-4 shadow-lg">
+          <div class="experience-badge">
+            <span class="badge-number">10+</span>
+            <span class="badge-text">Years Experience</span>
           </div>
         </div>
       </div>
-      <!-- End Stats Item -->
-
-      <div class="col-lg-4 col-md-8">
-        <div class="stats-item d-flex align-items-center w-100 h-100">
-          <i class="bi bi-headset color-green flex-shrink-0"></i>
-          <div>
-            <span data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="1"
-              class="purecounter"></span>
-            <p>Hours Support</p>
-          </div>
-        </div>
-      </div>
-      <!-- End Stats Item -->
     </div>
   </div>
 </section>
-<!-- /Stats Counter Section -->
+<!-- End About Story Section -->
+
+<!-- Why Choose Us Section -->
+<section class="why-choose-us section">
+  <div class="container">
+    <div class="section-header text-center" data-aos="fade-up">
+      <span class="section-badge">Why Choose Us</span>
+      <h2 class="section-title">What Makes Phoenix Cabs <span class="accent-text">Special</span></h2>
+      <p class="section-description">We pride ourselves on offering top-notch services that stand out from the competition</p>
+    </div>
+    
+    <div class="row gy-4 mt-5">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card modern-card text-center">
+          <div class="feature-icon">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div class="feature-content">
+            <h3>Experienced Drivers</h3>
+            <p>Our drivers are highly experienced, professional, and well-trained in customer service. They know the routes like the back of their hand and prioritize your safety and comfort.</p>
+            <ul class="feature-benefits">
+              <li><i class="fas fa-check"></i> Licensed & Verified</li>
+              <li><i class="fas fa-check"></i> Local Area Experts</li>
+              <li><i class="fas fa-check"></i> Courteous Service</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card modern-card text-center">
+          <div class="feature-icon">
+            <i class="fas fa-car"></i>
+          </div>
+          <div class="feature-content">
+            <h3>Premium Fleet</h3>
+            <p>We maintain a diverse fleet of high-quality, well-maintained vehicles ranging from compact cars to spacious SUVs, all equipped with modern amenities for your comfort.</p>
+            <ul class="feature-benefits">
+              <li><i class="fas fa-check"></i> Regular Maintenance</li>
+              <li><i class="fas fa-check"></i> Clean & Sanitized</li>
+              <li><i class="fas fa-check"></i> AC & GPS Enabled</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-card modern-card text-center">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="feature-content">
+            <h3>Safety & Comfort</h3>
+            <p>Safety and comfort are our top priorities. We ensure every journey is secure, comfortable, and stress-free with comprehensive safety measures and premium amenities.</p>
+            <ul class="feature-benefits">
+              <li><i class="fas fa-check"></i> Safety Protocols</li>
+              <li><i class="fas fa-check"></i> Insurance Coverage</li>
+              <li><i class="fas fa-check"></i> 24/7 Support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="400">
+      <a href="tel:+917983438214" class="btn-primary-modern">Book Your Ride Now</a>
+    </div>
+  </div>
+</section>
+<!-- End Why Choose Us Section -->
+
+<!-- Stats Section -->
+<section class="stats-section dark-background">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="section-header text-center" data-aos="fade-up">
+      <span class="section-badge">Our Achievements</span>
+      <h2 class="section-title text-white">Numbers That <span class="accent-text">Speak</span> for Us</h2>
+      <p class="section-description text-white opacity-75">These numbers reflect our commitment to excellence and customer satisfaction</p>
+    </div>
+    
+    <div class="row gy-4 mt-5">
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card text-center">
+          <div class="stat-icon">
+            <i class="fas fa-smile"></i>
+          </div>
+          <div class="stat-content">
+            <h3 class="stat-number" data-purecounter-start="0" data-purecounter-end="5500" data-purecounter-duration="2">5500</h3>
+            <p class="stat-label">Happy Clients</p>
+            <span class="stat-description">Satisfied customers across Uttarakhand</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card text-center">
+          <div class="stat-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="stat-content">
+            <h3 class="stat-number" data-purecounter-start="0" data-purecounter-end="40" data-purecounter-duration="2">40+</h3>
+            <p class="stat-label">Destinations</p>
+            <span class="stat-description">Cities and towns we serve</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card text-center">
+          <div class="stat-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <div class="stat-content">
+            <h3 class="stat-number" data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="2">24/7</h3>
+            <p class="stat-label">Support</p>
+            <span class="stat-description">Round-the-clock assistance</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="stat-card text-center">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-content">
+            <h3 class="stat-number">4.9</h3>
+            <p class="stat-label">Rating</p>
+            <span class="stat-description">Average customer rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Stats Section -->
 
 <!-- Testimonials Section -->
-<section id="testimonials" class="testimonials section">
+<section id="testimonials" class="testimonials section light-background">
 
 <!-- Section Title -->
-<div class="container section-title" data-aos="fade-up">
-  <h2>Our Client Says</h2>
-  <p>Read the experiences of our satisfied customers and discover why Phoenix Cabs is the preferred
-    choice for reliable and exceptional travel services.</p>
-</div><!-- End Section Title -->
+<div class="container">
+  <div class="section-header text-center" data-aos="fade-up">
+    <span class="section-badge">Testimonials</span>
+    <h2 class="section-title">What Our <span class="accent-text">Customers</span> Say</h2>
+    <p class="section-description">Read the experiences of our satisfied customers and discover why Phoenix Cabs is the preferred choice for reliable travel services</p>
+  </div><!-- End Section Title -->
 
-<div class="container" data-aos="fade-up" data-aos-delay="100">
+  <div class="container mt-5" data-aos="fade-up" data-aos-delay="100">
 
   <div class="swiper init-swiper">
     <script type="application/json" class="swiper-config">

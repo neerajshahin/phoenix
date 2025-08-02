@@ -9,227 +9,310 @@ bodyClass: index-page
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
 <!-- Hero Section -->
-<section id="hero" class="hero section dark-background">
+<section id="hero" class="hero section dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="info d-flex align-items-center">
     <div class="container">
       <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
-        <div class="col-lg-6 text-center">
-          <h1>Phoenix Cabs - Dehradun's Premier Taxi Service</h1>
-          <p>
-          Experience the best car rental and taxi service in Dehradun with Phoenix Cabs. We offer reliable, 24/7 taxi services with professional drivers, comfortable vehicles, and competitive rates. From airport transfers to Char Dham Yatra, Delhi trips, and local sightseeing - your trusted travel companion across Uttarakhand and India.
+        <div class="col-lg-8 text-center">
+          <h1 class="hero-title">Dehradun's Premier <span class="accent-text">Taxi Service</span></h1>
+          <p class="hero-subtitle">
+          Experience reliable, 24/7 taxi services with professional drivers and comfortable vehicles. From airport transfers to Char Dham Yatra - your trusted travel companion across Uttarakhand.
           </p>
-          <a href="tel:+917983438214" class="btn-get-started">ENQUIRE NOW</a>
+          <div class="hero-buttons">
+            <a href="tel:+917983438214" class="btn-primary-modern">Book Now</a>
+            <a href="#services" class="btn-secondary-modern">Our Services</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Happy Customers</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">Available</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">5★</span>
+              <span class="stat-label">Rated Service</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div id="hero-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-
     <div class="carousel-item active">
-      <img class="carousel-img-1" alt="" />
+      <img class="carousel-img-1" alt="Phoenix Cabs - Premium Taxi Service" />
     </div>
-
     <div class="carousel-item">
-      <img class="carousel-img-2" alt="" />
+      <img class="carousel-img-2" alt="Comfortable Vehicle Fleet" />
     </div>
-
-    <div class="carousel-item ">
-      <img class="carousel-img-3" alt="" />
+    <div class="carousel-item">
+      <img class="carousel-img-3" alt="Professional Drivers" />
     </div>
-
-    <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-    </a>
-
-    <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-      <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-    </a>
   </div>
 </section>
 <!-- /Hero Section -->
 
-<!-- Get Started Section -->
-<section id="get-started" class="get-started section">
+<!-- About Section -->
+<section id="about" class="about section modern-about">
   <div class="container">
-    <div class="row justify-content-between gy-4">
-      <div class="col-lg-6 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <div class="content">
-          <h2>Why Phoenix Cabs is Dehradun's #1 Choice for Taxi Services</h2>
-          <p>
-            With years of expertise in Dehradun's taxi and car rental industry, Phoenix Cabs has established itself as the most trusted name for reliable transportation. Our team of professional drivers and well-maintained fleet ensures safe, comfortable, and punctual service for all your travel needs.
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+        <div class="about-content">
+          <span class="section-badge">Why Choose Us</span>
+          <h2 class="section-title">Dehradun's <span class="accent-text">#1 Choice</span> for Taxi Services</h2>
+          <p class="section-description">
+            With years of expertise in Dehradun's taxi industry, Phoenix Cabs has established itself as the most trusted name for reliable transportation.
           </p>
-          <p>
-            From airport pickups and drops to spiritual journeys like Char Dham Yatra, business trips to Delhi, or exploring Uttarakhand's scenic destinations - we provide 24/7 taxi services with transparent pricing, experienced drivers, and vehicles that prioritize your safety and comfort.
-          </p>
-
-        </div>
-      </div>
-
-      <div class="col-lg-5" data-aos="zoom-out" data-aos-delay="200">
-         <center><img id="innova" src="{{assetPath}}assets/img/innova.jpg" alt="Image" width="100%" height="100%"> </center>
-      </div>
-
-      <div data-aos="delay" data-aos-delay="100" style="margin-bottom:   1rem;"
-        class="call-us-button-wrapper d-flex align-items-center justify-content-center">
-        <a href="tel:+917983438214" class="call-us-button btn-get-started" style="margin-top: 14px;">CALL NOW </a>
-      </div>
-
-    </div>
-  </div>
-</section>
-<!-- /Get Started Section -->
-
-<!-- Taxi Images Section -->
-<section id="constructions" class="constructions section">
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Taxi Service</h2>
-    <p>
-      We have various kinds of vehicles available
-    </p>
-  </div>
-  <!-- End Section Title -->
-
-  <div class="container">
-    <div class="row gy-4">
-      <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/ciaz.png" alt="Maruti Suzuki Ciaz - Premium Sedan Taxi Service by Phoenix Cabs Dehradun" width="100%" />
+          
+          <div class="features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
               </div>
-              <h3 style="text-align: center;">Maruti Suzuki Ciaz</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
+              <div class="feature-content">
+                <h4>Safe & Reliable</h4>
+                <p>Professional drivers and well-maintained vehicles</p>
               </div>
+            </div>
+            
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="feature-content">
+                <h4>24/7 Service</h4>
+                <p>Round-the-clock availability for all your needs</p>
+              </div>
+            </div>
+            
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-rupee-sign"></i>
+              </div>
+              <div class="feature-content">
+                <h4>Transparent Pricing</h4>
+                <p>No hidden charges, competitive rates</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="cta-section">
+            <a href="tel:+917983438214" class="btn-primary-modern">Call Now</a>
+            <div class="contact-info">
+              <span class="phone-number">+91 79834 38214</span>
+              <span class="availability">Available 24/7</span>
             </div>
           </div>
         </div>
       </div>
-      <!-- End Card Item -->
+
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+        <div class="about-image">
+          <img src="{{assetPath}}assets/img/innova.jpg" alt="Toyota Innova - Premium Taxi Service" class="img-fluid rounded-4 shadow-lg">
+          <div class="floating-card">
+            <div class="card-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="card-content">
+              <h5>Premium Fleet</h5>
+              <p>Well-maintained vehicles for comfort</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /About Section -->
+
+<!-- Fleet Section -->
+<section id="fleet" class="fleet section light-background">
+  <!-- Section Title -->
+  <div class="container">
+    <div class="section-header text-center" data-aos="fade-up">
+      <span class="section-badge">Our Fleet</span>
+      <h2 class="section-title">Choose Your <span class="accent-text">Ride</span></h2>
+      <p class="section-description">Premium vehicles for every journey, maintained to the highest standards</p>
+    </div>
+
+    <div class="row gy-4 mt-5">
+      <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="vehicle-card modern-card">
+          <div class="card-image">
+            <img src="{{assetPath}}assets/img/ciaz.png" alt="Maruti Suzuki Ciaz - Premium Sedan" class="img-fluid" />
+            <div class="card-badge">Premium Sedan</div>
+          </div>
+          <div class="card-content">
+            <h3 class="vehicle-name">Maruti Suzuki Ciaz</h3>
+            <div class="vehicle-features">
+              <span class="feature"><i class="fas fa-users"></i> 4 Seats</span>
+              <span class="feature"><i class="fas fa-snowflake"></i> AC</span>
+              <span class="feature"><i class="fas fa-suitcase"></i> Luggage</span>
+            </div>
+            <div class="card-footer">
+              <div class="price-info">
+                <span class="price-label">Starting from</span>
+                <span class="price">₹12/km</span>
+              </div>
+              <a href="tel:+917983438214" class="btn-card">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/swift.png" alt="Maruti Suzuki Swift - Compact Hatchback Taxi Service by Phoenix Cabs Dehradun" width="100%" />
+        <div class="vehicle-card modern-card">
+          <div class="card-image">
+            <img src="{{assetPath}}assets/img/swift.png" alt="Maruti Suzuki Swift - Compact Hatchback" class="img-fluid" />
+            <div class="card-badge">Compact</div>
+          </div>
+          <div class="card-content">
+            <h3 class="vehicle-name">Maruti Suzuki Swift</h3>
+            <div class="vehicle-features">
+              <span class="feature"><i class="fas fa-users"></i> 4 Seats</span>
+              <span class="feature"><i class="fas fa-snowflake"></i> AC</span>
+              <span class="feature"><i class="fas fa-city"></i> City Rides</span>
+            </div>
+            <div class="card-footer">
+              <div class="price-info">
+                <span class="price-label">Starting from</span>
+                <span class="price">₹10/km</span>
               </div>
-              <h3 style="text-align: center;">Maruti Suzuki Swift</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
+              <a href="tel:+917983438214" class="btn-card">Book Now</a>
             </div>
           </div>
         </div>
       </div>
-      <!-- End Card Item -->
 
       <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/innova.jpg" alt="Toyota Innova - Spacious 7-Seater Taxi Service by Phoenix Cabs Dehradun" />
+        <div class="vehicle-card modern-card">
+          <div class="card-image">
+            <img src="{{assetPath}}assets/img/innova.jpg" alt="Toyota Innova - Spacious 7-Seater" class="img-fluid" />
+            <div class="card-badge">Most Popular</div>
+          </div>
+          <div class="card-content">
+            <h3 class="vehicle-name">Toyota Innova</h3>
+            <div class="vehicle-features">
+              <span class="feature"><i class="fas fa-users"></i> 7 Seats</span>
+              <span class="feature"><i class="fas fa-snowflake"></i> AC</span>
+              <span class="feature"><i class="fas fa-route"></i> Long Distance</span>
+            </div>
+            <div class="card-footer">
+              <div class="price-info">
+                <span class="price-label">Starting from</span>
+                <span class="price">₹15/km</span>
               </div>
-              <h3 style="text-align: center;">Toyota Innova</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
+              <a href="tel:+917983438214" class="btn-card">Book Now</a>
             </div>
           </div>
         </div>
       </div>
-      <!-- End Card Item -->
 
       <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="card-item">
-          <div class="row">
-            <div class="col-xl-11">
-              <div class="card-bg">
-                <img src="{{assetPath}}assets/img/ertiga.png" alt="Maruti Suzuki Ertiga - 7-Seater MPV Taxi Service by Phoenix Cabs Dehradun" />
+        <div class="vehicle-card modern-card">
+          <div class="card-image">
+            <img src="{{assetPath}}assets/img/ertiga.png" alt="Maruti Suzuki Ertiga - 7-Seater MPV" class="img-fluid" />
+            <div class="card-badge">Family MPV</div>
+          </div>
+          <div class="card-content">
+            <h3 class="vehicle-name">Maruti Suzuki Ertiga</h3>
+            <div class="vehicle-features">
+              <span class="feature"><i class="fas fa-users"></i> 7 Seats</span>
+              <span class="feature"><i class="fas fa-snowflake"></i> AC</span>
+              <span class="feature"><i class="fas fa-heart"></i> Family</span>
+            </div>
+            <div class="card-footer">
+              <div class="price-info">
+                <span class="price-label">Starting from</span>
+                <span class="price">₹13/km</span>
               </div>
-              <h3 style="text-align: center;">Maruti Suzuki Ertiga</h3>
-              <div class="call-us-button-wrapper d-flex align-items-center justify-content-center"
-                style="margin-bottom: 1rem;">
-                <a href="tel:+917983438214" class="call-us-button btn-get-started">BOOK NOW </a>
-              </div>
+              <a href="tel:+917983438214" class="btn-card">Book Now</a>
             </div>
           </div>
         </div>
       </div>
-      <!-- End Card Item -->
     </div>
   </div>
 </section>
-<!-- /Images Section -->
+<!-- /Fleet Section -->
 
 <!-- Services Section -->
-<section id="services" class="services section light-background">
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2><a href="{{assetPath}}services/index.html" style="color: black;">Services</a></h2>
-    <p>
-      We provide the world class taxi service
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<section id="services" class="services section">
   <div class="container">
-    <div class="row gy-4">
+    <div class="section-header text-center" data-aos="fade-up">
+      <span class="section-badge">Our Services</span>
+      <h2 class="section-title">Popular <span class="accent-text">Destinations</span></h2>
+      <p class="section-description">Experience world-class taxi service to your favorite destinations</p>
+    </div>
 
+    <div class="row gy-4 mt-5">
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-        <div class="service-item position-relative">
-          <div class="icon">
+        <div class="service-card modern-card">
+          <div class="service-icon">
             <i class="fa-solid fa-gopuram"></i>
           </div>
-          <h3>Taxi for Char Dham Yatra</h3>
-          <p>
-            Begin your spiritual adventure with our dependable and comfortable taxi service for the Char Dham Yatra, providing a safe and memorable journey to the sacred destinations.
-          </p>
-          <a href="{{assetPath}}char-dham/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <div class="service-content">
+            <h3>Char Dham Yatra</h3>
+            <p>Begin your spiritual adventure with our dependable taxi service for the sacred Char Dham destinations.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Experienced drivers</li>
+              <li><i class="fas fa-check"></i> Comfortable vehicles</li>
+              <li><i class="fas fa-check"></i> Safe journey</li>
+            </ul>
+          </div>
+          <div class="service-footer">
+            <a href="{{assetPath}}char-dham/index.html" class="btn-service">Learn More <i class="bi bi-arrow-right"></i></a>
+          </div>
         </div>
       </div>
-      <!-- End Service Item -->
 
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-mountain"></i>
+        <div class="service-card modern-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-city"></i>
           </div>
-          <h3>Dehradun to Delhi</h3>
-          <p>
-            Embark on a reliable journey with Phoenix Cabs, starting from the foothills of Dehradun to the bustling heart of Delhi. Whether you're traveling through scenic routes or exploring vibrant cityscapes, our service ensures smooth rides, timely pickups, and unparalleled comfort at every turn. Choose Phoenix Cabs for a memorable travel experience.
-          </p>
-          <a href="{{assetPath}}delhi/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <div class="service-content">
+            <h3>Dehradun to Delhi</h3>
+            <p>Reliable journey from the foothills of Dehradun to the bustling heart of Delhi with comfort.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> Scenic routes</li>
+              <li><i class="fas fa-check"></i> Timely pickups</li>
+              <li><i class="fas fa-check"></i> Competitive rates</li>
+            </ul>
+          </div>
+          <div class="service-footer">
+            <a href="{{assetPath}}delhi/index.html" class="btn-service">Learn More <i class="bi bi-arrow-right"></i></a>
+          </div>
         </div>
       </div>
-      <!-- End Service Item -->
 
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="service-item position-relative">
-          <div class="icon">
-            <i class="fa-solid fa-taxi"></i>
+        <div class="service-card modern-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-plane"></i>
           </div>
-          <h3>Dehradun to Jolly Grant Airport</h3>
-          <p>
-            Make your trip to the Jolly Grant Airport stress-free with Phoenix Cabs. Enjoy a comfortable, timely, and hassle-free ride from anywhere in Dehradun to the airport. Our reliable service ensures that you reach your destination with ease, so you can catch your flight without any worries. Choose Phoenix Cabs for a smooth and efficient travel experience.
-          </p>
-          <a href="{{assetPath}}airport/index.html" class="readmore stretched-link">Read more <i class="bi bi-arrow-right"></i></a>
+          <div class="service-content">
+            <h3>Airport Transfers</h3>
+            <p>Stress-free airport transfers to Jolly Grant Airport with comfortable and timely service.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check"></i> On-time arrival</li>
+              <li><i class="fas fa-check"></i> Luggage assistance</li>
+              <li><i class="fas fa-check"></i> Flight tracking</li>
+            </ul>
+          </div>
+          <div class="service-footer">
+            <a href="{{assetPath}}airport/index.html" class="btn-service">Learn More <i class="bi bi-arrow-right"></i></a>
+          </div>
         </div>
       </div>
-      <!-- End Service Item -->
+    </div>
 
-      <div data-aos="delay" data-aos-delay="100" style="margin-top: 4rem;"
-        class="d-flex align-items-center justify-content-center all">
-        <a href="{{assetPath}}services/index.html" class="call-us-button btn-get-started">ALL SERVICES </a>
-      </div>
-
+    <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="400">
+      <a href="{{assetPath}}services/index.html" class="btn-primary-modern">View All Services</a>
     </div>
   </div>
 </section>

@@ -1216,97 +1216,113 @@ extraJS: |
         "id": "hatchback",
         "name": "Hatchback",
         "model": "Swift, i20, Wagon R",
-        "icon": "🚗", // Compact car
+        "icon": "🚗",
         "capacity": "4 seats",
         "mileage": 16,
         "fuelType": "petrol",
         "baseRate": 13,
-        "driverAllowance": 350, // Standard driver allowance
-        "features": ["AC", "Music System", "Clean Interior"]
+        "driverAllowance": 350,
+        "features": ["AC", "Music System", "Clean Interior"],
+        "extraPerKm": 13,
+        "extraPerHour": 100
       },
       {
         "id": "sedan",
         "name": "Sedan",
         "model": "Dzire, Etios, Amaze",
-        "icon": "🚘", // Sedan
+        "icon": "🚘",
         "capacity": "4 seats",
         "mileage": 14,
         "fuelType": "petrol",
         "baseRate": 15,
-        "driverAllowance": 400, // Standard driver allowance
-        "features": ["AC", "Comfortable Seats", "Spacious"]
+        "driverAllowance": 400,
+        "features": ["AC", "Comfortable Seats", "Spacious"],
+        "extraPerKm": 15,
+        "extraPerHour": 120
       },
       {
         "id": "suv",
         "name": "SUV",
         "model": "Ertiga, Marazzo, XUV500",
-        "icon": "🚙", // SUV
+        "icon": "🚙",
         "capacity": "6-7 seats",
         "mileage": 11,
         "fuelType": "petrol",
         "baseRate": 17,
-        "driverAllowance": 450, // Increased driver allowance for larger vehicle
-        "features": ["AC", "6-7 Seater", "More Luggage Space"]
+        "driverAllowance": 450,
+        "features": ["AC", "6-7 Seater", "More Luggage Space"],
+        "extraPerKm": 17,
+        "extraPerHour": 150
       },
       {
         "id": "prime-sedan",
         "name": "Prime Sedan",
         "model": "City, Verna, Ciaz",
-        "icon": "🚖", // Premium sedan (like a taxi)
+        "icon": "🚖",
         "capacity": "4 seats",
         "mileage": 12,
         "fuelType": "petrol",
         "baseRate": 19,
-        "driverAllowance": 500, // Higher driver allowance
-        "features": ["Premium AC", "Leather Seats", "Latest Model"]
+        "driverAllowance": 500,
+        "features": ["Premium AC", "Leather Seats", "Latest Model"],
+        "extraPerKm": 19,
+        "extraPerHour": 170
       },
       {
         "id": "prime-suv",
         "name": "Prime SUV",
         "model": "Innova, Crysta",
-        "icon": "🚙", // Larger premium SUV
+        "icon": "🚙",
         "capacity": "6-7 seats",
         "mileage": 10,
         "fuelType": "diesel",
         "baseRate": 22,
         "driverAllowance": 600,
-        "features": ["Premium Interior", "Extra Comfort", "Best for Long Trips"]
+        "features": ["Premium Interior", "Extra Comfort", "Best for Long Trips"],
+        "extraPerKm": 22,
+        "extraPerHour": 200
       },
       {
         "id": "tempo-traveller-12",
         "name": "Tempo Traveller",
         "model": "12 Seater",
-        "icon": "🚐", // Minibus/van
+        "icon": "🚐",
         "capacity": "12 seats",
-        "mileage": 9, 
+        "mileage": 9,
         "fuelType": "diesel",
         "baseRate": 25,
         "driverAllowance": 700,
-        "features": ["AC", "12 Seater", "Group Travel", "Large Luggage Space"]
+        "features": ["AC", "12 Seater", "Group Travel", "Large Luggage Space"],
+        "extraPerKm": 25,
+        "extraPerHour": 220
       },
       {
         "id": "tempo-traveller-17",
         "name": "Tempo Traveller",
         "model": "17 Seater",
-        "icon": "🚌", // Bus-like vehicle
+        "icon": "🚌",
         "capacity": "17 seats",
-        "mileage": 8, 
+        "mileage": 8,
         "fuelType": "diesel",
         "baseRate": 28,
-        "driverAllowance": 800, // Higher driver allowance
-        "features": ["AC", "17 Seater", "Group Travel", "Extra Large Luggage"]
+        "driverAllowance": 800,
+        "features": ["AC", "17 Seater", "Group Travel", "Extra Large Luggage"],
+        "extraPerKm": 28,
+        "extraPerHour": 250
       },
       {
         "id": "tempo-traveller-26",
         "name": "Tempo Traveller",
         "model": "26 Seater",
-        "icon": "🚍", // Large bus
+        "icon": "🚍",
         "capacity": "26 seats",
         "mileage": 7,
         "fuelType": "diesel",
-        "baseRate": 30, 
+        "baseRate": 30,
         "driverAllowance": 1000,
-        "features": ["AC", "26 Seater", "Large Group Travel", "Maximum Comfort"]
+        "features": ["AC", "26 Seater", "Large Group Travel", "Maximum Comfort"],
+        "extraPerKm": 30,
+        "extraPerHour": 300
       }
     ];
     
@@ -1447,6 +1463,12 @@ extraJS: |
           }
         }
       });
+      
+      // Setup booking form submission
+      const bookingForm = document.getElementById('booking-form');
+      if (bookingForm) {
+        bookingForm.addEventListener('submit', handleBookingFormSubmit);
+      }
     }
     
     // Get user's current location
@@ -2968,10 +2990,24 @@ extraJS: |
         }
         
         summaryHTML += `
+            <div class="breakdown-row">
+              <span>Extra Per KM (if applicable)</span>
+              <span>₹${vehicle.extraPerKm}/km</span>
+            </div>
+            
+            <div class="breakdown-row">
+              <span>Extra Per Hour (if applicable)</span>
+              <span>₹${vehicle.extraPerHour}/hour</span>
+            </div>
+            
             <div class="breakdown-divider"></div>
             <div class="breakdown-row total-row">
               <span><strong>Total Fare</strong></span>
               <span><strong>₹${tripData.fare}</strong></span>
+            </div>
+            
+            <div class="estimated-rate-notice" style="margin-top: 8px; padding: 8px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; font-size: 12px; color: #856404;">
+              <i class="bi bi-info-circle me-1"></i><strong>Note:</strong> This is an estimated rate only. Final fare may vary based on actual route, traffic conditions, and additional services.
             </div>
           </div>
           
@@ -2999,6 +3035,163 @@ extraJS: |
       }
       
       summary.innerHTML = summaryHTML;
+      
+      // Update booking message field
+      updateBookingMessageField();
+    }
+    
+    // Format booking state for email message
+    function formatBookingMessage() {
+      const state = {
+        tripData: tripData,
+        tripDates: tripDates,
+        tripType: tripType,
+        isReturnTrip: isReturnTrip || false
+      };
+      
+      let message = "=== PHOENIX CABS BOOKING REQUEST ===\n\n";
+      
+      // Route Information
+      const allRouteInputs = document.querySelectorAll('.route-input');
+      const routeNames = [];
+      allRouteInputs.forEach((element) => {
+        const input = element.querySelector('input');
+        const inputValue = input ? input.value.trim() : '';
+        if (inputValue) {
+          routeNames.push(inputValue);
+        }
+      });
+      
+      if (routeNames.length >= 2) {
+        if (routeNames.length > 2) {
+          message += `📍 ROUTE: ${routeNames[0]} → ${routeNames.slice(1, -1).join(' → ')} → ${routeNames[routeNames.length - 1]}\n`;
+        } else {
+          message += `📍 ROUTE: ${routeNames[0]} → ${routeNames[1]}\n`;
+        }
+        message += `📏 DISTANCE: ${tripData.distance || 'TBD'} km${isReturnTrip ? ' (Round Trip)' : ' (One Way)'}\n`;
+        message += `⏱️ ESTIMATED DURATION: ~${tripData.duration || 'TBD'} minutes\n\n`;
+      }
+      
+      // Trip Details
+      message += "🗓️ TRIP DETAILS:\n";
+      message += `   Trip Type: ${tripType.charAt(0).toUpperCase() + tripType.slice(1)}\n`;
+      
+      if (tripDates.startDate) {
+        message += `   Start Date: ${new Date(tripDates.startDate).toLocaleDateString('en-IN')}\n`;
+      }
+      if (tripDates.endDate) {
+        message += `   End Date: ${new Date(tripDates.endDate).toLocaleDateString('en-IN')}\n`;
+      }
+      if (tripDates.days > 0) {
+        message += `   Duration: ${tripDates.days} day${tripDates.days > 1 ? 's' : ''}`;
+        if (tripDates.nights > 0) {
+          message += `, ${tripDates.nights} night${tripDates.nights > 1 ? 's' : ''}`;
+        }
+        message += "\n";
+      }
+      
+      // Vehicle and Pricing
+      if (tripData.selectedVehicle) {
+        message += `\n🚗 SELECTED VEHICLE: ${tripData.selectedVehicle.name} (${tripData.selectedVehicle.model})\n`;
+        message += `💰 ESTIMATED FARE: ₹${tripData.fare || 'TBD'}\n`;
+        message += `   - Capacity: ${tripData.selectedVehicle.capacity} passengers\n`;
+        message += `   - Fuel Type: ${tripData.selectedVehicle.fuelType}\n`;
+        message += `   - AC: ${tripData.selectedVehicle.ac ? 'Yes' : 'No'}\n`;
+      }
+      return message;
+    }
+    
+    // Update booking message field
+    function updateBookingMessageField() {
+      const messageField = document.getElementById('booking-message');
+      if (messageField) {
+        messageField.value = formatBookingMessage();
+      }
+    }
+    
+    // Google Apps Script URL for form submission
+    // TODO: Replace with your actual Google Apps Script web app URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh3vXQDhO0Vw2cRmacZzFNjN9mATZ60pwqUyleR2bYKQwKk7ln7SywzKBOmOD-mQ2xuQ/exec';
+    
+    // Handle booking form submission
+    function handleBookingFormSubmit(event) {
+      event.preventDefault();
+      
+      const form = event.target;
+      const formData = new FormData(form);
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      
+      // Disable button and show loading state
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
+      
+      // Prepare form data
+      const bookingData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        pickup_time: formData.get('pickup_time'),
+        message: formData.get('message'),
+        timestamp: new Date().toISOString(),
+        source: 'Phoenix Cabs Booking Form'
+      };
+      
+      // Try to submit to Google Apps Script first, fallback to mailto
+      submitToGoogleScript(bookingData, form, submitButton, originalButtonText);
+    }
+    
+    // Submit to Google Apps Script
+    async function submitToGoogleScript(bookingData, form, submitButton, originalButtonText) {
+      try {
+        // Check if Google Apps Script URL is configured
+        if (GOOGLE_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+          throw new Error('Google Apps Script not configured');
+        }
+        
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bookingData)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          showAlert('Booking request sent successfully! We will contact you shortly.', 'success');
+          form.reset();
+          updateBookingMessageField(); // Refresh the message field
+        } else {
+          throw new Error('Failed to submit booking');
+        }
+      } catch (error) {
+        console.warn('Google Apps Script submission failed, falling back to mailto:', error);
+        fallbackToMailto(bookingData);
+      } finally {
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonText;
+      }
+    }
+    
+    // Fallback to mailto if Google Apps Script fails
+    function fallbackToMailto(bookingData) {
+      const subject = encodeURIComponent(`Phoenix Cabs Booking Request - ${bookingData.name}`);
+      const body = encodeURIComponent(bookingData.message + '\n\n' + 
+        `Customer Details:\n` +
+        `Name: ${bookingData.name}\n` + 
+        `Email: ${bookingData.email}\n` + 
+        `Phone: ${bookingData.phone}\n` + 
+        `Preferred Pickup Time: ${bookingData.pickup_time || 'Not specified'}\n\n` +
+        `Submitted: ${new Date(bookingData.timestamp).toLocaleString('en-IN')}`
+      );
+      
+      const mailtoLink = `mailto:{{ site.email }}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoLink;
+      
+      showAlert('Your email client will open with the booking request. You can also call us at {{ site.phone }}', 'info');
     }
     
     // Book now function
@@ -3616,9 +3809,81 @@ extraJS: |
         </ul>
       </div>
 
-      <button class="btn btn-success btn-lg" onclick="bookNow()" style="font-size: 1.25rem; padding: 1.5rem 3rem;">
-        <i class="bi bi-telephone-fill me-2"></i>Book Now - Call {{ site.phone }}
-      </button>
+      <!-- Booking Form -->
+      <div class="booking-form-section" style="background: white; border-radius: 12px; padding: 2rem; margin: 1rem 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h4 style="margin-bottom: 1.5rem; color: var(--dark-color); text-align: center;">
+          <i class="bi bi-calendar-check me-2" style="color: var(--primary-color);"></i>
+          Complete Your Booking
+        </h4>
+        
+        <form id="booking-form" class="booking-form">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <label for="customer-name" class="form-label">Full Name *</label>
+              <input 
+                type="text" 
+                id="customer-name" 
+                name="name" 
+                class="form-control" 
+                placeholder="Enter your full name" 
+                required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="customer-email" class="form-label">Email Address *</label>
+              <input 
+                type="email" 
+                id="customer-email" 
+                name="email" 
+                class="form-control" 
+                placeholder="Enter your email" 
+                required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="customer-phone" class="form-label">Phone Number *</label>
+              <input 
+                type="tel" 
+                id="customer-phone" 
+                name="phone" 
+                class="form-control" 
+                placeholder="Enter your phone number" 
+                required>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="pickup-time" class="form-label">Preferred Pickup Time</label>
+              <input 
+                type="time" 
+                id="pickup-time" 
+                name="pickup_time" 
+                class="form-control">
+            </div>
+            
+            <div class="col-12">
+              <label for="booking-message" class="form-label">Booking Details</label>
+              <textarea 
+                id="booking-message" 
+                name="message" 
+                rows="5" 
+                class="form-control" 
+                placeholder="Auto-filled with your trip details..." 
+                readonly></textarea>
+            </div>
+            
+            <div class="col-12">
+              <div class="d-flex gap-3 flex-column flex-sm-row">
+                <button type="submit" class="btn btn-success btn-lg flex-fill" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                  <i class="bi bi-envelope me-2"></i>Send Booking Request
+                </button>
+                <a href="tel:{{ site.phone }}" class="btn btn-warning btn-lg" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                  <i class="bi bi-telephone-fill me-2"></i>Call {{ site.phone }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

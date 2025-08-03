@@ -5,53 +5,122 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Chandigarh</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current" >Dehradun to Chandigarh</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- Info Section -->
-<section id="features" class="features section">
-
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Dehradun to Chandigarh</h2>
-    <p>
-      "Travel comfortably from Dehradun to the vibrant city of Chandigarh with Phoenix Cabs."
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/chand.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h2 style="font-weight: bold;" >Dehradun to Chandigarh <span style="color: #ff914d;">TAXI SERVICE</span></h2>
-        <p class="fst-italic">    
-          Travel comfortably from Dehradun to the vibrant city of Chandigarh with <span style="color: #ff914d;">Phoenix Cabs</span>. Enjoy a smooth and scenic ride through the picturesque landscapes, ensuring a safe and hassle-free journey to the city known for its modern architecture and lush gardens. Choose <span style="color: #ff914d;">Phoenix Cabs</span> for a reliable and enjoyable travel experience.
-        </p>     
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Premium Travel</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Chandigarh</span></h1>
+          <p class="hero-subtitle">
+            Travel in comfort and style with Phoenix Cabs from Dehradun to Chandigarh. Whether you're heading for business, education, or a weekend getaway, our reliable taxi service offers a smooth and stress-free experience on every ride.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Chandigarh</span>
+          </nav>
+        </div>
       </div>
     </div>
-    <!-- Features Item -->
-
   </div>
-
 </section>
+<!-- End Modern Hero Section -->
 
-<!-- Call Us Button -->
-<div class="call-us-button-wrapper d-flex align-items-center justify-content-center book" style="margin-bottom: 4.5rem;">
-    <a href="tel:{{ site.phone }}" class="call-us-button btn-get-started">BOOK NOW  </a>
-</div>
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-box">
+          <img src="{{assetPath}}assets/img/chand.jpg" alt="Dehradun to Chandigarh Taxi Service by Phoenix Cabs" class="img-fluid services-img">
+          <h2>Dehradun to Chandigarh Taxi Service</h2>
+          <p>
+            Travel from Dehradun to Chandigarh with ease and comfort through Phoenix Cabs' professional taxi service. Chandigarh, known as one of India’s best-planned cities, is a hub for education, business, and tourism with its modern architecture and lush gardens. Whether you're visiting for a relaxing weekend, a conference, or a family trip, we ensure your journey is safe, convenient, and enjoyable.
+          </p>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Journey Information</h3>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> Approximately 170–180 km</li>
+                <li><i class="bi bi-clock"></i> <strong>Travel Time:</strong> 4.5–5.5 hours</li>
+                <li><i class="bi bi-road"></i> <strong>Route:</strong> Via NH7 through Paonta Sahib and Nahan</li>
+                <li><i class="bi bi-car-front"></i> <strong>Vehicles:</strong> Sedans, SUVs, and premium options available</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Ideal Visiting Season</h3>
+              <ul>
+                <li><i class="bi bi-sun"></i> <strong>Spring:</strong> February to April (Pleasant and blooming)</li>
+                <li><i class="bi bi-cloud-sun"></i> <strong>Autumn:</strong> September to November (Mild and scenic)</li>
+                <li><i class="bi bi-fan"></i> <strong>Year-round:</strong> Suitable for travel in all seasons</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Top Attractions in Chandigarh</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Rock Garden:</strong> A unique garden built entirely from industrial & domestic waste</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Sukhna Lake:</strong> A peaceful spot for boating and evening strolls</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Rose Garden:</strong> Asia's largest garden of its kind with over 1,600 species</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Sector 17 Market:</strong> Popular shopping & food destination</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Capitol Complex:</strong> A UNESCO World Heritage site designed by Le Corbusier</li>
+          </ul>
+
+          <h3>Why Choose Phoenix Cabs for Chandigarh?</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-shield-check"></i> Professional, courteous drivers</li>
+                <li><i class="bi bi-geo-fill"></i> Multiple route options based on traffic</li>
+                <li><i class="bi bi-alarm"></i> On-time pickup and drop guaranteed</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-telephone"></i> 24/7 booking support</li>
+                <li><i class="bi bi-currency-rupee"></i> No hidden charges</li>
+                <li><i class="bi bi-heart"></i> Trusted by thousands of happy travelers</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>
+            <strong>Book your Chandigarh trip today!</strong> Call Phoenix Cabs at <strong>{{ site.phone }}</strong> or message us on WhatsApp for fast and easy booking.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="services-list">
+          <a href="{{assetPath}}services/index.html" class="active">All Services</a>
+          <a href="{{assetPath}}mussorie/index.html">Mussoorie</a>
+          <a href="{{assetPath}}auli/index.html">Auli</a>
+          <a href="{{assetPath}}chopta/index.html">Chopta</a>
+          <a href="{{assetPath}}dhanaulti/index.html">Dhanaulti</a>
+          <a href="{{assetPath}}new-tehri/index.html">New Tehri</a>
+        </div>
+
+        <div class="help-box d-flex flex-column justify-content-center align-items-center">
+          <i class="bi bi-headset help-icon"></i>
+          <h4>Book Your Ride</h4>
+          <p class="d-flex align-items-center mt-2 mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            <span>{{ site.phone }}</span>
+          </p>
+          <p class="d-flex align-items-center mt-1 mb-0">
+            <i class="bi bi-whatsapp me-2"></i>
+            <span>Quick WhatsApp Booking</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Service Details Section -->
+

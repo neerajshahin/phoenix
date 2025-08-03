@@ -7,21 +7,31 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Chakrata</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li><a href="{{assetPath}}services/index.html">Services</a></li>
-        <li class="current">Chakrata</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Premium Travel</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Chakrata</span></h1>
+          <p class="hero-subtitle">
+            Discover the scenic beauty of the hills with Phoenix Cabs' premium taxi service from Dehradun to Chakrata. Ideal for nature lovers, trekkers, and peaceful getaways, our comfortable rides ensure a safe and memorable journey to this serene hill station.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Chakrata</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Service Details Section -->
 <section id="service-details" class="service-details section">

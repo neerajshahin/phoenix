@@ -32,6 +32,9 @@ jobs:
         
       - name: Install dependencies
         run: npm ci
+
+      - name: Echo SITE_URL
+        run: echo "SITE_URL is ${{ steps.pages.outputs.base_url }}"
         
       - name: Build with Eleventy
         run: npm run build

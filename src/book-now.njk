@@ -3111,7 +3111,7 @@ extraJS: |
     
     // Google Apps Script URL for form submission
     // TODO: Replace with your actual Google Apps Script web app URL
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxzB28R1bxI5ZXoR2w_eSRdo1PjPqKiAtxpm7DWeLzrMt5YGdb7-OB7WavrVzr6IzT0w/exec';
+    // const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxzB28R1bxI5ZXoR2w_eSRdo1PjPqKiAtxpm7DWeLzrMt5YGdb7-OB7WavrVzr6IzT0w/exec';
     
     // Handle booking form submission
     function handleBookingFormSubmit(event) {
@@ -3145,11 +3145,11 @@ extraJS: |
     async function submitToGoogleScript(bookingData, form, submitButton, originalButtonText) {
       try {
         // Check if Google Apps Script URL is configured
-        if (GOOGLE_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
-          throw new Error('Google Apps Script not configured');
-        }
+        // if (GOOGLE_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+        //  throw new Error('Google Apps Script not configured');
+        //}
         
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        const response = await fetch('https://phoenix.neerajshahapp.workers.dev', {
           method: 'POST',
           mode: 'cors',
           headers: {

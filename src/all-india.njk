@@ -7,21 +7,31 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>All India Taxi Service</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li><a href="{{assetPath}}services/index.html">Services</a></li>
-        <li class="current">All India</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Nationwide Travel</span>
+          <h1 class="hero-title">All <span class="accent-text">India</span> Taxi Service</h1>
+          <p class="hero-subtitle">
+            Travel across the length and breadth of India with Phoenix Cabs. From business trips to family vacations, experience comfortable interstate travel with our professional drivers and well-maintained vehicles.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">All India</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Service Details Section -->
 <section id="service-details" class="service-details section">
@@ -48,27 +58,91 @@ background-position: center;">
           <h3>Popular All India Routes</h3>
           <div class="row">
             <div class="col-md-6">
+              <h4>North India</h4>
               <ul>
-                <li>Dehradun to Mumbai</li>
-                <li>Dehradun to Bangalore</li>
-                <li>Dehradun to Chennai</li>
-                <li>Dehradun to Kolkata</li>
-                <li>Dehradun to Pune</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Delhi (250 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Chandigarh (170 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Jaipur (450 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Agra (350 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Lucknow (380 km)</li>
+              </ul>
+              
+              <h4>West India</h4>
+              <ul>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Mumbai (1,450 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Pune (1,350 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Ahmedabad (950 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Goa (1,650 km)</li>
               </ul>
             </div>
             <div class="col-md-6">
+              <h4>South India</h4>
               <ul>
-                <li>Dehradun to Hyderabad</li>
-                <li>Dehradun to Ahmedabad</li>
-                <li>Dehradun to Jaipur</li>
-                <li>Dehradun to Goa</li>
-                <li>Dehradun to Kerala</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Bangalore (2,100 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Chennai (2,200 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Hyderabad (1,800 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Kerala (2,400 km)</li>
+              </ul>
+              
+              <h4>East India</h4>
+              <ul>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Kolkata (1,350 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Bhubaneswar (1,450 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Patna (750 km)</li>
+                <li><i class="bi bi-geo-alt-fill"></i> Dehradun to Guwahati (1,800 km)</li>
               </ul>
             </div>
           </div>
 
+          <h3>Service Packages</h3>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="package-box">
+                <h4>One-Way Travel</h4>
+                <ul>
+                  <li>Flexible departure timing</li>
+                  <li>Direct route travel</li>
+                  <li>No return charges</li>
+                  <li>Professional driver</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="package-box">
+                <h4>Round Trip</h4>
+                <ul>
+                  <li>Return journey included</li>
+                  <li>Discounted pricing</li>
+                  <li>Extended stay options</li>
+                  <li>Local sightseeing</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="package-box">
+                <h4>Multi-City Tour</h4>
+                <ul>
+                  <li>Multiple destinations</li>
+                  <li>Customized itinerary</li>
+                  <li>Flexible schedule</li>
+                  <li>Tour guide assistance</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <h3>What's Included in All India Service</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Accommodation for Driver:</strong> Hotel stay arranged for long journeys</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Fuel & Tolls:</strong> All driving expenses covered in the package</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Interstate Permits:</strong> All necessary permits and documentation</li>
+            <li><i class="bi bi-check-circle"></i> <strong>GPS Tracking:</strong> Real-time location tracking for family peace of mind</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Emergency Support:</strong> 24/7 roadside assistance and customer support</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Travel Insurance:</strong> Comprehensive coverage for passengers and luggage</li>
+          </ul>
+
           <p>
-            <strong>Book your all India taxi service today!</strong> Call us at <strong>{{ site.phone }}</strong> for instant booking and get competitive rates for your interstate travel needs.
+            <strong>Ready to explore India with Phoenix Cabs?</strong> Call us at <strong>{{ site.phone }}</strong> for personalized quotes and begin your all-India journey with confidence and comfort!
           </p>
         </div>
       </div>

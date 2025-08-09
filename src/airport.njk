@@ -8,60 +8,156 @@ canonicalUrl: https://phoenix-cabs.netlify.app/airport/
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Airport</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current" >Dehradun to Airport</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- Info Setion -->
-<section id="features" class="features section">
-
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Dehradun to Jolly Grant Airport</h2>
-    <p>"Embark on a scenic journey from the serene landscapes of Dehradun to the Dehradun Airport"</p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/airport-service.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h2 style="font-weight: bold;" >Dehradun to Jolly Grant Airport <span style="color: #ff914d;">TAXI SERVICE</span></h2>
-        <p class="fst-italic">  
-            Traveling from Dehradun to Jolly Grant Airport with <span style="color: #ff914d;"> Phoenix Cabs </span> offers a seamless and comfortable experience. Their professional drivers ensure a smooth ride, allowing passengers to relax and enjoy the scenic views along the way. Known for their commitment to safety and reliability, Phoenix Cabs is a trusted choice for airport transfers. With their excellent service, you can start or end your journey on a stress-free note, knowing you're in good hands.
-        </p>        
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Airport Transfer</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Airport</span></h1>
+          <p class="hero-subtitle">
+            Reliable and punctual airport transfer service to Jolly Grant Airport. Never miss a flight with Phoenix Cabs' professional airport transportation - comfortable rides, 24/7 availability, and competitive rates.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Airport Transfer</span>
+          </nav>
+        </div>
       </div>
     </div>
-    <!-- Features Item -->
-
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-        <img src="{{assetPath}}assets/img/airport-service-2.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-        <h3>Distance between Dehradun and Jolly Grant Airport </h3>
-        <p class="fst-italic">
-            The journey from Dehradun to Jolly Grant Airport covers a distance of approximately 30 kilometers and typically takes around 45 minutes to an hour, depending on traffic conditions. With <span style="color:#ff914d" > Phoenix Cabs</span>, you can expect a smooth and comfortable ride, ensuring you reach the airport safely and on time. Their professional drivers are well-versed with the local routes, offering a stress-free experience as you transition from the serene cityscape to the bustling airport. Phoenix Cabs commitment to reliability and customer satisfaction makes them the ideal choice for a convenient airport transfer, providing peace of mind and a pleasant start to your journey.
-        </p> 
-      </div>
-    </div><!-- Features Item -->
   </div>
-
 </section>
+<!-- End Modern Hero Section -->
+
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-box">
+          <img src="{{assetPath}}assets/img/airport-service.jpg" alt="Dehradun to Jolly Grant Airport Taxi Service" class="img-fluid services-img">
+          <h2>Dehradun Airport Taxi Service</h2>
+          <p>
+            Experience hassle-free airport transfers with Phoenix Cabs. Our reliable and punctual service ensures you never miss a flight, with professional drivers who understand the importance of timely airport transportation.
+          </p>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Journey Details</h3>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> Approximately 30 km</li>
+                <li><i class="bi bi-clock"></i> <strong>Travel Time:</strong> 45 minutes - 1 hour</li>
+                <li><i class="bi bi-road"></i> <strong>Route:</strong> Via Airport Road (scenic mountain route)</li>
+                <li><i class="bi bi-car-front"></i> <strong>Vehicle Options:</strong> AC Sedan, SUV, Hatchback</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Service Features</h3>
+              <ul>
+                <li><i class="bi bi-clock-history"></i> <strong>24/7 Availability:</strong> Round-the-clock service</li>
+                <li><i class="bi bi-telephone"></i> <strong>Advance Booking:</strong> Schedule your pickup</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Flight Tracking:</strong> Monitor flight schedules</li>
+                <li><i class="bi bi-shield-check"></i> <strong>Meet & Greet:</strong> Driver assistance available</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>About Jolly Grant Airport</h3>
+          <ul>
+            <li><i class="bi bi-airplane"></i> <strong>Official Name:</strong> Dehradun Airport (Jolly Grant Airport)</li>
+            <li><i class="bi bi-geo-alt-fill"></i> <strong>IATA Code:</strong> DED | <strong>ICAO Code:</strong> VIDN</li>
+            <li><i class="bi bi-building"></i> <strong>Airlines:</strong> IndiGo, Air India, SpiceJet, Vistara</li>
+            <li><i class="bi bi-map"></i> <strong>Destinations:</strong> Delhi, Mumbai, Bangalore, Chennai, Hyderabad</li>
+            <li><i class="bi bi-shop"></i> <strong>Facilities:</strong> Cafeteria, parking, car rental, taxi services</li>
+            <li><i class="bi bi-wifi"></i> <strong>Amenities:</strong> Free WiFi, waiting lounges, ATM facilities</li>
+          </ul>
+
+          <h3>Service Options</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Airport Drop</h4>
+              <ul>
+                <li><i class="bi bi-arrow-right"></i> Pickup from your location in Dehradun</li>
+                <li><i class="bi bi-clock"></i> Recommended 2-3 hours before flight</li>
+                <li><i class="bi bi-luggage"></i> Assistance with luggage</li>
+                <li><i class="bi bi-geo-alt"></i> Drop at departure terminal</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h4>Airport Pickup</h4>
+              <ul>
+                <li><i class="bi bi-airplane-engines"></i> Flight arrival monitoring</li>
+                <li><i class="bi bi-person-standing"></i> Driver waiting at arrival gate</li>
+                <li><i class="bi bi-hourglass"></i> Free waiting up to 45 minutes</li>
+                <li><i class="bi bi-house"></i> Safe drop to your destination</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Why Choose Phoenix Cabs for Airport Transfer?</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-clock-fill"></i> <strong>Punctual Service:</strong> Always on time, every time</li>
+                <li><i class="bi bi-shield-check"></i> <strong>Professional Drivers:</strong> Licensed and experienced</li>
+                <li><i class="bi bi-car-front-fill"></i> <strong>Clean Vehicles:</strong> Well-maintained and sanitized</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-currency-rupee"></i> <strong>Transparent Pricing:</strong> No surge charges or hidden fees</li>
+                <li><i class="bi bi-telephone-fill"></i> <strong>24/7 Support:</strong> Customer assistance available</li>
+                <li><i class="bi bi-geo-alt-fill"></i> <strong>Local Knowledge:</strong> Best routes to avoid traffic</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Booking Tips</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Book in Advance:</strong> Guarantee availability during peak travel times</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Share Flight Details:</strong> Provide flight number for tracking</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Allow Extra Time:</strong> Account for traffic during peak hours</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Contact Number:</strong> Keep driver's contact handy</li>
+          </ul>
+
+          <p>
+            <strong>Need reliable airport transfer?</strong> Book Phoenix Cabs today! Call <strong>{{ site.phone }}</strong> for punctual, comfortable, and stress-free airport transportation.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="services-list">
+          <a href="{{assetPath}}services/index.html" class="active">All Services</a>
+          <a href="{{assetPath}}char-dham/index.html">Char Dham Yatra</a>
+          <a href="{{assetPath}}delhi/index.html">Delhi</a>
+          <a href="{{assetPath}}mussorie/index.html">Mussoorie</a>
+          <a href="{{assetPath}}haridwar/index.html">Haridwar</a>
+          <a href="{{assetPath}}rishikesh/index.html">Rishikesh</a>
+        </div>
+
+        <div class="help-box d-flex flex-column justify-content-center align-items-center">
+          <i class="bi bi-headset help-icon"></i>
+          <h4>Airport Transfer</h4>
+          <p class="d-flex align-items-center mt-2 mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            <span>{{ site.phone }}</span>
+          </p>
+          <p class="d-flex align-items-center mt-1 mb-0">
+            <i class="bi bi-whatsapp me-2"></i>
+            <span>24/7 Airport Service</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Service Details Section -->
 
 <!-- Call Us Button -->
 <div class="call-us-button-wrapper d-flex align-items-center justify-content-center book" style="margin-bottom: 4.5rem;">

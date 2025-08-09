@@ -5,73 +5,165 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Mussorie, Haridwar and Rishikesh</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current" >Dehradun to Mussorie, Haridwar and Rishikesh</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- Info Section -->
-<section id="features" class="features section">
-
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Dehradun to Mussorie, Haridwar and Rishikesh</h2>
-    <p>
-      "Discover the best of Uttarakhand with Phoenix Cabs, offering seamless rides to Mussoorie, Haridwar, and Rishikesh."
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/mussorie-service.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h2 style="font-weight: bold;" >Dehradun to Mussorie, Haridwar and Rishikesh <span style="color: #ff914d;">TAXI SERVICE</span></h2>
-        <p class="fst-italic">    
-          Discover the best of Uttarakhand with <span style="color: #ff914d;">Phoenix Cabs</span>, offering seamless rides from Dehradun to Mussoorie, Haridwar, and Rishikesh. Whether it's the serene hills of Mussoorie, the spiritual vibes of Haridwar, or the adventurous charm of Rishikesh, enjoy a comfortable and hassle-free journey to these iconic destinations. Book now with <span style="color: #ff914d;">Phoenix Cabs</span> for a reliable and unforgettable travel experience.
-        </p>     
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Tri-City Tour</span>
+          <h1 class="hero-title">Mussorie, Haridwar & <span class="accent-text">Rishikesh</span></h1>
+          <p class="hero-subtitle">
+            Discover the best of Uttarakhand in one incredible journey. From the Queen of Hills to sacred ghats and the yoga capital, experience three unique destinations with Phoenix Cabs.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Tri-City Tour</span>
+          </nav>
+        </div>
       </div>
     </div>
-    <!-- Features Item -->
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-        <img src="{{assetPath}}assets/img/haridwar-service.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-        <h3>The Spiritual Journey - Haridwar</h3>
-        <p class="fst-italic">
-          Experience the spiritual essence of Haridwar, where the sacred Ganges flows into the plains. Witness the evening Ganga Aarti, visit ancient temples, and immerse yourself in the holy atmosphere of this sacred city. With <span style="color: #ff914d;">Phoenix Cabs</span>, enjoy a peaceful and comfortable journey to this spiritual destination.
-        </p>
-      </div>
-    </div><!-- Features Item -->
-
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="300">
-        <img src="{{assetPath}}assets/img/rishikesh-service.jpeg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="300">
-        <h3>Adventure and Serenity - Rishikesh</h3>
-        <p class="fst-italic">
-          Complete your journey in Rishikesh, the yoga capital of the world and adventure hub of Uttarakhand. From river rafting and bungee jumping to peaceful meditation by the Ganges, Rishikesh offers the perfect blend of adventure and tranquility. <span style="color: #ff914d;">Phoenix Cabs</span> ensures you reach this iconic destination safely and comfortably.
-        </p>
-      </div>
-    </div><!-- Features Item -->
   </div>
+</section>
+<!-- End Modern Hero Section -->
 
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-box">
+          <img src="{{assetPath}}assets/img/mussorie-service.jpg" alt="Tri-City Tour: Mussorie, Haridwar, Rishikesh" class="img-fluid services-img">
+          <h2>Tri-City Tour: Mussorie, Haridwar & Rishikesh</h2>
+          <p>
+            Experience the best of Uttarakhand in one incredible journey with Phoenix Cabs. From the Queen of Hills to sacred ghats and the yoga capital of the world, discover three unique destinations that showcase the diverse beauty of this blessed state.
+          </p>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Tour Details</h3>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Total Distance:</strong> Approximately 150 km</li>
+                <li><i class="bi bi-clock"></i> <strong>Duration:</strong> 2-3 days recommended</li>
+                <li><i class="bi bi-car-front"></i> <strong>Vehicle:</strong> AC Sedan/SUV/Tempo Traveller</li>
+                <li><i class="bi bi-route"></i> <strong>Route:</strong> Customizable based on preferences</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Recommended Itinerary</h3>
+              <ul>
+                <li><i class="bi bi-1-circle"></i> <strong>Day 1:</strong> Dehradun → Mussoorie (35 km)</li>
+                <li><i class="bi bi-2-circle"></i> <strong>Day 2:</strong> Mussoorie → Haridwar (85 km)</li>
+                <li><i class="bi bi-3-circle"></i> <strong>Day 3:</strong> Haridwar → Rishikesh (30 km)</li>
+                <li><i class="bi bi-house"></i> <strong>Return:</strong> Rishikesh → Dehradun (45 km)</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Destination Highlights</h3>
+          <div class="row">
+            <div class="col-md-4">
+              <h4><i class="bi bi-mountain"></i> Mussoorie</h4>
+              <ul>
+                <li>Mall Road shopping and dining</li>
+                <li>Gun Hill viewpoint</li>
+                <li>Kempty Falls waterfall</li>
+                <li>Camel's Back Road walk</li>
+                <li>Cloud's End peaceful retreat</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h4><i class="bi bi-water"></i> Haridwar</h4>
+              <ul>
+                <li>Har Ki Pauri evening aarti</li>
+                <li>Chandi Devi Temple</li>
+                <li>Mansa Devi Temple</li>
+                <li>Bharat Mata Mandir</li>
+                <li>Sacred Ganges dip</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h4><i class="bi bi-heart-pulse"></i> Rishikesh</h4>
+              <ul>
+                <li>Laxman Jhula suspension bridge</li>
+                <li>Beatles Ashram (Chaurasi Kutia)</li>
+                <li>River rafting adventures</li>
+                <li>Triveni Ghat aarti</li>
+                <li>Yoga and meditation centers</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Tour Packages Available</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="package-box">
+                <h4>2 Days / 1 Night</h4>
+                <ul>
+                  <li>Quick sightseeing tour</li>
+                  <li>Major attractions covered</li>
+                  <li>Overnight in any city</li>
+                  <li>Perfect for weekend trips</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="package-box">
+                <h4>3 Days / 2 Nights</h4>
+                <ul>
+                  <li>Comprehensive exploration</li>
+                  <li>All major attractions</li>
+                  <li>Leisure time for each city</li>
+                  <li>Ideal for family vacations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <h3>What's Included</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Transportation:</strong> Comfortable AC vehicle for entire tour</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Driver:</strong> Experienced local driver with area knowledge</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Fuel & Tolls:</strong> All driving expenses included</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Flexible Itinerary:</strong> Customize based on your interests</li>
+            <li><i class="bi bi-check-circle"></i> <strong>24/7 Support:</strong> Customer assistance throughout journey</li>
+          </ul>
+
+          <p>
+            <strong>Ready to explore Uttarakhand's trinity?</strong> Book your tri-city tour today! Call <strong>{{ site.phone }}</strong> for a memorable journey through mountains, rivers, and spiritual destinations.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="services-list">
+          <a href="{{assetPath}}services/index.html" class="active">All Services</a>
+          <a href="{{assetPath}}mussorie/index.html">Mussoorie Only</a>
+          <a href="{{assetPath}}haridwar/index.html">Haridwar Only</a>
+          <a href="{{assetPath}}rishikesh/index.html">Rishikesh Only</a>
+          <a href="{{assetPath}}mossorie-haridwar/index.html">Mussoorie-Haridwar</a>
+          <a href="{{assetPath}}char-dham/index.html">Char Dham Yatra</a>
+        </div>
+
+        <div class="help-box d-flex flex-column justify-content-center align-items-center">
+          <i class="bi bi-headset help-icon"></i>
+          <h4>Tour Planning</h4>
+          <p class="d-flex align-items-center mt-2 mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            <span>{{ site.phone }}</span>
+          </p>
+          <p class="d-flex align-items-center mt-1 mb-0">
+            <i class="bi bi-whatsapp me-2"></i>
+            <span>Custom Tour Packages</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Call Us Button -->

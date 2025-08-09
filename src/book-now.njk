@@ -4,7 +4,6 @@ title: Taxi Fare Calculator & Online Cab Booking - Phoenix Cabs Dehradun
 description: Calculate taxi fares and book cabs online with Phoenix Cabs interactive fare calculator. Get instant quotes for airport transfers, outstation trips, and local rides in Dehradun with transparent pricing.
 keywords: fare calculator, taxi booking online, cab fare calculator Dehradun, Phoenix Cabs booking, instant taxi quote, online cab reservation, Dehradun taxi rates
 extraCSS: |
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
       --primary-color: #2563eb;
@@ -27,7 +26,6 @@ extraCSS: |
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #f1f5f9;
-      padding-top: 80px; /* Space for header */
     }
 
     .booking-container {
@@ -876,7 +874,144 @@ extraCSS: |
     }
   </style>
 extraJS: |
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  // Shared Email Handler for Phoenix Cabs
+  console.log('📧 Email handler loaded for booking form');
+  
+  const GOOGLE_SCRIPT_URL = 'https://phoenix.neerajshahapp.workers.dev';
+  
+  async function handleFormSubmission(event, formType = 'contact') {
+    console.log('handleFormSubmission called with formType:', formType);
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    
+    // Validate captcha if it exists
+    if (typeof validateCaptcha === 'function' && !validateCaptcha()) {
+      showAlert('Please solve the captcha correctly.', 'error');
+      return;
+    }
+    
+    // Disable button and show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
+    
+    // Prepare form data based on form type
+    const submissionData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      message: formData.get('message'),
+      timestamp: new Date().toISOString(),
+      source: `Phoenix Cabs ${formType === 'booking' ? 'Booking' : 'Contact'} Form`,
+      formType: formType
+    };
+    
+    // Add pickup time only for booking forms
+    if (formType === 'booking') {
+      submissionData.pickup_time = formData.get('pickup_time');
+    }
+    
+    try {
+      console.log('Submitting to Google Script:', submissionData);
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.status !== 'success') {
+        throw new Error(result.message || 'Unknown error occurred');
+      }
+      
+      // Show success message
+      showAlert(
+        `${formType === 'booking' ? 'Booking request' : 'Message'} sent successfully! We will contact you shortly.`, 
+        'success'
+      );
+      
+      // Reset form
+      form.reset();
+      
+      // For booking forms, refresh the message field
+      if (formType === 'booking' && typeof updateBookingMessageField === 'function') {
+        updateBookingMessageField();
+      }
+      
+      // Regenerate captcha if it exists
+      if (typeof generateCaptcha === 'function') {
+        generateCaptcha();
+      }
+      
+    } catch (error) {
+      console.warn('Google Apps Script submission failed:', error);
+      showAlert('Failed to send request. Please try again or call us directly.', 'error');
+    } finally {
+      // Re-enable button
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalButtonText;
+    }
+  }
+  
+  // Show alert messages
+  function showAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    
+    const icons = {
+      'success': 'bi-check-circle-fill',
+      'error': 'bi-exclamation-triangle-fill',
+      'warning': 'bi-exclamation-triangle-fill',
+      'info': 'bi-info-circle-fill'
+    };
+    
+    alertDiv.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="bi ${icons[type] || icons['info']} me-2"></i>
+        <span>${message}</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+      </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      if (alertDiv.parentNode) {
+        alertDiv.remove();
+      }
+    }, 5000);
+  }
+  
+  // Function to convert the name field to Camel Case
+  function convertToCamelCase() {
+    const nameInput = document.getElementById("name") || document.getElementById("customer-name");
+    if (nameInput && nameInput.value) {
+      nameInput.value = nameInput.value
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+  }
+  
+  console.log('🔧 Email handler ready');
+  </script>
+  <!-- Fast Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
   <script>
     // App State
     let tripData = {
@@ -898,6 +1033,9 @@ extraJS: |
     let bookingMap = null;
     let originMarker = null;
     let destinationMarker = null;
+    let currentRoute = null;
+    let searchTimeout = null;
+    const searchCache = new Map();
     let routePolyline = null;
     
     // Trip duration variables
@@ -1024,6 +1162,9 @@ extraJS: |
     
     // Restore UI elements
     function restoreUIState(state) {
+      // Skip if no state provided
+      if (!state) return;
+      
       // Restore route inputs
       if (state.routeInputs && state.routeInputs.length > 0) {
         state.routeInputs.forEach(inputData => {
@@ -1071,7 +1212,7 @@ extraJS: |
         
         // Recalculate route after a short delay
         setTimeout(() => {
-          calculateSequentialRoute();
+          calculateRoute();
         }, 1000);
       }
       
@@ -1168,14 +1309,32 @@ extraJS: |
     // Clear map elements
     function clearMapElements() {
       if (bookingMap) {
+        console.log('🧹 Clearing all map elements...');
+        
         // Remove all markers
         if (originMarker && bookingMap.hasLayer(originMarker)) {
           bookingMap.removeLayer(originMarker);
           originMarker = null;
+          console.log('✅ Origin marker cleared');
         }
         if (destinationMarker && bookingMap.hasLayer(destinationMarker)) {
           bookingMap.removeLayer(destinationMarker);
           destinationMarker = null;
+          console.log('✅ Destination marker cleared');
+        }
+        
+        // Clear OSRM route (currentRoute)
+        if (typeof currentRoute !== 'undefined' && currentRoute && bookingMap.hasLayer(currentRoute)) {
+          bookingMap.removeLayer(currentRoute);
+          currentRoute = null;
+          console.log('✅ OSRM route (currentRoute) cleared');
+        }
+        
+        // Clear simple route (routePolyline)
+        if (typeof routePolyline !== 'undefined' && routePolyline && bookingMap.hasLayer(routePolyline)) {
+          bookingMap.removeLayer(routePolyline);
+          routePolyline = null;
+          console.log('✅ Simple route (routePolyline) cleared');
         }
         
         // Clear route markers and polylines
@@ -1185,6 +1344,7 @@ extraJS: |
           }
         });
         routeMarkers = [];
+        console.log('✅ Route markers cleared:', routeMarkers.length);
         
         routePolylines.forEach(polyline => {
           if (bookingMap.hasLayer(polyline)) {
@@ -1192,6 +1352,11 @@ extraJS: |
           }
         });
         routePolylines = [];
+        console.log('✅ Route polylines cleared:', routePolylines.length);
+        
+        console.log('🎯 All map elements cleared successfully');
+      } else {
+        console.log('⚠️ Map not initialized, cannot clear elements');
       }
     }
     
@@ -1334,9 +1499,11 @@ extraJS: |
     
     // Initialize the app
     document.addEventListener('DOMContentLoaded', function() {
-      initializeMap();
       setupEventListeners();
       getCurrentLocation();
+      
+      // Initialize map with small delay to ensure Leaflet is loaded
+      setTimeout(initializeMap, 100);
       
       // Initialize trip dates
       const today = new Date();
@@ -1379,20 +1546,217 @@ extraJS: |
       }, 30000);
     });
     
-    // Initialize map
+    // Initialize Leaflet map with performance optimizations
     function initializeMap() {
+      if (typeof L === 'undefined') {
+        setTimeout(initializeMap, 100);
+        return;
+      }
+      
       const phoenixLocation = [30.3165, 78.0322];
       
-      bookingMap = L.map('booking-map').setView(phoenixLocation, 11);
+      // Initialize map with performance settings
+      bookingMap = L.map('booking-map', {
+        center: phoenixLocation,
+        zoom: 11,
+        zoomControl: true,
+        attributionControl: false,
+        preferCanvas: true,
+        renderer: L.canvas()
+      });
       
+      // Add fast tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap',
+        maxZoom: 18,
+        updateWhenIdle: true,
+        keepBuffer: 2
       }).addTo(bookingMap);
       
       // Add click handler for destination selection
       bookingMap.on('click', function(e) {
         setDestination(e.latlng.lat, e.latlng.lng, 'Selected Location');
       });
+      
+      console.log('🗺️ Leaflet map initialized successfully');
+      
+      // Restore trip data if it exists
+      if (tripData.origin) {
+        setOrigin(tripData.origin.lat, tripData.origin.lng, tripData.origin.name);
+      }
+      if (tripData.destination) {
+        setDestination(tripData.destination.lat, tripData.destination.lng, tripData.destination.name);
+      }
+    }
+    
+    // Get real car route using OSRM (from working implementation)
+    async function getOSRMRoute(coordinates) {
+      try {
+        console.log('🚗 Getting OSRM route for coordinates:', coordinates);
+        
+        // Format coordinates for OSRM: lon,lat;lon,lat...
+        const coordString = coordinates.map(coord => `${coord.lng},${coord.lat}`).join(';');
+        
+        // Use public OSRM server (free but rate-limited)
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson&steps=false`;
+        
+        console.log('🌐 OSRM URL:', osrmUrl);
+        console.log('📍 Coordinate string:', coordString);
+        
+        const response = await fetch(osrmUrl);
+        console.log('📡 OSRM Response status:', response.status, response.statusText);
+        
+        if (!response.ok) {
+          console.error('❌ OSRM API HTTP error:', response.status, response.statusText);
+          throw new Error(`OSRM API error: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('📊 OSRM Response data:', data);
+        
+        if (data.code !== 'Ok') {
+          console.error('❌ OSRM API returned error code:', data.code, data.message);
+          throw new Error(`OSRM API error: ${data.code} - ${data.message || 'Unknown error'}`);
+        }
+        
+        if (!data.routes || data.routes.length === 0) {
+          console.error('❌ No routes found in OSRM response');
+          throw new Error('No route found by OSRM');
+        }
+        
+        const route = data.routes[0];
+        console.log('🛣️ Route geometry points:', route.geometry?.coordinates?.length || 0);
+        
+        console.log('✅ OSRM route received:', {
+          distance: (route.distance / 1000).toFixed(2) + ' km',
+          duration: (route.duration / 60).toFixed(0) + ' min',
+          waypoints: data.waypoints?.length || 0,
+          geometryPoints: route.geometry?.coordinates?.length || 0
+        });
+        
+        return {
+          distance: route.distance / 1000, // Convert meters to km
+          duration: route.duration / 60,   // Convert seconds to minutes
+          geometry: route.geometry,        // GeoJSON geometry for polyline
+          success: true
+        };
+        
+      } catch (error) {
+        console.error('⚠️ OSRM routing failed:', error.message, error);
+        return {
+          success: false,
+          error: error.message
+        };
+      }
+    }
+
+    // Car route calculation using working OSRM implementation
+    async function calculateRoute() {
+      if (!tripData.origin || !tripData.destination) return;
+      
+      // Check if we have waypoints - if so, use sequential route calculation
+      const waypointElements = document.querySelectorAll('.route-input[data-type="waypoint"]');
+      if (waypointElements.length > 0) {
+        console.log(`🗺️ Found ${waypointElements.length} waypoints, using sequential route calculation`);
+        return calculateSequentialRoute();
+      }
+      
+      console.log('🗺️ Simple origin→destination route');
+      
+      // Remove existing routes (clear all route variables)
+      if (currentRoute) {
+        bookingMap.removeLayer(currentRoute);
+        currentRoute = null;
+      }
+      
+      if (routePolyline) {
+        bookingMap.removeLayer(routePolyline);
+        routePolyline = null;
+      }
+      
+      // Clear any existing route polylines
+      routePolylines.forEach(polyline => {
+        if (bookingMap.hasLayer(polyline)) {
+          bookingMap.removeLayer(polyline);
+        }
+      });
+      routePolylines = [];
+      
+      console.log('🚗 Calculating car route with OSRM...');
+      console.log('📍 Origin:', tripData.origin.lat, tripData.origin.lng);
+      console.log('📍 Destination:', tripData.destination.lat, tripData.destination.lng);
+      
+      try {
+        // Prepare coordinates for OSRM
+        const coordinates = [
+          { lat: tripData.origin.lat, lng: tripData.origin.lng, name: tripData.origin.name },
+          { lat: tripData.destination.lat, lng: tripData.destination.lng, name: tripData.destination.name }
+        ];
+        
+        const osrmResult = await getOSRMRoute(coordinates);
+        
+        if (osrmResult.success) {
+          // Use OSRM results
+          tripData.distance = Math.round(osrmResult.distance);
+          tripData.duration = Math.round(osrmResult.duration);
+          
+          // Update map with OSRM route geometry
+          updateMapRoute(coordinates, osrmResult.geometry);
+          
+          console.log(`🗺️ OSRM route calculated: ${tripData.distance} km, ${tripData.duration} min`);
+          
+        } else {
+          // Fallback to straight line calculation
+          console.log('🔄 Falling back to Haversine calculation');
+          const distance = calculateDistance(
+            tripData.origin.lat, tripData.origin.lng,
+            tripData.destination.lat, tripData.destination.lng
+          );
+          
+          const roadDistance = Math.round(distance * 1.4); // Road factor for mountain roads
+          const estimatedDuration = Math.round(roadDistance * 1.5); // 1.5 min per km
+          
+          tripData.distance = roadDistance;
+          tripData.duration = estimatedDuration;
+          
+          // Update map with fallback route (no geometry, will draw straight line)
+          updateMapRoute(coordinates, null);
+          
+          console.log(`📏 Fallback route calculated: ${tripData.distance} km, ${tripData.duration} min`);
+        }
+        
+        // Update UI
+        calculateFares();
+        updateBookingSummary();
+        
+        // Update distance display
+        const routeDistanceText = document.getElementById('route-distance-text');
+        if (routeDistanceText) {
+          routeDistanceText.textContent = `${tripData.distance} km • ${Math.round(tripData.duration / 60)}h ${tripData.duration % 60}m`;
+        }
+        
+      } catch (error) {
+        console.error('❌ Route calculation failed:', error);
+        // Fallback calculation already handled above
+      }
+    }
+    
+    // Fallback route calculation (straight line with road factor)
+    function calculateFallbackRoute() {
+      if (!tripData.origin || !tripData.destination) return;
+      
+      const distance = calculateDistance(
+        tripData.origin.lat, tripData.origin.lng,
+        tripData.destination.lat, tripData.destination.lng
+      );
+      
+      tripData.distance = Math.round(distance * 1.3); // Add 30% for road distance
+      tripData.duration = Math.round(tripData.distance / 50 * 60); // Assume 50 km/h average
+      
+      console.log(`📏 Fallback route calculated: ${tripData.distance} km, ${tripData.duration} min`);
+      
+      calculateFares();
+      updateBookingSummary();
     }
     
     // Setup event listeners
@@ -1464,11 +1828,7 @@ extraJS: |
         }
       });
       
-      // Setup booking form submission
-      const bookingForm = document.getElementById('booking-form');
-      if (bookingForm) {
-        bookingForm.addEventListener('submit', handleBookingFormSubmit);
-      }
+      // Booking form submission handled by inline event listener only
     }
     
     // Get user's current location
@@ -1499,21 +1859,43 @@ extraJS: |
         originInput.value = name;
       }
       
-      if (originMarker) {
-        bookingMap.removeLayer(originMarker);
+      // Check if map is ready
+      if (!bookingMap) {
+        console.log('Map not ready yet, skipping marker placement');
+        return;
       }
       
+      // Clear existing origin marker and routes
+      if (originMarker) {
+        bookingMap.removeLayer(originMarker);
+        originMarker = null;
+      }
+      
+      // Clear any existing routes since origin changed
+      if (currentRoute) {
+        bookingMap.removeLayer(currentRoute);
+        currentRoute = null;
+      }
+      if (routePolyline) {
+        bookingMap.removeLayer(routePolyline);
+        routePolyline = null;
+      }
+      
+      // Create fast marker with custom icon
+      const originIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<div style="background-color: #28a745; border: 2px solid #fff; border-radius: 50%; width: 16px; height: 16px;"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+      
       originMarker = L.marker([lat, lng], {
-        icon: L.divIcon({
-          className: 'custom-marker',
-          html: '<div class="marker-origin">A</div>',
-          iconSize: [30, 30],
-          iconAnchor: [15, 30]
-        })
+        icon: originIcon,
+        title: name
       }).addTo(bookingMap);
       
       updateMapView();
-      calculateSequentialRoute(); // Async call // Async call - will update summary when complete
+      calculateRoute(); // Calculate route with fast distance calculation
     }
     
     // Set destination location
@@ -1550,35 +1932,76 @@ extraJS: |
         destinationInput.value = name;
       }
       
-      if (destinationMarker) {
-        bookingMap.removeLayer(destinationMarker);
+      // Check if map is ready
+      if (!bookingMap) {
+        console.log('Map not ready yet, skipping marker placement');
+        return;
       }
       
+      // Clear existing destination marker and routes
+      if (destinationMarker) {
+        bookingMap.removeLayer(destinationMarker);
+        destinationMarker = null;
+      }
+      
+      // Clear any existing routes since destination changed
+      if (currentRoute) {
+        bookingMap.removeLayer(currentRoute);
+        currentRoute = null;
+      }
+      if (routePolyline) {
+        bookingMap.removeLayer(routePolyline);
+        routePolyline = null;
+      }
+      
+      // Create fast marker with custom icon
+      const destIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: '<div style="background-color: #dc3545; border: 2px solid #fff; border-radius: 50%; width: 16px; height: 16px;"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+      
       destinationMarker = L.marker([lat, lng], {
-        icon: L.divIcon({
-          className: 'custom-marker',
-          html: '<div class="marker-destination">B</div>',
-          iconSize: [30, 30],
-          iconAnchor: [15, 30]
-        })
+        icon: destIcon,
+        title: name
       }).addTo(bookingMap);
       
       updateMapView();
-      calculateSequentialRoute(); // Async call // Async call - will update summary when complete
+      calculateRoute(); // Calculate route with fast distance calculation
     }
     
-    // Search for locations
-    async function searchLocation(query, type) {
-      try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`);
-        const results = await response.json();
-        
-        if (results && results.length > 0) {
-          showLocationSuggestions(results, type);
-        }
-      } catch (error) {
-        console.error('Location search failed:', error);
+    // Fast location search using Nominatim with caching
+    function searchLocation(query, type) {
+      if (!query || query.length < 3) return;
+      
+      // Check cache first
+      const cacheKey = query.toLowerCase();
+      if (searchCache.has(cacheKey)) {
+        showLocationSuggestions(searchCache.get(cacheKey), type);
+        return;
       }
+      
+      // Clear previous timeout
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      
+      // Debounce search requests
+      searchTimeout = setTimeout(async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(query + ' Uttarakhand India')}&bounded=1&viewbox=77.5,31.0,79.0,29.5`
+          );
+          const results = await response.json();
+          
+          // Cache results
+          searchCache.set(cacheKey, results);
+          showLocationSuggestions(results, type);
+        } catch (error) {
+          console.error('Location search error:', error);
+        }
+      }, 300);
     }
     
     // Show location suggestions
@@ -1654,41 +2077,10 @@ extraJS: |
         })
       }).addTo(bookingMap);
       
-      calculateSequentialRoute(); // Async call // Async call
+      calculateRoute(); // Async call // Async call
     }
     
-    // Calculate route and distance
-    function calculateRoute() {
-      if (!tripData.origin || !tripData.destination) return;
-      
-      // Remove existing route
-      if (routePolyline) {
-        bookingMap.removeLayer(routePolyline);
-      }
-      
-      // Calculate distance (Haversine formula with road factor)
-      const distance = calculateDistance(
-        tripData.origin.lat, tripData.origin.lng,
-        tripData.destination.lat, tripData.destination.lng
-      );
-      
-      tripData.distance = Math.round(distance * 1.3); // Add 30% for road distance
-      tripData.duration = Math.round(tripData.distance / 50 * 60); // Assume 50 km/h average
-      
-      // Draw route line
-      routePolyline = L.polyline([
-        [tripData.origin.lat, tripData.origin.lng],
-        [tripData.destination.lat, tripData.destination.lng]
-      ], {
-        color: '#2563eb',
-        weight: 4,
-        opacity: 0.8
-      }).addTo(bookingMap);
-      
-      updateMapView();
-      calculateFares();
-      updateBookingSummary();
-    }
+    // REMOVED: Duplicate calculateRoute function - using OSRM version instead
     
     // Calculate distance using Haversine formula (fallback)
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -1819,12 +2211,14 @@ extraJS: |
     
     // Update map view to show both markers
     function updateMapView() {
+      if (!bookingMap) return;
+      
       if (tripData.origin && tripData.destination) {
         const bounds = L.latLngBounds([
           [tripData.origin.lat, tripData.origin.lng],
           [tripData.destination.lat, tripData.destination.lng]
         ]);
-        bookingMap.fitBounds(bounds, { padding: [50, 50] });
+        bookingMap.fitBounds(bounds, { padding: [20, 20] });
       } else if (tripData.origin) {
         bookingMap.setView([tripData.origin.lat, tripData.origin.lng], 13);
       }
@@ -1998,7 +2392,11 @@ extraJS: |
           
           // Add to waypoints array
           waypoints.push(waypointData);
-          console.log(`Added waypoint data:`, waypointData);
+          console.log(`✅ Added waypoint data:`, waypointData);
+          console.log(`📍 Waypoint coordinates: ${waypointData.lat}, ${waypointData.lng}`);
+        } else {
+          console.log('❌ Cannot create waypoint - missing destination coordinates');
+          console.log('tripData.destination:', tripData.destination);
         }
         
         // Add swap handle if not present
@@ -2072,6 +2470,11 @@ extraJS: |
       
       // Clean up any duplicate waypoints
       removeDuplicateWaypoints();
+      
+      // Recalculate route with new waypoint structure
+      setTimeout(() => {
+        calculateRoute();
+      }, 500); // Small delay to allow DOM updates
     }
     
     // Remove duplicate waypoints
@@ -2223,7 +2626,7 @@ extraJS: |
       updateRouteConnectingLines();
       
       // Recalculate route
-      calculateSequentialRoute(); // Async call
+      calculateRoute(); // Async call
       
       // Re-setup event listeners
       setupDestinationInputListeners();
@@ -2345,7 +2748,7 @@ extraJS: |
         }
         
         // Recalculate route and update types
-        calculateSequentialRoute(); // Async call
+        calculateRoute(); // Async call
         updateRouteConnectingLines();
         updateSequenceNumbers();
         updateRouteTypes();
@@ -2462,7 +2865,7 @@ extraJS: |
       suggestionsDiv.style.display = 'none';
       
       // Recalculate sequential route
-      calculateSequentialRoute(); // Async call
+      calculateRoute(); // Async call
     }
     
     // Toggle return trip functionality
@@ -2471,7 +2874,7 @@ extraJS: |
       isReturnTrip = returnCheckbox.checked;
       
       // Recalculate route with return trip consideration
-      calculateSequentialRoute(); // Async call
+      calculateRoute(); // Async call
     }
     
     // Calculate sequential route through all waypoints
@@ -2502,26 +2905,44 @@ extraJS: |
             locationData = tripData.destination;
           } else if (dataType === 'waypoint') {
             // Find waypoint data with detailed logging
-            console.log(`Looking for waypoint data for element ID: ${element.id}, value: ${inputValue}`);
+            console.log(`🔍 Looking for waypoint data for element ID: ${element.id}, value: "${inputValue}"`);
             console.log('Available waypoints:', waypoints);
             
+            // First try to find by element ID
             locationData = waypoints.find(wp => wp.id === element.id);
-            if (!locationData) {
-              locationData = waypoints.find(wp => wp.name === inputValue);
+            if (locationData) {
+              console.log('✅ Found waypoint by ID:', locationData);
             }
             
-            // Fallback to tripData if waypoint was moved
+            // If not found by ID, try by name
             if (!locationData) {
-              console.log('Waypoint not found in waypoints array, checking tripData...');
+              locationData = waypoints.find(wp => wp.name === inputValue);
+              if (locationData) {
+                console.log('✅ Found waypoint by name:', locationData);
+              }
+            }
+            
+            // Enhanced fallback with more thorough search
+            if (!locationData) {
+              console.log('❌ Waypoint not found in waypoints array, checking tripData...');
+              
+              // Check if this waypoint matches current origin
               if (tripData.origin && tripData.origin.name === inputValue) {
                 locationData = tripData.origin;
-                console.log('Found in tripData.origin');
-              } else if (tripData.destination && tripData.destination.name === inputValue) {
-                locationData = tripData.destination;
-                console.log('Found in tripData.destination');
+                console.log('✅ Found in tripData.origin:', locationData);
               }
-            } else {
-              console.log('Found waypoint data:', locationData);
+              // Check if this waypoint matches current destination
+              else if (tripData.destination && tripData.destination.name === inputValue) {
+                locationData = tripData.destination;
+                console.log('✅ Found in tripData.destination:', locationData);
+              }
+              // Final fallback: trigger geocoding for missing waypoint
+              else {
+                console.log('🌐 Waypoint coordinates missing, will need geocoding');
+                // For now, we'll skip this point and continue with available points
+                console.log(`⚠️ Skipping waypoint "${inputValue}" due to missing coordinates`);
+                return; // Skip this iteration
+              }
             }
           }
           
@@ -2573,6 +2994,7 @@ extraJS: |
       
       // Update map with route visualization
       updateMapRoute(routeForCalculation, routeResult.geometry);
+      console.log(`🗺️ Route displayed on map: ${routeResult.distance} km`);
       
       // Update displays
       updateRouteDisplay(routeForCalculation, routeResult.distance, routeResult.method);
@@ -2701,6 +3123,12 @@ extraJS: |
         bookingMap.removeLayer(destinationMarker);
       }
       
+      // Clear currentRoute if it exists
+      if (typeof currentRoute !== 'undefined' && currentRoute && bookingMap.hasLayer(currentRoute)) {
+        bookingMap.removeLayer(currentRoute);
+        currentRoute = null;
+      }
+      
       routeMarkers.forEach(marker => {
         if (bookingMap.hasLayer(marker)) {
           bookingMap.removeLayer(marker);
@@ -2768,9 +3196,9 @@ extraJS: |
               [routePoints[i].lat, routePoints[i].lng],
               [routePoints[i + 1].lat, routePoints[i + 1].lng]
             ], {
-              color: '#0ea5e9',
+              color: '#dc3545', // Red color for fallback routes
               weight: 4,
-              opacity: 0.7,
+              opacity: 0.8,
               dashArray: '10, 5' // Dashed line to indicate it's not real roads
             }).addTo(bookingMap);
             
@@ -3113,86 +3541,6 @@ extraJS: |
     // TODO: Replace with your actual Google Apps Script web app URL
     // const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxzB28R1bxI5ZXoR2w_eSRdo1PjPqKiAtxpm7DWeLzrMt5YGdb7-OB7WavrVzr6IzT0w/exec';
     
-    // Handle booking form submission
-    function handleBookingFormSubmit(event) {
-      event.preventDefault();
-      
-      const form = event.target;
-      const formData = new FormData(form);
-      const submitButton = form.querySelector('button[type="submit"]');
-      const originalButtonText = submitButton.innerHTML;
-      
-      // Disable button and show loading state
-      submitButton.disabled = true;
-      submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
-      
-      // Prepare form data
-      const bookingData = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        pickup_time: formData.get('pickup_time'),
-        message: formData.get('message'),
-        timestamp: new Date().toISOString(),
-        source: 'Phoenix Cabs Booking Form'
-      };
-      
-      // Try to submit to Google Apps Script first, fallback to mailto
-      submitToGoogleScript(bookingData, form, submitButton, originalButtonText);
-    }
-    
-    // Submit to Google Apps Script
-    async function submitToGoogleScript(bookingData, form, submitButton, originalButtonText) {
-      try {
-        // Check if Google Apps Script URL is configured
-        // if (GOOGLE_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
-        //  throw new Error('Google Apps Script not configured');
-        //}
-        
-        const response = await fetch('https://phoenix.neerajshahapp.workers.dev', {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bookingData)
-        });
-        
-        if (response.ok) {
-          const result = await response.json();
-          showAlert('Booking request sent successfully! We will contact you shortly.', 'success');
-          form.reset();
-          updateBookingMessageField(); // Refresh the message field
-        } else {
-          throw new Error('Failed to submit booking');
-        }
-      } catch (error) {
-        console.warn('Google Apps Script submission failed, falling back to mailto:', error);
-        fallbackToMailto(bookingData);
-      } finally {
-        // Re-enable button
-        submitButton.disabled = false;
-        submitButton.innerHTML = originalButtonText;
-      }
-    }
-    
-    // Fallback to mailto if Google Apps Script fails
-    function fallbackToMailto(bookingData) {
-      const subject = encodeURIComponent(`Phoenix Cabs Booking Request - ${bookingData.name}`);
-      const body = encodeURIComponent(bookingData.message + '\n\n' + 
-        `Customer Details:\n` +
-        `Name: ${bookingData.name}\n` + 
-        `Email: ${bookingData.email}\n` + 
-        `Phone: ${bookingData.phone}\n` + 
-        `Preferred Pickup Time: ${bookingData.pickup_time || 'Not specified'}\n\n` +
-        `Submitted: ${new Date(bookingData.timestamp).toLocaleString('en-IN')}`
-      );
-      
-      const mailtoLink = `mailto:{{ site.email }}?subject=${subject}&body=${body}`;
-      window.location.href = mailtoLink;
-      
-      showAlert('Your email client will open with the booking request. You can also call us at {{ site.phone }}', 'info');
-    }
     
     // Book now function
     function bookNow() {
@@ -3694,24 +4042,55 @@ extraJS: |
       const captchaValid = validateCaptcha();
       
       let allFieldsValid = true;
+      const missingFields = [];
       requiredFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (!field || !field.value.trim()) {
           allFieldsValid = false;
+          missingFields.push(fieldId);
         }
       });
       
       // Check if trip data is complete
       const hasValidTrip = tripData && tripData.selectedVehicle && tripData.distance > 0;
       
+      console.log('Form validation:', {
+        allFieldsValid,
+        captchaValid,
+        hasValidTrip,
+        missingFields,
+        tripData: tripData ? { selectedVehicle: tripData.selectedVehicle, distance: tripData.distance } : null
+      });
+      
       if (submitBtn) {
-        submitBtn.disabled = !(allFieldsValid && captchaValid && hasValidTrip);
+        const shouldEnable = allFieldsValid && captchaValid && hasValidTrip;
+        submitBtn.disabled = !shouldEnable;
+        console.log('Submit button enabled:', shouldEnable);
       }
     }
     
-    // Initialize captcha on page load
+    // Initialize captcha on page load  
     document.addEventListener('DOMContentLoaded', function() {
       generateCaptcha();
+      
+      // Backup event listener removed - using inline handler only
+      
+      // Setup booking form submission
+      const bookingForm = document.getElementById('booking-form');
+      if (bookingForm) {
+        console.log('Setting up booking form submission');
+        bookingForm.addEventListener('submit', async function(event) {
+          try {
+            await handleFormSubmission(event, 'booking');
+          } catch (error) {
+            console.error('Form submission error:', error);
+            // Show error to user if needed
+            if (typeof showAlert === 'function') {
+              showAlert('An error occurred. Please try again.', 'error');
+            }
+          }
+        });
+      }
       
       // Add event listeners for form validation
       const formInputs = ['customer-name', 'customer-email', 'customer-phone', 'captcha-input'];
@@ -3758,6 +4137,30 @@ extraJS: |
 ---
 
 {%- set assetPath = "../" if page.url != "/" else "" -%}
+
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Book Your Journey</span>
+          <h1 class="hero-title">Book Now & <span class="accent-text">Calculate Fare</span></h1>
+          <p class="hero-subtitle">
+            Plan your journey with Phoenix Cabs' smart booking system. Get instant fare estimates, select your preferred vehicle, and book your ride in minutes with our interactive route planner.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Book Now</span>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Modern Hero Section -->
 
 <!-- Modern Booking Interface -->
 <div class="booking-container">
@@ -3848,20 +4251,6 @@ extraJS: |
     <!-- Map Section -->
     <div class="map-section">
       <div id="booking-map"></div>
-      
-      <div class="map-overlay">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h6 style="margin: 0; color: var(--dark-color);">
-            <i class="bi bi-map me-2"></i>Interactive Route Map
-          </h6>
-          <button class="btn" style="padding: 0.5rem; font-size: 12px; background: var(--light-color);" onclick="getCurrentLocation()">
-            <i class="bi bi-crosshair"></i> My Location
-          </button>
-        </div>
-        <p style="margin: 0.5rem 0 0 0; font-size: 14px; color: #6b7280;">
-          Click on the map to set your destination or use the search above
-        </p>
-      </div>
     </div>
   </div>
 
@@ -3978,7 +4367,7 @@ extraJS: |
           Complete Your Booking
         </h4>
         
-        <form id="booking-form" class="booking-form">
+        <form id="booking-form" class="booking-form" method="post" action="#">
           <div class="row gy-3">
             <div class="col-md-6">
               <label for="customer-name" class="form-label">Full Name *</label>

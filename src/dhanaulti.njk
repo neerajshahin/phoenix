@@ -5,61 +5,123 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Dhanaulti</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current" >Dehradun to Dhanaulti</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- Info Section -->
-<section id="features" class="features section">
-
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Dehradun to Dhanaulti</h2>
-    <p>
-      "Set out on a picturesque journey from Dehradun to Dhanaulti, where the winding roads and verdant hills lead you to a tranquil escape amidst the Himalayan beauty."
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/dhanaulti-service.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h2 style="font-weight: bold;" >Dehradun to Dhanaulti <span style="color: #ff914d;">TAXI SERVICE</span></h2>
-        <p class="fst-italic">    
-          The drive from Dehradun to Dhanaulti covers approximately 60 kilometers, offering a scenic route through lush forests and picturesque landscapes. With <span style="color: #ff914d;"> Phoenix Cabs</span>, you can enjoy a comfortable and safe journey, as their experienced drivers navigate the charming, winding roads with ease. Whether you're heading to Dhanaulti for its serene beauty or a relaxing getaway, <span style="color: #ff914d;">Phoenix Cabs</span> ensures a smooth and pleasant trip, allowing you to focus on enjoying the journey.
-        </p>     
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Hill Retreat</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Dhanaulti</span></h1>
+          <p class="hero-subtitle">
+            Journey to the peaceful hill station of Dhanaulti, nestled among towering deodar and oak forests. Experience the tranquil beauty of this eco-friendly destination with Phoenix Cabs.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Dhanaulti</span>
+          </nav>
+        </div>
       </div>
     </div>
-    <!-- Features Item -->
-
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-        <img src="{{assetPath}}assets/img/dhanaulti-service-2.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-        <h3>Distance between Dehradun and Dhanaulti</h3>
-        <p class="fst-italic">
-          Experience a serene journey from Dehradun to the tranquil hills of Dhanaulti with Phoenix Cabs. Enjoy the scenic drive through lush forests and winding roads, ensuring a safe and comfortable ride to this peaceful retreat. Trust Phoenix Cabs for a reliable and delightful travel experience amidst nature's beauty.
-        </p>
-      </div>
-    </div><!-- Features Item -->
   </div>
+</section>
+<!-- End Modern Hero Section -->
 
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-box">
+          <img src="{{assetPath}}assets/img/dhanaulti-service.jpg" alt="Dehradun to Dhanaulti Taxi Service" class="img-fluid services-img">
+          <h2>Dehradun to Dhanaulti Taxi Service</h2>
+          <p>
+            Escape to the peaceful hill retreat of Dhanaulti with Phoenix Cabs. Journey through dense deodar and oak forests to this eco-friendly destination, perfect for those seeking tranquility away from crowded hill stations.
+          </p>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Journey Details</h3>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> Approximately 60 km</li>
+                <li><i class="bi bi-clock"></i> <strong>Travel Time:</strong> 1.5-2 hours</li>
+                <li><i class="bi bi-road"></i> <strong>Route:</strong> Via Mussoorie Road through scenic forests</li>
+                <li><i class="bi bi-mountain"></i> <strong>Altitude:</strong> 2,286 meters above sea level</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Best Time to Visit</h3>
+              <ul>
+                <li><i class="bi bi-sun"></i> <strong>Summer:</strong> April to June (Pleasant weather)</li>
+                <li><i class="bi bi-snow"></i> <strong>Winter:</strong> December to February (Snow activities)</li>
+                <li><i class="bi bi-cloud-rain"></i> <strong>Monsoon:</strong> July to September (Lush greenery)</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>What to Explore in Dhanaulti</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Eco Park:</strong> Beautiful park with adventure activities and nature trails</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Surkanda Devi Temple:</strong> Ancient temple with panoramic Himalayan views</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Apple Orchards:</strong> Visit local orchards and taste fresh mountain apples</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Potato Farm:</strong> Experience organic farming in the hills</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Adventure Sports:</strong> Rappelling, rock climbing, and valley crossing</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Nature Walks:</strong> Peaceful trails through deodar and rhododendron forests</li>
+          </ul>
+
+          <h3>Why Choose Phoenix Cabs for Dhanaulti?</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-shield-check"></i> <strong>Hill Station Experts:</strong> Drivers experienced with mountain roads</li>
+                <li><i class="bi bi-car-front"></i> <strong>Comfortable Vehicles:</strong> Well-maintained cars suitable for hill travel</li>
+                <li><i class="bi bi-clock"></i> <strong>Flexible Timing:</strong> Early morning or evening departures available</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-telephone"></i> <strong>24/7 Support:</strong> Customer assistance throughout your journey</li>
+                <li><i class="bi bi-currency-rupee"></i> <strong>Transparent Pricing:</strong> No hidden charges or extra fees</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Local Knowledge:</strong> Insights about best spots and local attractions</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>
+            <strong>Ready to discover Dhanaulti's natural beauty?</strong> Book your taxi today! Call <strong>{{ site.phone }}</strong> for competitive rates and a memorable hill station experience.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="services-list">
+          <a href="{{assetPath}}services/index.html" class="active">All Services</a>
+          <a href="{{assetPath}}mussorie/index.html">Mussoorie</a>
+          <a href="{{assetPath}}chakrata/index.html">Chakrata</a>
+          <a href="{{assetPath}}new-tehri/index.html">New Tehri</a>
+          <a href="{{assetPath}}auli/index.html">Auli</a>
+          <a href="{{assetPath}}chopta/index.html">Chopta</a>
+        </div>
+
+        <div class="help-box d-flex flex-column justify-content-center align-items-center">
+          <i class="bi bi-headset help-icon"></i>
+          <h4>Need Assistance?</h4>
+          <p class="d-flex align-items-center mt-2 mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            <span>{{ site.phone }}</span>
+          </p>
+          <p class="d-flex align-items-center mt-1 mb-0">
+            <i class="bi bi-whatsapp me-2"></i>
+            <span>Hill Station Specialists</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Call Us Button -->

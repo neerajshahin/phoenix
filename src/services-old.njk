@@ -667,21 +667,29 @@ extraJS: |
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg);
- background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Services</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current">Services</li>
-      </ol>
-    </nav>
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Our Services</span>
+          <h1 class="hero-title">Phoenix Cabs <span class="accent-text">Services</span></h1>
+          <p class="hero-subtitle">
+            Discover our comprehensive range of taxi services designed to meet all your travel needs. From local rides to pilgrimage journeys, experience comfort, safety, and reliability with Phoenix Cabs.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Services</span>
+          </nav>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<!-- End Page Title -->
+</section>
+<!-- End Modern Hero Section -->
 
 <section id="constructions" class="constructions section">
   <!-- Section Title -->

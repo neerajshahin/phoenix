@@ -5,61 +5,145 @@ bodyClass: services-page
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
-<!-- Page Title -->
-<div class="page-title dark-background" style="background-image: url({{assetPath}}assets/img/bg-dark.jpg); background-repeat: no-repeat;
-background-position: center;">
-  <div class="container position-relative">
-    <h1>Dehradun to Mathura</h1>
-    <nav class="breadcrumbs">
-      <ol>
-        <li><a href="{{assetPath}}index.html">Home</a></li>
-        <li class="current" >Dehradun to Mathura</li>
-      </ol>
-    </nav>
-  </div>
-</div>
-<!-- End Page Title -->
-
-<!-- Info Section -->
-<section id="features" class="features section">
-
-  <!-- Section Title -->
-  <div class="container section-title" data-aos="fade-up">
-    <h2>Dehradun to Mathura</h2>
-    <p>
-      "Travel from the scenic hills of Dehradun to the spiritual charm of Mathura, the city of Lord Krishna."
-    </p>
-  </div>
-  <!-- End Section Title -->
-
+<!-- Modern Hero Section -->
+<section class="about-hero dark-background modern-hero">
+  <div class="hero-overlay"></div>
   <div class="container">
-
-    <div class="row gy-4 align-items-center features-item" style="margin-bottom: 5rem;">
-      <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-        <img src="{{assetPath}}assets/img/mathura.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-        <h2 style="font-weight: bold;" >Dehradun to Mathura <span style="color: #ff914d;">TAXI SERVICE</span></h2>
-        <p class="fst-italic">    
-          Travel from the scenic hills of Dehradun to the spiritual charm of Mathura with <span style="color: #ff914d;">Phoenix Cabs</span>. Enjoy a comfortable and hassle-free journey through picturesque landscapes and vibrant towns, ensuring a smooth ride to the city of Lord Krishna. Book your trip with <span style="color: #ff914d;">Phoenix Cabs</span> for a safe, reliable, and delightful travel experience.
-        </p>     
+    <div class="row align-items-center min-vh-50">
+      <div class="col-lg-12" data-aos="fade-right" data-aos-delay="100">
+        <div class="hero-content">
+          <span class="section-badge">Sacred Journey</span>
+          <h1 class="hero-title">Dehradun to <span class="accent-text">Mathura</span></h1>
+          <p class="hero-subtitle">
+            Journey to the birthplace of Lord Krishna with Phoenix Cabs. Experience the spiritual essence of Mathura, where every corner resonates with divine stories and ancient traditions.
+          </p>
+          <nav class="modern-breadcrumbs">
+            <a href="{{assetPath}}index.html">Home</a>
+            <span class="separator">/</span>
+            <a href="{{assetPath}}services/index.html">Services</a>
+            <span class="separator">/</span>
+            <span class="current">Mathura</span>
+          </nav>
+        </div>
       </div>
     </div>
-    <!-- Features Item -->
-
-    <div class="row gy-4 align-items-center features-item">
-      <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-        <img src="{{assetPath}}assets/img/mathura.jpg" class="img-fluid" alt="">
-      </div>
-      <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-        <h3>Distance between Dehradun and Mathura</h3>
-        <p class="fst-italic">
-          The distance from Dehradun to Mathura is approximately 310 kilometers, and the journey typically takes around 5 to 6 hours by road. With <span style="color: #ff914d;">Phoenix Cabs</span>, you can expect a comfortable and safe trip through diverse landscapes. Their experienced drivers ensure smooth travel, allowing you to enjoy the journey to this sacred destination.
-        </p>
-      </div>
-    </div><!-- Features Item -->
   </div>
+</section>
+<!-- End Modern Hero Section -->
 
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-box">
+          <img src="{{assetPath}}assets/img/mathura.jpg" alt="Dehradun to Mathura Taxi Service" class="img-fluid services-img">
+          <h2>Dehradun to Mathura Taxi Service</h2>
+          <p>
+            Journey to the birthplace of Lord Krishna with Phoenix Cabs. Experience the spiritual atmosphere of Mathura, where ancient temples, sacred ghats, and vibrant festivals celebrate the divine love of Radha and Krishna.
+          </p>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Journey Details</h3>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Distance:</strong> Approximately 310 km</li>
+                <li><i class="bi bi-clock"></i> <strong>Travel Time:</strong> 5-6 hours</li>
+                <li><i class="bi bi-road"></i> <strong>Route:</strong> Via Delhi-Agra Highway</li>
+                <li><i class="bi bi-car-front"></i> <strong>Vehicle Options:</strong> AC Sedan, SUV, Tempo Traveller</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3>Best Time to Visit</h3>
+              <ul>
+                <li><i class="bi bi-sun"></i> <strong>Winter:</strong> October to March (Pleasant weather)</li>
+                <li><i class="bi bi-calendar-event"></i> <strong>Janmashtami:</strong> August/September (Grand celebrations)</li>
+                <li><i class="bi bi-heart"></i> <strong>Holi:</strong> March (Festival of colors)</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Sacred Places in Mathura</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Major Temples</h4>
+              <ul>
+                <li><i class="bi bi-building"></i> <strong>Krishna Janmabhoomi:</strong> Lord Krishna's birthplace</li>
+                <li><i class="bi bi-building"></i> <strong>Dwarkadhish Temple:</strong> Beautiful Krishna temple</li>
+                <li><i class="bi bi-building"></i> <strong>Vishram Ghat:</strong> Sacred bathing ghat on Yamuna</li>
+                <li><i class="bi bi-building"></i> <strong>ISKCON Temple:</strong> Modern spiritual center</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h4>Nearby Attractions</h4>
+              <ul>
+                <li><i class="bi bi-geo-alt"></i> <strong>Vrindavan:</strong> 15 km - Radha Krishna temples</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Gokul:</strong> 8 km - Krishna's childhood home</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Barsana:</strong> 50 km - Radha's birthplace</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Goverdhan:</strong> 25 km - Sacred hill</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>Spiritual Experience</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <strong>Evening Aarti:</strong> Witness beautiful temple ceremonies</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Yamuna River:</strong> Take holy dip in sacred waters</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Parikrama:</strong> Sacred circumambulation of holy sites</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Local Prasad:</strong> Taste traditional Krishna bhog</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Cultural Programs:</strong> Classical dance and devotional music</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Shopping:</strong> Religious artifacts and traditional items</li>
+          </ul>
+
+          <h3>Why Choose Phoenix Cabs for Mathura Pilgrimage?</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-shield-check"></i> <strong>Spiritual Sensitivity:</strong> Respectful of religious customs</li>
+                <li><i class="bi bi-clock"></i> <strong>Flexible Schedule:</strong> Adjust timing for temple visits</li>
+                <li><i class="bi bi-geo-alt"></i> <strong>Local Guidance:</strong> Knowledge of best temples and timings</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul>
+                <li><i class="bi bi-car-front"></i> <strong>Comfortable Journey:</strong> Long-distance travel comfort</li>
+                <li><i class="bi bi-telephone"></i> <strong>24/7 Support:</strong> Assistance throughout pilgrimage</li>
+                <li><i class="bi bi-currency-rupee"></i> <strong>Transparent Pricing:</strong> No hidden charges</li>
+              </ul>
+            </div>
+          </div>
+
+          <p>
+            <strong>Ready for your spiritual journey to Mathura?</strong> Book your pilgrimage taxi today! Call <strong>{{ site.phone }}</strong> for a blessed and comfortable journey to Lord Krishna's sacred land.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="services-list">
+          <a href="{{assetPath}}services/index.html" class="active">All Services</a>
+          <a href="{{assetPath}}char-dham/index.html">Char Dham Yatra</a>
+          <a href="{{assetPath}}do-dham/index.html">Do Dham Yatra</a>
+          <a href="{{assetPath}}haridwar/index.html">Haridwar</a>
+          <a href="{{assetPath}}rishikesh/index.html">Rishikesh</a>
+          <a href="{{assetPath}}delhi/index.html">Delhi</a>
+        </div>
+
+        <div class="help-box d-flex flex-column justify-content-center align-items-center">
+          <i class="bi bi-headset help-icon"></i>
+          <h4>Pilgrimage Support</h4>
+          <p class="d-flex align-items-center mt-2 mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            <span>{{ site.phone }}</span>
+          </p>
+          <p class="d-flex align-items-center mt-1 mb-0">
+            <i class="bi bi-whatsapp me-2"></i>
+            <span>Spiritual Journey Specialists</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Call Us Button -->

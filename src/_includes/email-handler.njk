@@ -1,0 +1,195 @@
+<!-- Shared Email Handler Utility for Phoenix Cabs -->
+<script>
+console.log('📧 EMAIL HANDLER: Script loading from include file');
+console.log('📧 EMAIL HANDLER: Current timestamp:', new Date().toISOString());
+// Google Apps Script URL for form submission
+const GOOGLE_SCRIPT_URL = 'https://phoenix.neerajshahapp.workers.dev';
+
+// Shared function to handle form submissions
+async function handleFormSubmission(event, formType = 'contact') {
+  console.log('handleFormSubmission called with formType:', formType);
+  event.preventDefault();
+  
+  const form = event.target;
+  
+  // Validate captcha if it exists
+  if (typeof validateCaptcha === 'function' && !validateCaptcha()) {
+    showAlert('Please solve the captcha correctly.', 'error');
+    return;
+  }
+  const formData = new FormData(form);
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.innerHTML;
+  
+  // Disable button and show loading state
+  submitButton.disabled = true;
+  submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
+  
+  // Prepare form data based on form type
+  const submissionData = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    message: formData.get('message'),
+    timestamp: new Date().toISOString(),
+    source: `Phoenix Cabs ${formType === 'booking' ? 'Booking' : 'Contact'} Form`,
+    formType: formType
+  };
+  
+  // Add pickup time only for booking forms
+  if (formType === 'booking') {
+    submissionData.pickup_time = formData.get('pickup_time');
+  }
+  
+  try {
+    // Try to submit to Google Apps Script first
+    await submitToGoogleScript(submissionData);
+    
+    // Show success message
+    showAlert(
+      `${formType === 'booking' ? 'Booking request' : 'Message'} sent successfully! We will contact you shortly.`, 
+      'success'
+    );
+    
+    // Reset form
+    form.reset();
+    
+    // For booking forms, refresh the message field
+    if (formType === 'booking' && typeof updateBookingMessageField === 'function') {
+      updateBookingMessageField();
+    }
+    
+  } catch (error) {
+    console.warn('Google Apps Script submission failed, falling back to mailto:', error);
+    
+    // Fallback to mailto
+    fallbackToMailto(submissionData, formType);
+    
+    // Show partial success message
+    showAlert(
+      'Your email client will open with the message. You can also call us directly for immediate assistance.', 
+      'info'
+    );
+  } finally {
+    // Re-enable button
+    submitButton.disabled = false;
+    submitButton.innerHTML = originalButtonText;
+  }
+}
+
+// Submit to Google Apps Script
+async function submitToGoogleScript(submissionData) {
+  console.log('Submitting to Google Script:', submissionData);
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(submissionData)
+  });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  const result = await response.json();
+  
+  if (result.status !== 'success') {
+    throw new Error(result.message || 'Unknown error occurred');
+  }
+  
+  return result;
+}
+
+// Fallback to mailto if Google Apps Script fails
+function fallbackToMailto(submissionData, formType) {
+  let subject, body;
+  
+  if (formType === 'booking') {
+    subject = encodeURIComponent(`Phoenix Cabs Booking Request from ${submissionData.name}`);
+    body = encodeURIComponent(submissionData.message);
+  } else {
+    subject = encodeURIComponent(`Phoenix Cabs Inquiry from ${submissionData.name}`);
+    body = encodeURIComponent(
+      `Name: ${submissionData.name}\n` +
+      `Email: ${submissionData.email}\n` +
+      (submissionData.phone ? `Phone: ${submissionData.phone}\n` : '') +
+      `Message: ${submissionData.message}\n\n` +
+      'Please respond to this inquiry at your earliest convenience.'
+    );
+  }
+  
+  const mailtoLink = `mailto:{{ site.email }}?subject=${subject}&body=${body}`;
+  window.location.href = mailtoLink;
+}
+
+// Show alert messages
+function showAlert(message, type = 'info') {
+  // Create alert element
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+  alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+  
+  alertDiv.innerHTML = `
+    <div class="d-flex align-items-center">
+      <i class="bi ${getAlertIcon(type)} me-2"></i>
+      <span>${message}</span>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+  `;
+  
+  // Add to page
+  document.body.appendChild(alertDiv);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (alertDiv.parentNode) {
+      alertDiv.remove();
+    }
+  }, 5000);
+}
+
+// Get appropriate icon for alert type
+function getAlertIcon(type) {
+  const icons = {
+    'success': 'bi-check-circle-fill',
+    'error': 'bi-exclamation-triangle-fill',
+    'warning': 'bi-exclamation-triangle-fill',
+    'info': 'bi-info-circle-fill'
+  };
+  return icons[type] || icons['info'];
+}
+
+// Function to convert the name field to Camel Case (shared utility)
+function convertToCamelCase() {
+  const nameInput = document.getElementById("name");
+  if (nameInput && nameInput.value) {
+    nameInput.value = nameInput.value
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+}
+
+// Test function to manually trigger form submission
+window.testFormSubmission = function() {
+  console.log('🧪 Testing form submission manually');
+  const testData = {
+    name: 'Test User',
+    email: 'test@example.com',
+    phone: '1234567890',
+    message: 'Test message',
+    timestamp: new Date().toISOString(),
+    source: 'Manual Test',
+    formType: 'test'
+  };
+  
+  submitToGoogleScript(testData)
+    .then(() => console.log('✅ Manual test successful'))
+    .catch(error => console.error('❌ Manual test failed:', error));
+};
+
+console.log('🔧 Email handler utility functions loaded. Test with: testFormSubmission()');
+</script>

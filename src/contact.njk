@@ -6,52 +6,278 @@ keywords: contact Phoenix Cabs, book taxi Dehradun, Phoenix Cabs phone number, t
 bodyClass: contact-page
 extraJS: |
   <script>
-    // Function to convert the name field to Camel Case
-    function convertToCamelCase() {
-        const nameInput = document.getElementById("name");
-        if (nameInput && nameInput.value) {
-            nameInput.value = nameInput.value
-                .toLowerCase()
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-        }
+  // Shared Email Handler for Phoenix Cabs
+  console.log('📧 Email handler loaded for contact form');
+  
+  const GOOGLE_SCRIPT_URL = 'https://phoenix.neerajshahapp.workers.dev';
+  
+  async function handleFormSubmission(event, formType = 'contact') {
+    console.log('handleFormSubmission called with formType:', formType);
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    
+    // Validate captcha if it exists
+    if (typeof validateCaptcha === 'function' && !validateCaptcha()) {
+      showAlert('Please solve the captcha correctly.', 'error');
+      return;
     }
-
-    // Lightweight contact form handler
+    
+    // Disable button and show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Sending...';
+    
+    // Prepare form data based on form type
+    const submissionData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      message: formData.get('message'),
+      timestamp: new Date().toISOString(),
+      source: `Phoenix Cabs ${formType === 'booking' ? 'Booking' : 'Contact'} Form`,
+      formType: formType
+    };
+    
+    // Add pickup time only for booking forms
+    if (formType === 'booking') {
+      submissionData.pickup_time = formData.get('pickup_time');
+    }
+    
+    try {
+      console.log('Submitting to Google Script:', submissionData);
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.status !== 'success') {
+        throw new Error(result.message || 'Unknown error occurred');
+      }
+      
+      // Show success message
+      showAlert(
+        `${formType === 'booking' ? 'Booking request' : 'Message'} sent successfully! We will contact you shortly.`, 
+        'success'
+      );
+      
+      // Reset form
+      form.reset();
+      
+      // For booking forms, refresh the message field
+      if (formType === 'booking' && typeof updateBookingMessageField === 'function') {
+        updateBookingMessageField();
+      }
+      
+      // Regenerate captcha if it exists
+      if (typeof generateCaptcha === 'function') {
+        generateCaptcha();
+      }
+      
+    } catch (error) {
+      console.warn('Google Apps Script submission failed:', error);
+      showAlert('Failed to send message. Please try again or call us directly.', 'error');
+    } finally {
+      // Re-enable button
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalButtonText;
+    }
+  }
+  
+  // Show alert messages
+  function showAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    
+    const icons = {
+      'success': 'bi-check-circle-fill',
+      'error': 'bi-exclamation-triangle-fill',
+      'warning': 'bi-exclamation-triangle-fill',
+      'info': 'bi-info-circle-fill'
+    };
+    
+    alertDiv.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="bi ${icons[type] || icons['info']} me-2"></i>
+        <span>${message}</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+      </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      if (alertDiv.parentNode) {
+        alertDiv.remove();
+      }
+    }, 5000);
+  }
+  
+  // Function to convert the name field to Camel Case
+  function convertToCamelCase() {
+    const nameInput = document.getElementById("name") || document.getElementById("customer-name");
+    if (nameInput && nameInput.value) {
+      nameInput.value = nameInput.value
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+  }
+  
+  console.log('🔧 Email handler ready');
+  </script>
+  <script>
+    // Captcha functionality
+    let currentCaptchaAnswer = '';
+    
+    function generateCaptcha() {
+      const canvas = document.getElementById('captcha-canvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Generate random math problem
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      const operators = ['+', '-'];
+      const operator = operators[Math.floor(Math.random() * operators.length)];
+      
+      let answer;
+      if (operator === '+') {
+        answer = num1 + num2;
+      } else {
+        answer = num1 - num2;
+      }
+      
+      currentCaptchaAnswer = answer.toString();
+      
+      // Draw background with noise
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, '#f8f9fa');
+      gradient.addColorStop(1, '#e9ecef');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Add noise lines
+      for (let i = 0; i < 5; i++) {
+        ctx.strokeStyle = `rgba(${Math.random() * 100}, ${Math.random() * 100}, ${Math.random() * 100}, 0.3)`;
+        ctx.lineWidth = Math.random() * 2 + 1;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.stroke();
+      }
+      
+      // Draw text
+      const expression = `${num1} ${operator} ${num2} = ?`;
+      ctx.font = '18px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const chars = expression.split('');
+      let currentX = 20;
+      
+      chars.forEach((char, index) => {
+        ctx.save();
+        
+        // Random rotation and position variation
+        const rotation = (Math.random() - 0.5) * 0.3;
+        const yOffset = (Math.random() - 0.5) * 8;
+        
+        ctx.translate(currentX, canvas.height / 2 + yOffset);
+        ctx.rotate(rotation);
+        
+        // Random color
+        const colors = ['#495057', '#6c757d', '#343a40', '#212529'];
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        
+        ctx.fillText(char, 0, 0);
+        ctx.restore();
+        
+        currentX += ctx.measureText(char).width + 2;
+      });
+      
+      // Clear captcha input and validate form
+      const captchaInput = document.getElementById('captcha-input');
+      if (captchaInput) {
+        captchaInput.value = '';
+        validateContactForm();
+      }
+    }
+    
+    function validateCaptcha() {
+      const captchaInput = document.getElementById('captcha-input');
+      return captchaInput && captchaInput.value.trim() === currentCaptchaAnswer;
+    }
+    
+    function validateContactForm() {
+      const submitBtn = document.getElementById('submit-contact-btn');
+      const nameField = document.getElementById('name');
+      const emailField = document.getElementById('email');
+      const captchaValid = validateCaptcha();
+      
+      let allFieldsValid = true;
+      
+      // Check required fields
+      if (!nameField || !nameField.value.trim()) allFieldsValid = false;
+      if (!emailField || !emailField.value.trim()) allFieldsValid = false;
+      
+      if (submitBtn) {
+        submitBtn.disabled = !(allFieldsValid && captchaValid);
+      }
+    }
+    
+    // Contact form initialization
     document.addEventListener('DOMContentLoaded', function() {
-        const contactForm = document.getElementById("contact-form");
-        if (contactForm) {
-            contactForm.addEventListener("submit", function(event) {
-                event.preventDefault();
-                
-                // Get form data
-                const formData = new FormData(this);
-                const name = formData.get('name');
-                const email = formData.get('email');
-                const message = formData.get('message');
-                
-                // Create mailto link with form data
-                const subject = encodeURIComponent('Phoenix Cabs Inquiry from ' + name);
-                const body = encodeURIComponent(
-                    'Name: ' + name + '\n' +
-                    'Email: ' + email + '\n' +
-                    'Message: ' + message + '\n\n' +
-                    'Please respond to this inquiry at your earliest convenience.'
-                );
-                
-                const mailtoLink = 'mailto:{{ site.email }}?subject=' + subject + '&body=' + body;
-                
-                // Open email client
-                window.location.href = mailtoLink;
-                
-                // Show success message
-                alert('Thank you for your message! Your email client will now open with your inquiry. You can also call us directly at {{ site.phone }} for immediate assistance.');
-                
-                // Reset form
-                this.reset();
-            });
-        }
+        // Initialize captcha
+        generateCaptcha();
+        
+        // Add event listeners for form validation
+        const formInputs = ['name', 'email', 'captcha-input'];
+        formInputs.forEach(fieldId => {
+          const field = document.getElementById(fieldId);
+          if (field) {
+            field.addEventListener('input', validateContactForm);
+            field.addEventListener('blur', validateContactForm);
+          }
+        });
+        
+        // Add a small delay to ensure all scripts are loaded
+        setTimeout(function() {
+            const contactForm = document.getElementById("contact-form");
+            console.log('Contact form found:', contactForm);
+            console.log('handleFormSubmission function available:', typeof handleFormSubmission);
+            console.log('GOOGLE_SCRIPT_URL available:', typeof GOOGLE_SCRIPT_URL !== 'undefined' ? GOOGLE_SCRIPT_URL : 'undefined');
+            
+            if (contactForm) {
+                if (typeof handleFormSubmission === 'function') {
+                    console.log('Adding event listener to contact form');
+                    contactForm.addEventListener("submit", function(event) {
+                        console.log('Contact form submit event triggered');
+                        handleFormSubmission(event, 'contact');
+                    });
+                } else {
+                    console.error('❌ handleFormSubmission function not available, form submission will not work');
+                }
+            }
+        }, 100);
     });
   </script>
   <style>
@@ -149,7 +375,7 @@ extraJS: |
       max-width: 600px;
       margin: 0 auto;
     }
-  </style>
+    \n    /* Enhanced Form Styling */\n    .phoenix-form {\n      background: #fff;\n      padding: 0;\n    }\n    \n    .phoenix-form .form-label {\n      font-weight: 600;\n      color: #1f2937;\n      margin-bottom: 0.5rem;\n      display: flex;\n      align-items: center;\n    }\n    \n    .phoenix-form .form-label i {\n      color: #ff914d;\n      font-size: 0.9rem;\n    }\n    \n    .phoenix-form .form-control {\n      border: 2px solid #e5e7eb;\n      border-radius: 8px;\n      padding: 12px 16px;\n      font-size: 14px;\n      transition: all 0.2s ease;\n      background: #fff;\n    }\n    \n    .phoenix-form .form-control:focus {\n      border-color: #ff914d;\n      box-shadow: 0 0 0 3px rgba(255, 145, 77, 0.1);\n      outline: none;\n    }\n    \n    .phoenix-form .form-control-lg {\n      padding: 14px 18px;\n      font-size: 16px;\n    }\n    \n    .phoenix-form .form-text {\n      font-size: 0.8rem;\n      color: #6b7280;\n      margin-top: 0.25rem;\n    }\n    \n    .phoenix-form .submit-btn {\n      background: linear-gradient(135deg, #ff914d 0%, #ff7b39 100%);\n      border: none;\n      border-radius: 8px;\n      padding: 14px 24px;\n      font-weight: 600;\n      font-size: 16px;\n      transition: all 0.3s ease;\n      position: relative;\n      overflow: hidden;\n    }\n    \n    .phoenix-form .submit-btn:hover {\n      background: linear-gradient(135deg, #ff7b39 0%, #ff6b29 100%);\n      transform: translateY(-2px);\n      box-shadow: 0 8px 25px rgba(255, 145, 77, 0.3);\n    }\n    \n    .phoenix-form .submit-btn:disabled {\n      background: #9ca3af;\n      transform: none;\n      cursor: not-allowed;\n    }\n    \n    /* Alert Styles */\n    .alert {\n      border-radius: 8px;\n      border: none;\n      font-size: 14px;\n      font-weight: 500;\n    }\n    \n    .alert-success {\n      background: linear-gradient(135deg, #10b981 0%, #059669 100%);\n      color: white;\n    }\n    \n    .alert-info {\n      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);\n      color: white;\n    }\n    \n    .alert-error {\n      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);\n      color: white;\n    }\n  </style>
 ---
 {%- set assetPath = "../" if page.url != "/" else "" -%}
 
@@ -276,40 +502,88 @@ extraJS: |
             <h3>Send Us a Message</h3>
           </div>
           <div class="service-card-body">
-            <form id="contact-form" class="php-email-form">
-              <div class="row gy-3">
-                  <div class="col-md-12">
-                      <input 
-                          type="text" 
-                          name="name" 
-                          id="name" 
-                          class="form-control" 
-                          placeholder="Your Name" 
-                          required 
-                          onblur="convertToCamelCase()">
-                  </div>
-                  <div class="col-md-12">
-                      <input 
-                          type="email" 
-                          name="email" 
-                          class="form-control" 
-                          placeholder="Your Email" 
-                          required>
-                  </div>
-                  <div class="col-md-12">
-                      <textarea 
-                          name="message" 
-                          rows="5" 
-                          class="form-control" 
-                          placeholder="Your Message (Travel requirements, pickup location, etc.)" 
-                          required></textarea>
-                  </div>
-                  <div class="col-md-12">
-                      <button type="submit" class="btn btn-primary w-100 py-2">
-                        <i class="bi bi-send me-2"></i>Send Message
-                      </button>
-                  </div>
+            <form id="contact-form" class="phoenix-form" method="post" action="#">
+              <div class="form-group mb-3">
+                <label for="name" class="form-label">
+                  <i class="bi bi-person me-2"></i>Full Name
+                </label>
+                <input 
+                    type="text" 
+                    name="name" 
+                    id="name" 
+                    class="form-control form-control-lg" 
+                    placeholder="Enter your full name" 
+                    required 
+                    onblur="convertToCamelCase()">
+                <div class="invalid-feedback">Please enter your name.</div>
               </div>
+              
+              <div class="form-group mb-3">
+                <label for="email" class="form-label">
+                  <i class="bi bi-envelope me-2"></i>Email Address
+                </label>
+                <input 
+                    type="email" 
+                    name="email" 
+                    id="email"
+                    class="form-control form-control-lg" 
+                    placeholder="Enter your email address" 
+                    required>
+                <div class="invalid-feedback">Please enter a valid email address.</div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="phone" class="form-label">
+                  <i class="bi bi-telephone me-2"></i>Phone Number
+                </label>
+                <input 
+                    type="tel" 
+                    name="phone" 
+                    id="phone"
+                    class="form-control form-control-lg" 
+                    placeholder="Enter your phone number" 
+                    pattern="[0-9+\s()-]*">
+                <div class="form-text">Optional - We'll call you back if needed</div>
+              </div>
+              
+              <div class="form-group mb-4">
+                <label for="message" class="form-label">
+                  <i class="bi bi-chat-text me-2"></i>Message
+                </label>
+                <textarea 
+                    name="message" 
+                    id="message"
+                    rows="5" 
+                    class="form-control" 
+                    placeholder="Tell us how we can help you - travel requirements, pickup location, destination, etc."></textarea>
+                <div class="form-text">Optional - Leave empty for general inquiries</div>
+              </div>
+              
+              <div class="form-group mb-4">
+                <label for="captcha-input" class="form-label">
+                  <i class="bi bi-shield-check me-2"></i>Security Check *
+                </label>
+                <div class="d-flex gap-2 align-items-center">
+                  <canvas id="captcha-canvas" width="140" height="50" style="border: 1px solid #dee2e6; border-radius: 4px; background: #f8f9fa; cursor: default;"></canvas>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="generateCaptcha()" title="Generate new captcha">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                  <input 
+                    type="text" 
+                    id="captcha-input" 
+                    name="captcha" 
+                    class="form-control" 
+                    placeholder="Answer" 
+                    required 
+                    maxlength="3"
+                    style="max-width: 80px;">
+                </div>
+                <div class="form-text">Enter the result of the math problem shown</div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary btn-lg w-100 submit-btn" id="submit-contact-btn">
+                <i class="bi bi-send me-2"></i>Send Message
+              </button>
             </form>
           </div>
         </div>
